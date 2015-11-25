@@ -108,7 +108,9 @@ class ir_attachment(osv.osv):
         return fname
 
     def _file_delete(self, cr, uid, location, fname):
-        count = self.search(cr, 1, [('store_fname','=',fname)], count=True)
+        # using SQL to include files hidden through unlink or due to record rules
+        cr.execute("SELECT COUNT(*) FROM ir_attachment WHERE store_fname = %s", (fname,))
+        count = cr.fetchone()[0]
         if count <= 1:
             full_path = self._full_path(cr, uid, location, fname)
             try:
@@ -130,6 +132,9 @@ class ir_attachment(osv.osv):
                 result[attach.id] = self._file_read(cr, uid, location, attach.store_fname, bin_size)
             else:
                 result[attach.id] = attach.db_datas
+                if bin_size:
+                    result[attach.id] = int(result[attach.id] or 0)
+
         return result
 
     def _data_set(self, cr, uid, id, name, value, arg, context=None):
@@ -195,10 +200,11 @@ class ir_attachment(osv.osv):
         if ids:
             if isinstance(ids, (int, long)):
                 ids = [ids]
-            cr.execute('SELECT DISTINCT res_model, res_id FROM ir_attachment WHERE id = ANY (%s)', (ids,))
-            for rmod, rid in cr.fetchall():
+            cr.execute('SELECT DISTINCT res_model, res_id, create_uid FROM ir_attachment WHERE id = ANY (%s)', (ids,))
+            for rmod, rid, create_uid in cr.fetchall():
                 if not (rmod and rid):
-                    require_employee = True
+                    if create_uid != uid:
+                        require_employee = True
                     continue
                 res_ids.setdefault(rmod,set()).add(rid)
         if values:
