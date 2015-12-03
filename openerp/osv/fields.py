@@ -367,6 +367,11 @@ class datetime(_column):
                               exc_info=True)
         return utc_timestamp
 
+    @classmethod
+    def _as_display_name(cls, field, cr, uid, obj, value, context=None):
+        value = datetime.context_timestamp(cr, uid, DT.datetime.strptime(value, tools.DEFAULT_SERVER_DATETIME_FORMAT), context=context)
+        return tools.ustr(value.strftime(tools.DEFAULT_SERVER_DATETIME_FORMAT))
+
 class binary(_column):
     _type = 'binary'
     _symbol_c = '%s'
@@ -1273,6 +1278,8 @@ class sparse(function):
         """
 
         if self._type == 'many2many':
+            if not value:
+                return []
             assert value[0][0] == 6, 'Unsupported m2m value for sparse field: %s' % value
             return value[0][2]
 

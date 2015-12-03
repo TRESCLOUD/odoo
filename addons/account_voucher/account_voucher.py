@@ -70,13 +70,13 @@ class account_config_settings(osv.osv_memory):
             type='many2one',
             relation='account.account',
             string="Gain Exchange Rate Account", 
-            domain="[('type', '=', 'other')]"),
+            domain="[('type', '=', 'other'), ('company_id', '=', company_id)]"),
         'expense_currency_exchange_account_id': fields.related(
             'company_id', 'expense_currency_exchange_account_id',
             type="many2one",
             relation='account.account',
             string="Loss Exchange Rate Account",
-            domain="[('type', '=', 'other')]"),
+            domain="[('type', '=', 'other'), ('company_id', '=', company_id)]"),
     }
     def onchange_company_id(self, cr, uid, ids, company_id, context=None):
         res = super(account_config_settings, self).onchange_company_id(cr, uid, ids, company_id, context=context)
@@ -88,6 +88,23 @@ class account_config_settings(osv.osv_memory):
             res['value'].update({'income_currency_exchange_account_id': False, 
                                  'expense_currency_exchange_account_id': False})
         return res
+
+    def _check_account_gain(self, cr, uid, ids, context=None):
+        for obj in self.browse(cr, uid, ids, context=context):
+            if obj.income_currency_exchange_account_id.company_id and obj.company_id != obj.income_currency_exchange_account_id.company_id:
+                return False
+        return True
+
+    def _check_account_loss(self, cr, uid, ids, context=None):
+        for obj in self.browse(cr, uid, ids, context=context):
+            if obj.expense_currency_exchange_account_id.company_id and obj.company_id != obj.expense_currency_exchange_account_id.company_id:
+                return False
+        return True
+
+    _constraints = [
+        (_check_account_gain, 'The company of the gain exchange rate account must be the same than the company selected.', ['income_currency_exchange_account_id']),
+        (_check_account_loss, 'The company of the loss exchange rate account must be the same than the company selected.', ['expense_currency_exchange_account_id']),
+    ]
 
 class account_voucher(osv.osv):
     def _check_paid(self, cr, uid, ids, name, args, context=None):
@@ -410,7 +427,7 @@ class account_voucher(osv.osv):
         'state': 'draft',
         'pay_now': 'pay_now',
         'name': '',
-        'date': lambda *a: time.strftime('%Y-%m-%d'),
+        'date': fields.date.context_today,
         'company_id': lambda self,cr,uid,c: self.pool.get('res.company')._company_default_get(cr, uid, 'account.voucher',context=c),
         'tax_id': _get_tax,
         'payment_option': 'without_writeoff',
@@ -556,7 +573,12 @@ class account_voucher(osv.osv):
         else:
             if not journal.default_credit_account_id or not journal.default_debit_account_id:
                 raise osv.except_osv(_('Error!'), _('Please define default credit/debit accounts on the journal "%s".') % (journal.name))
-            account_id = journal.default_credit_account_id.id or journal.default_debit_account_id.id
+            if ttype in ('sale', 'receipt'):
+                account_id = journal.default_debit_account_id.id
+            elif ttype in ('purchase', 'payment'):
+                account_id = journal.default_credit_account_id.id
+            else:
+                account_id = journal.default_credit_account_id.id or journal.default_debit_account_id.id
             tr_type = 'receipt'
 
         default['value']['account_id'] = account_id
@@ -648,6 +670,10 @@ class account_voucher(osv.osv):
             account_id = partner.property_account_receivable.id
         elif journal.type in ('purchase', 'purchase_refund','expense'):
             account_id = partner.property_account_payable.id
+        elif ttype in ('sale', 'receipt'):
+            account_id = journal.default_debit_account_id.id
+        elif ttype in ('purchase', 'payment'):
+            account_id = journal.default_credit_account_id.id
         else:
             account_id = journal.default_credit_account_id.id or journal.default_debit_account_id.id
 
@@ -904,7 +930,12 @@ class account_voucher(osv.osv):
             return False
         journal_pool = self.pool.get('account.journal')
         journal = journal_pool.browse(cr, uid, journal_id, context=context)
-        account_id = journal.default_credit_account_id or journal.default_debit_account_id
+        if ttype in ('sale', 'receipt'):
+            account_id = journal.default_debit_account_id
+        elif ttype in ('purchase', 'payment'):
+            account_id = journal.default_credit_account_id
+        else:
+            account_id = journal.default_credit_account_id or journal.default_debit_account_id
         tax_id = False
         if account_id and account_id.tax_ids:
             tax_id = account_id.tax_ids[0].id
@@ -995,6 +1026,10 @@ class account_voucher(osv.osv):
                 account_id = partner.property_account_receivable.id
             elif journal.type in ('purchase', 'purchase_refund','expense'):
                 account_id = partner.property_account_payable.id
+            elif ttype in ('sale', 'receipt'):
+                account_id = journal.default_debit_account_id.id
+            elif ttype in ('purchase', 'payment'):
+                account_id = journal.default_credit_account_id.id
             else:
                 account_id = journal.default_credit_account_id.id or journal.default_debit_account_id.id
             if account_id:
@@ -1174,6 +1209,15 @@ class account_voucher(osv.osv):
         voucher = self.browse(cr, uid, voucher_id, context=context)
         return currency_obj.compute(cr, uid, voucher.currency_id.id, voucher.company_id.currency_id.id, amount, context=context)
 
+    def _get_voucher_line_partner(self, voucher, line, context=None):
+        """
+        Specifies the partner associated with the current line for the current voucher.
+        :param voucher:
+        :param line:
+        :return: The associated partner (this implementation defaults to using the voucher partner id.
+        """
+        return voucher.partner_id.id
+
     def voucher_move_line_create(self, cr, uid, voucher_id, line_total, move_id, company_currency, current_currency, context=None):
         '''
         Create one account move line, on the given account move, per voucher line where amount is not 0.0.
@@ -1228,7 +1272,7 @@ class account_voucher(osv.osv):
                 'name': line.name or '/',
                 'account_id': line.account_id.id,
                 'move_id': move_id,
-                'partner_id': voucher.partner_id.id,
+                'partner_id': self._get_voucher_line_partner(voucher, line, context),
                 'currency_id': line.move_line_id and (company_currency <> line.move_line_id.currency_id.id and line.move_line_id.currency_id.id) or False,
                 'analytic_account_id': line.account_analytic_id and line.account_analytic_id.id or False,
                 'quantity': 1,
@@ -1297,7 +1341,7 @@ class account_voucher(osv.osv):
                     'name': _('change')+': '+(line.name or '/'),
                     'account_id': line.account_id.id,
                     'move_id': move_id,
-                    'partner_id': line.voucher_id.partner_id.id,
+                    'partner_id': self._get_voucher_line_partner(voucher, line, context),
                     'currency_id': line.move_line_id.currency_id.id,
                     'amount_currency': -1 * foreign_currency_diff,
                     'quantity': 1,

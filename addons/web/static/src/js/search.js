@@ -1453,7 +1453,7 @@ instance.web.search.SelectionField = instance.web.search.Field.extend(/** @lends
         var results = _(this.attrs.selection).chain()
             .filter(function (sel) {
                 var value = sel[0], label = sel[1];
-                if (!value) { return false; }
+                if (value === undefined || !label) { return false; }
                 return label.toLowerCase().indexOf(needle.toLowerCase()) !== -1;
             })
             .map(function (sel) {
@@ -2150,6 +2150,10 @@ instance.web.search.ExtendedSearchProposition.Float = instance.web.search.Extend
         {value: "∃", text: _lt("is set")},
         {value: "∄", text: _lt("is not set")}
     ],
+    init: function (parent) {
+        this._super(parent);
+        this.decimal_point = instance.web._t.database.parameters.decimal_point;
+    },
     toString: function () {
         return this.$el.val();
     },

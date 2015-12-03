@@ -243,6 +243,11 @@ class sale_order(osv.osv):
         :param str userdate: date string in in user time zone
         :return: UTC datetime string for server-side use
         """
+        #Este código fue modificado por TRESCLOUD
+        ####################################################################################
+        if len(userdate.split(' ')) == 2:                                                  #
+            return userdate                                                                # 
+        ####################################################################################
         # TODO: move to fields.datetime in server after 7.0
         user_date = datetime.strptime(userdate, DEFAULT_SERVER_DATE_FORMAT)
         if context and context.get('tz'):
@@ -387,6 +392,17 @@ class sale_order(osv.osv):
         date_planned = (date_planned - timedelta(days=order.company_id.security_lead)).strftime(DEFAULT_SERVER_DATETIME_FORMAT)
         return date_planned
 
+    def action_steps_picking(self, cr, uid, order, order_lines, picking_id=False, context=None):
+        '''
+        :param cr: Cursor estándar de base de datos PostgreSQL.
+        :param uid: ID del usuario actual.
+        :param order: Registro Activo de sale.order
+        :param order_lines: Lista de Registros Activos de sale.order.line
+        :param picking_id: Registro Activo de stock.picking, opcional.
+        :param context: Datos adicionales de contexto.
+        '''
+        return True
+    
     def _create_pickings_and_procurements(self, cr, uid, order, order_lines, picking_id=False, context=None):
         """Create the required procurements to supply sales order lines, also connecting
         the procurements to appropriate stock moves in order to bring the goods to the
@@ -407,7 +423,10 @@ class sale_order(osv.osv):
         :return: True
         """
         move_obj = self.pool.get('stock.move')
-        picking_obj = self.pool.get('stock.picking')
+        #######################
+        ###Codigo modificado por TRESCLOUD
+        picking_obj = self.pool.get('stock.picking.out')
+        ########################
         procurement_obj = self.pool.get('procurement.order')
         proc_ids = []
 
@@ -434,6 +453,7 @@ class sale_order(osv.osv):
         wf_service = netsvc.LocalService("workflow")
         if picking_id:
             wf_service.trg_validate(uid, 'stock.picking', picking_id, 'button_confirm', cr)
+            self.action_steps_picking(cr, uid, order, order_lines, picking_id, context)
         for proc_id in proc_ids:
             wf_service.trg_validate(uid, 'procurement.order', proc_id, 'button_confirm', cr)
 
@@ -593,6 +613,11 @@ class sale_order_line(osv.osv):
         partner_obj = self.pool.get('res.partner')
         product_obj = self.pool.get('product.product')
         warning = {}
+        #Este código fue modificado por Trescloud
+        ################################################################        
+        if not qty:                                                    #
+            qty = 0                                                    #
+        ################################################################
         res = super(sale_order_line, self).product_id_change(cr, uid, ids, pricelist, product, qty=qty,
             uom=uom, qty_uos=qty_uos, uos=uos, name=name, partner_id=partner_id,
             lang=lang, update_tax=update_tax, date_order=date_order, packaging=packaging, fiscal_position=fiscal_position, flag=flag, context=context)
@@ -600,6 +625,22 @@ class sale_order_line(osv.osv):
         if not product:
             res['value'].update({'product_packaging': False})
             return res
+        
+         # set product uom in context to get virtual stock in current uom
+        if res.get('value', {}).get('product_uom'):
+            # use the uom changed by super call
+           context.update({'uom': res['value']['product_uom']})
+        elif uom:
+            # fallback on selected
+            context.update({'uom': uom})
+
+        # set product uom in context to get virtual stock in current uom
+        if res.get('value', {}).get('product_uom'):
+            # use the uom changed by super call
+            context.update({'uom': res['value']['product_uom']})
+        elif uom:
+            # fallback on selected
+            context.update({'uom': uom})
 
         #update of result obtained in super function
         product_obj = product_obj.browse(cr, uid, product, context=context)

@@ -77,7 +77,7 @@ _schema = logging.getLogger(__name__ + '.schema')
 # List of etree._Element subclasses that we choose to ignore when parsing XML.
 from openerp.tools import SKIPPED_ELEMENT_TYPES
 
-regex_order = re.compile('^( *([a-z0-9_]+|"[a-z0-9_]+")( *desc| *asc)?( *, *|))+$', re.I)
+regex_order = re.compile('^(\s*([a-z0-9:_]+|"[a-z0-9:_]+")(\s+(desc|asc))?\s*(,|$))+(?<!,)$', re.I)
 regex_object_name = re.compile(r'^[a-z0-9_.]+$')
 
 # TODO for trunk, raise the value to 1000
@@ -1215,17 +1215,6 @@ class BaseModel(object):
                                 for fpos2 in range(len(fields)):
                                     if lines2 and lines2[0][fpos2]:
                                         data[fpos2] = lines2[0][fpos2]
-                                if not data[fpos]:
-                                    dt = ''
-                                    for rr in r:
-                                        name_relation = self.pool.get(rr._table_name)._rec_name
-                                        if isinstance(rr[name_relation], browse_record):
-                                            rr = rr[name_relation]
-                                        rr_name = self.pool.get(rr._table_name).name_get(cr, uid, [rr.id], context=context)
-                                        rr_name = rr_name and rr_name[0] and rr_name[0][1] or ''
-                                        dt += tools.ustr(rr_name or '') + ','
-                                    data[fpos] = dt[:-1]
-                                    break
                                 lines += lines2[1:]
                                 first = False
                             else:
@@ -5469,10 +5458,10 @@ class ImportWarning(Warning):
 def convert_pgerror_23502(model, fields, info, e):
     m = re.match(r'^null value in column "(?P<field>\w+)" violates '
                  r'not-null constraint\n',
-                 str(e))
+                 tools.ustr(e))
     field_name = m.group('field')
     if not m or field_name not in fields:
-        return {'message': unicode(e)}
+        return {'message': tools.ustr(e)}
     message = _(u"Missing required value for the field '%s'.") % field_name
     field = fields.get(field_name)
     if field:
@@ -5484,10 +5473,10 @@ def convert_pgerror_23502(model, fields, info, e):
     }
 def convert_pgerror_23505(model, fields, info, e):
     m = re.match(r'^duplicate key (?P<field>\w+) violates unique constraint',
-                 str(e))
+                 tools.ustr(e))
     field_name = m.group('field')
     if not m or field_name not in fields:
-        return {'message': unicode(e)}
+        return {'message': tools.ustr(e)}
     message = _(u"The value for the field '%s' already exists.") % field_name
     field = fields.get(field_name)
     if field:
@@ -5500,7 +5489,7 @@ def convert_pgerror_23505(model, fields, info, e):
 
 PGERROR_TO_OE = collections.defaultdict(
     # shape of mapped converters
-    lambda: (lambda model, fvg, info, pgerror: {'message': unicode(pgerror)}), {
+    lambda: (lambda model, fvg, info, pgerror: {'message': tools.ustr(pgerror)}), {
     # not_null_violation
     '23502': convert_pgerror_23502,
     # unique constraint error
