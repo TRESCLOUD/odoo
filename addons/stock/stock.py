@@ -2945,10 +2945,16 @@ class stock_inventory(osv.osv):
         """
         move_obj = self.pool.get('stock.move')
         account_move_obj = self.pool.get('account.move')
+        account_move_line_obj = self.pool.get('account.move.line')
         for inv in self.browse(cr, uid, ids, context=context):
             move_obj.action_cancel(cr, uid, [x.id for x in inv.move_ids], context=context)
             for move in inv.move_ids:
-                 account_move_ids = account_move_obj.search(cr, uid, [('name', '=', move.name)])
+                 account_move_ids = []
+                 account_move_line_ids = account_move_line_obj.search(cr, uid, [('name', '=', move.name)])
+                 for move_line in account_move_line_obj.browse(cr, uid, account_move_line_ids, context=context):
+                     if not move_line.move_id.id in account_move_ids: 
+                         account_move_ids.append(move_line.move_id.id)
+                 #account_move_ids = account_move_obj.search(cr, uid, [('name', '=', move.name)])
                  if account_move_ids:
                      account_move_data_l = account_move_obj.read(cr, uid, account_move_ids, ['state'], context=context)
                      for account_move in account_move_data_l:
