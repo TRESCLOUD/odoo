@@ -119,6 +119,7 @@ purchase_order()
 class account_invoice(osv.osv):
     _inherit = 'account.invoice'
     
+    #Código modificado por Trescloud
     def onchange_partner_id(self, cr, uid, ids, type, partner_id,
             date_invoice=False, payment_term=False, partner_bank_id=False, company_id=False, context=None):
         if context is None:
