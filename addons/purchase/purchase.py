@@ -1067,7 +1067,8 @@ class purchase_order_line(osv.osv):
 
         taxes = account_tax.browse(cr, uid, map(lambda x: x.id, product.supplier_taxes_id))
         fpos = fiscal_position_id and account_fiscal_position.browse(cr, uid, fiscal_position_id, context=context) or False
-        taxes_ids = account_fiscal_position.map_tax(cr, uid, fpos, taxes)
+        context.update({'document_date': date_order})
+        taxes_ids = account_fiscal_position.map_tax(cr, uid, fpos, taxes, context=context)
         res['value'].update({'price_unit': price, 'taxes_id': taxes_ids})
 
         return res
