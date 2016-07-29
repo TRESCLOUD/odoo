@@ -1747,11 +1747,12 @@ class account_invoice_tax(osv.osv):
         cur = inv.currency_id
         company_currency = self.pool['res.company'].browse(cr, uid, inv.company_id.id).currency_id.id
         for line in inv.invoice_line:
+            cur = inv.pricelist_id.currency_id
             for tax in tax_obj.compute_all(cr, uid, line.invoice_line_tax_id, (line.price_unit* (1-(line.discount or 0.0)/100.0)), line.quantity, line.product_id, inv.partner_id)['taxes']:
                 val={}
                 val['invoice_id'] = inv.id
                 val['name'] = tax['name']
-                val['amount'] = tax['amount']
+                val['amount'] = cur_obj.round(cr, uid, cur, tax['amount'])
                 val['manual'] = False
                 val['sequence'] = tax['sequence']
                 val['base'] = cur_obj.round(cr, uid, cur, tax['price_unit'] * line['quantity'])

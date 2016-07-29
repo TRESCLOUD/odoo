@@ -2198,11 +2198,10 @@ class account_tax(osv.osv):
     def _unit_compute_inv(self, cr, uid, taxes, price_unit, product=None, partner=None, context=None):
         if context is None:
             context = {}
-        taxes = self._applicable(cr, uid, taxes, price_unit,  product, partner)
+        taxes = self._applicable(cr, uid, taxes, price_unit, product, partner)
         res = []
         taxes.reverse()
         cur_price_unit = price_unit
-
         tax_parent_tot = 0.0
         for tax in taxes:
             if (tax.type=='percent') and not tax.include_base_amount:
@@ -2242,7 +2241,8 @@ class account_tax(osv.osv):
                     'force_vat': context.get('force_vat')
                 }                
                 eval(tax.python_compute_inv, localdict, mode="exec", nocopy=True)
-                amount = localdict['result']
+                currency = self.pool.get('res.users').browse(cr, uid, uid, context=context).company_id.currency_id
+                amount = self.pool.get('res.currency').round(cr, uid, currency, localdict['result'])
             elif tax.type=='balance':
                 amount = cur_price_unit - reduce(lambda x,y: y.get('amount',0.0)+x, res, 0.0)
 
