@@ -728,7 +728,8 @@ class account_invoice(osv.osv):
             'number':False,
             'move_id':False,
             'move_name':False,
-            'internal_number': False,
+            #Código modificado por TRESCLOUD
+            #'internal_number': False,
             'period_id': False,
             'sent': False,
         })
