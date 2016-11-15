@@ -160,6 +160,7 @@
                             <field name="number" class="oe_inline"  attrs="{'invisible': [('state', '=', 'draft')]}"/>
                         </h1>
                     </div>
+                    <div class="oe_right oe_button_box" name="buttons"></div>
                     <field name="type" invisible="1"/>
                     <group>
                         <group>
