@@ -264,15 +264,20 @@ class account_asset_asset(osv.osv):
         # Tambien hace falta que dependa del contexto ya se usa analisis_date como fecha de analisis
         context = context or {}
         analisis_date = datetime.now().strftime('%Y-%m-%d')
-        if 'analisis_date' in context and context['analisis_date']:
-            analisis_date = context['analisis_date']
-        cr.execute("""SELECT
+        sql = """SELECT
                 l.asset_id as id, SUM(l.debit-l.credit) AS amount
             FROM
                 account_move_line l
             WHERE
-                l.asset_id IN %s and l.date <= %s 
-            GROUP BY l.asset_id """, ((tuple(ids), analisis_date)))
+                l.asset_id IN %s """
+        param = [tuple(ids)]
+        if 'analisis_date' in context and context['analisis_date']:
+            analisis_date = context['analisis_date']
+            sql += """and l.date <= %s
+            """
+            param.append(analisis_date) 
+        sql += "            GROUP BY l.asset_id"
+        cr.execute(sql, tuple(param))
         res=dict(cr.fetchall())
         for asset in self.browse(cr, uid, ids, context):
             company_currency = asset.company_id.currency_id.id
