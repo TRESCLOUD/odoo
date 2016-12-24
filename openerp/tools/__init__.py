@@ -34,6 +34,8 @@ from yaml_import import *
 from sql import *
 from float_utils import *
 from mail import *
+# TRESCLOUD: creamos nueva funcion para conversion de zona horaria
+from timezone import *
 
 #.apidoc title: Tools
 
