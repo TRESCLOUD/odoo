@@ -68,7 +68,6 @@ class stock_invoice_onshipping(osv.osv_memory):
             adjust_journal_manufacture = True
             try:
                 user = self.pool.get('res.users').browse(cr, uid, uid, context=context)
-                obj, move_reason_id = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'ecua_stock', 'move_reason_in_14')
                 if journal_type == 'sale_refund':
                     journal_id = user.company_id.customer_credit_note_journal_id.id
                     if user.printer_id.journal_credit_notes_id:
@@ -76,12 +75,12 @@ class stock_invoice_onshipping(osv.osv_memory):
                     value = [journal_id]
                 if context.get('active_id'):
                     picking = self.pool.get(context.get('active_model')).browse(cr, uid, context.get('active_id'), context=context)
-                    if picking.move_reason_id.id == move_reason_id:
+                    if picking.creation in ['manual', 'manufacture', 'others']:
                         if not user.company_id.adjust_journal_accounting_stock_id:
                             adjust_journal_accounting_stock = False
                         if not user.company_id.adjust_journal_manufacture_id:
                             adjust_journal_manufacture = False
-                        if picking.manufacture:
+                        if picking.creation == 'manufacture':
                             value = [user.company_id.adjust_journal_manufacture_id.id]
                         else:
                             value = [user.company_id.adjust_journal_accounting_stock_id.id]

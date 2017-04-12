@@ -1113,7 +1113,7 @@ class stock_picking(osv.osv):
         quantity = move_line.product_uos_qty or move_line.product_qty
         module_ids = self.pool.get('ir.module.module').search(cr, uid, [('name','=','invoiced_stock'), ('state','=','installed')], context=context)
         if module_ids:
-            if picking.manufacture:
+            if picking.creation == 'manufacture':
                 quantity = move_line.product_qty
         ###########################################################################################################################
         return {
