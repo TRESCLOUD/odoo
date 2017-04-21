@@ -2147,6 +2147,12 @@ class account_tax(osv.osv):
         # rounding after the sum of the tax amounts of each line
         context = context or {}
         precision = self.pool.get('decimal.precision').precision_get(cr, uid, 'Account')
+        #Codigo modificado por TRESCLOUD para que se aplique en los impuestos de
+        #la factura la misma logica implementada en los totales de la misma, los
+        #totales usan precision de moneda(2) y los impuestos usaban precision de
+        #account(no siempre es 2) y esto trae error de redondeo        
+        if context.get('origin') == 'invoice_tax_line' and context.get('precision'):
+            precision = context.get('precision') 
         tax_compute_precision = precision
         if taxes and taxes[0].company_id.tax_calculation_rounding_method == 'round_globally':
             tax_compute_precision += 5
