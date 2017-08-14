@@ -780,7 +780,7 @@ class account_voucher(osv.osv):
                 account_type = 'receivable'
 
         if not context.get('move_line_ids', False):
-            ids = move_line_pool.search(cr, uid, [('state','=','valid'), ('account_id.type', '=', account_type), ('reconcile_id', '=', False), ('partner_id', '=', partner_id)], context=context)
+            ids = move_line_pool.search(cr, uid, [('state','=','valid'), ('account_id.type', '=', account_type), ('reconcile_id', '=', False), ('partner_id', '=', partner_id)], order='date_created, date_maturity asc', context=context)
         else:
             ids = context['move_line_ids']
         invoice_id = context.get('invoice_id', False)
@@ -788,7 +788,7 @@ class account_voucher(osv.osv):
         move_lines_found = []
 
         #order the lines by most old first
-        ids.reverse()
+       # ids.reverse()
         account_move_lines = move_line_pool.browse(cr, uid, ids, context=context)
 
         #compute the total debit/credit and look for a matching open amount or invoice
@@ -846,6 +846,14 @@ class account_voucher(osv.osv):
                 'currency_id': line_currency_id,
             }
             remaining_amount -= rs['amount']
+            if remaining_amount <= 0.0:
+                amount_unreconciled = 0.0
+            else:
+                remaining_amount -= amount_unreconciled
+                if remaining_amount <= 0.0:
+                    amount_unreconciled = min(amount_unreconciled, (amount_unreconciled + remaining_amount)) 
+                else:
+                    amount_unreconciled
             #in case a corresponding move_line hasn't been found, we now try to assign the voucher amount
             #on existing invoices: we split voucher amount by most old first, but only for lines in the same currency
             if not move_lines_found:
@@ -1008,8 +1016,8 @@ class account_voucher(osv.osv):
 
     def unlink(self, cr, uid, ids, context=None):
         for t in self.read(cr, uid, ids, ['state'], context=context):
-            if t['state'] not in ('draft', 'cancel'):
-                raise osv.except_osv(_('Invalid Action!'), _('Cannot delete voucher(s) which are already opened or paid.'))
+            if t['state'] not in ('draft'):
+                raise osv.except_osv(_('Invalid Action!'), _('Payments can only be deleted in draft status.'))
         return super(account_voucher, self).unlink(cr, uid, ids, context=context)
 
     def onchange_payment(self, cr, uid, ids, pay_now, journal_id, partner_id, ttype='sale'):
@@ -1147,14 +1155,30 @@ class account_voucher(osv.osv):
         :return: the account move line and its counterpart to create, depicted as mapping between fieldname and value
         :rtype: tuple of dict
         '''
+        #move_line_obj = self.pool.get('account.move.line')
         if amount_residual > 0:
+            #move = move_line_obj.browse(cr, uid, move_id)
+            value = line.move_line_id.credit - line.move_line_id.debit
+            value_split = str(value).replace(',','.').split('.')
+            prec = self.pool.get('decimal.precision').precision_get(cr, uid, 'Account')
+            if len(value_split) == 2 and len(value_split[1]) > prec:
+                move_text = line.move_line_id.name + u"-" + line.move_line_id.ref + u"-" + line.move_line_id.move_id.name
+                text = u"Se ha detectado un cambio en la configuración de decimales para los apuntes contables y no es posible \
+                 realizar la validación de este pago bajo el número de decimales actual.\
+                 \n El apunte contable %s tiene %s decimales y debe setearse en la configuración contable este valor de decimales \
+                 para permitir realizar este pago.\nUna vez que se realice el pago debe proceder a poner el número de decimales \
+                 que originalmente se requiere.\nDebe realizarse con mucha precaución y cuidando que no se realicen mas asientos \
+                 contables mientras se realiza esta correción."%(move_text, len(value_split[1]))
+                raise osv.except_osv(_('Error de Configuracion!'), _(text))
             account_id = line.voucher_id.company_id.expense_currency_exchange_account_id
             if not account_id:
-                raise osv.except_osv(_('Insufficient Configuration!'),_("You should configure the 'Loss Exchange Rate Account' in the accounting settings, to manage automatically the booking of accounting entries related to differences between exchange rates."))
+                move_text = line.move_line_id.name + u"-" + line.move_line_id.ref + u"-" + line.move_line_id.move_id.name
+                raise osv.except_osv(_(u'Error de Configuracion!'),_(u"Debe configurar 'Perdida por diferencia de cambio' en la configuración de contabilidad para gestionar automáticamente los asientos en el libro contable asociados a las diferencias relacionadas con el cambio de moneda. \n Apunte contable: %s"%(move_text)))
         else:
             account_id = line.voucher_id.company_id.income_currency_exchange_account_id
             if not account_id:
-                raise osv.except_osv(_('Insufficient Configuration!'),_("You should configure the 'Gain Exchange Rate Account' in the accounting settings, to manage automatically the booking of accounting entries related to differences between exchange rates."))
+                move_text = line.move_line_id.name + u"-" + line.move_line_id.ref + u"-" + line.move_line_id.move_id.name
+                raise osv.except_osv(_(u'Error de Configuracion!'),_(u"Debe configurar 'Ingresos por diferencia de cambio' en la configuración de contabilidad para gestionar automáticamente los asientos en el libro contable asociados a las diferencias relacionadas con el cambio de moneda. \n Apunte contable: %s"%(move_text)))
         # Even if the amount_currency is never filled, we need to pass the foreign currency because otherwise
         # the receivable/payable account may have a secondary currency, which render this field mandatory
         if line.account_id.currency_id:
@@ -1208,6 +1232,15 @@ class account_voucher(osv.osv):
         currency_obj = self.pool.get('res.currency')
         voucher = self.browse(cr, uid, voucher_id, context=context)
         return currency_obj.compute(cr, uid, voucher.currency_id.id, voucher.company_id.currency_id.id, amount, context=context)
+
+    def _get_voucher_line_partner(self, voucher, line, context=None):
+        """
+        Specifies the partner associated with the current line for the current voucher.
+        :param voucher:
+        :param line:
+        :return: The associated partner (this implementation defaults to using the voucher partner id.
+        """
+        return voucher.partner_id.id
 
     def voucher_move_line_create(self, cr, uid, voucher_id, line_total, move_id, company_currency, current_currency, context=None):
         '''
@@ -1263,7 +1296,7 @@ class account_voucher(osv.osv):
                 'name': line.name or '/',
                 'account_id': line.account_id.id,
                 'move_id': move_id,
-                'partner_id': voucher.partner_id.id,
+                'partner_id': self._get_voucher_line_partner(voucher, line, context),
                 'currency_id': line.move_line_id and (company_currency <> line.move_line_id.currency_id.id and line.move_line_id.currency_id.id) or False,
                 'analytic_account_id': line.account_analytic_id and line.account_analytic_id.id or False,
                 'quantity': 1,
@@ -1332,7 +1365,7 @@ class account_voucher(osv.osv):
                     'name': _('change')+': '+(line.name or '/'),
                     'account_id': line.account_id.id,
                     'move_id': move_id,
-                    'partner_id': line.voucher_id.partner_id.id,
+                    'partner_id': self._get_voucher_line_partner(voucher, line, context),
                     'currency_id': line.move_line_id.currency_id.id,
                     'amount_currency': -1 * foreign_currency_diff,
                     'quantity': 1,

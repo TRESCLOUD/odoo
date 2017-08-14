@@ -40,12 +40,19 @@ class asset_depreciation_confirmation_wizard(osv.osv_memory):
         'period_id': _get_period,
     }
 
-    def asset_compute(self, cr, uid, ids, context):
+    def asset_compute(self, cr, uid, ids, context=None):
+        if context is None:
+            context = {}
+        if isinstance(ids, (int, long)):
+            ids = [ids]
         ass_obj = self.pool.get('account.asset.asset')
+        wizard = self.browse(cr, uid, ids[0], context=context)
+        module_ids = self.pool.get('ir.module.module').search(cr, uid, [('name','=','asset'), ('state','=','installed')], context=context)
+        if module_ids:
+            if wizard.reproces_accounting_entry:
+                context.update({'reproces_accounting_entry': True})
         asset_ids = ass_obj.search(cr, uid, [('state','=','open')], context=context)
-        data = self.browse(cr, uid, ids, context=context)
-        period_id = data[0].period_id.id
-        created_move_ids = ass_obj._compute_entries(cr, uid, asset_ids, period_id, context=context)
+        created_move_ids = ass_obj._compute_entries(cr, uid, asset_ids, wizard.period_id.id, context=context)
         return {
             'name': _('Created Asset Moves'),
             'view_type': 'form',

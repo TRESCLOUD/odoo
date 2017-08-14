@@ -20,22 +20,29 @@
 ##############################################################################
 
 from openerp.osv import fields, osv
+# TRESCLOUD: Se comenta completamente la clase account_inovice por que
+# el trabajo de creacion se lo hace a travez de un wizard y no requiere 
+# estas funcionalidades
 
-class account_invoice(osv.osv):
+#class account_invoice(osv.osv):
 
-    _inherit = 'account.invoice'
-    def action_number(self, cr, uid, ids, *args, **kargs):
-        result = super(account_invoice, self).action_number(cr, uid, ids, *args, **kargs)
-        for inv in self.browse(cr, uid, ids):
-            self.pool.get('account.invoice.line').asset_create(cr, uid, inv.invoice_line)
-        return result
+#    _inherit = 'account.invoice'
+# Esta seccion se comenta por que con el nuevo wizard no se requiere la autocreacion 
+# a partir de la validacion de la factura
+#     def action_number(self, cr, uid, ids, *args, **kargs):
+#         result = super(account_invoice, self).action_number(cr, uid, ids, *args, **kargs)
+#         for inv in self.browse(cr, uid, ids):
+#             self.pool.get('account.invoice.line').asset_create(cr, uid, inv.invoice_line)
+#         return result
 
-    def line_get_convert(self, cr, uid, x, part, date, context=None):
-        res = super(account_invoice, self).line_get_convert(cr, uid, x, part, date, context=context)
-        res['asset_id'] = x.get('asset_id', False)
-        return res
+# Esta seccion tampoco se utiliza, los activos se relacionan con la linea 
+# de la factura en el activo y no al reves
+#     def line_get_convert(self, cr, uid, x, part, date, context=None):
+#         res = super(account_invoice, self).line_get_convert(cr, uid, x, part, date, context=context)
+#         res['asset_id'] = x.get('asset_id', False)
+#         return res
 
-account_invoice()
+#account_invoice()
 
 class account_invoice_line(osv.osv):
 

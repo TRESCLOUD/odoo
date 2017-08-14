@@ -62,8 +62,40 @@ class stock_invoice_onshipping(osv.osv_memory):
                 else:
                     journal_type = 'sale'
                 domain = [('type', '=', journal_type)]
-
             value = journal_obj.search(cr, uid, domain)
+            #El siguiente codigo fue agregado por TRESCLOUD
+            adjust_journal_accounting_stock = True
+            adjust_journal_manufacture = True
+            try:
+                user = self.pool.get('res.users').browse(cr, uid, uid, context=context)
+                obj, move_reason_id = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'ecua_stock', 'move_reason_in_14')
+                if journal_type == 'sale_refund':
+                    journal_id = user.company_id.customer_credit_note_journal_id.id
+                    if user.printer_id.journal_credit_notes_id:
+                        journal_id = user.printer_id.journal_credit_notes_id.id
+                    value = [journal_id] if journal_id else value
+                if context.get('active_id'):
+                    picking = self.pool.get(context.get('active_model')).browse(cr, uid, context.get('active_id'), context=context)
+                    if picking.move_reason_id.id == move_reason_id:
+                        if not user.company_id.adjust_journal_accounting_stock_id:
+                            adjust_journal_accounting_stock = False
+                        if not user.company_id.adjust_journal_manufacture_id:
+                            adjust_journal_manufacture = False
+                        if picking.manufacture:
+                            value = [user.company_id.adjust_journal_manufacture_id.id]
+                        else:
+                            #En los ajustes de inv fisico se muestran los diarios de ajuste de inv contable y diario de ventas
+                            value.append(user.company_id.adjust_journal_accounting_stock_id.id)
+                            value.reverse()
+            except:
+                pass
+            finally:
+                if not adjust_journal_accounting_stock and not value[0]:
+                    raise osv.except_osv(_(u'¡Error de Usuario!'),
+                                         _(u'Por favor configure el diario de ajuste de inventario contable en la compañía.'))
+                if not adjust_journal_manufacture and not value[0]:
+                    raise osv.except_osv(_(u'¡Error de Usuario!'),
+                                         _(u'Por favor configure el diario de ajuste de manufactura en la compañía.'))
             for jr_type in journal_obj.browse(cr, uid, value, context=context):
                 t1 = jr_type.id,jr_type.name
                 if t1 not in vals:
@@ -113,8 +145,30 @@ class stock_invoice_onshipping(osv.osv_memory):
             raise osv.except_osv(_('Error!'), _('Please create Invoices.'))
         if inv_type == "out_invoice":
             action_model,action_id = data_pool.get_object_reference(cr, uid, 'account', "action_invoice_tree1")
+            #Este código fue modificado por TRESCLOUD
+            ###################################################################################################
+            if context.get('origin') == 'manual_adjustment':
+                module_ids = self.pool.get('ir.module.module').search(cr, uid, [('name','=','invoiced_stock'), ('state','=','installed')], context=context)
+                if module_ids:
+                    obj, adjustment_journal_id = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'invoiced_stock', 'journal_adjust_accounting_stock')
+                    journal_id = context.get('journal_id')
+                    #Para comparar convertirmos el journal al int pues llega como unicode
+                    if journal_id and int(journal_id) == adjustment_journal_id:
+                        action_model,action_id = data_pool.get_object_reference(cr, uid, 'invoiced_stock', "action_adjust_manual_accounting_stock")
+            ####################################################################################################
         elif inv_type == "in_invoice":
             action_model,action_id = data_pool.get_object_reference(cr, uid, 'account', "action_invoice_tree2")
+            #Este código fue modificado por TRESCLOUD
+            ###################################################################################################
+            if context.get('origin') == 'manual_adjustment':
+                module_ids = self.pool.get('ir.module.module').search(cr, uid, [('name','=','invoiced_stock'), ('state','=','installed')], context=context)
+                if module_ids:
+                    obj, adjustment_journal_id = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'invoiced_stock', 'journal_adjust_accounting_stock')
+                    journal_id = context.get('journal_id')
+                    #Para comparar convertirmos el journal al int pues llega como unicode
+                    if journal_id and int(journal_id) == adjustment_journal_id:
+                        action_model,action_id = data_pool.get_object_reference(cr, uid, 'invoiced_stock', "action_adjust_manual_accounting_stock")
+            ####################################################################################################
         elif inv_type == "out_refund":
             action_model,action_id = data_pool.get_object_reference(cr, uid, 'account', "action_invoice_tree3")
         elif inv_type == "in_refund":
@@ -140,6 +194,13 @@ class stock_invoice_onshipping(osv.osv_memory):
         context['inv_type'] = inv_type
         if isinstance(onshipdata_obj[0]['journal_id'], tuple):
             onshipdata_obj[0]['journal_id'] = onshipdata_obj[0]['journal_id'][0]
+        if active_picking.sale_id:
+            force_vat = active_picking.sale_id.force_vat
+        elif active_picking.purchase_id:
+            force_vat = active_picking.purchase_id.force_vat
+        else:
+            force_vat = 'automatic'
+        context.update({'force_vat': force_vat})
         res = picking_pool.action_invoice_create(cr, uid, active_ids,
               journal_id = onshipdata_obj[0]['journal_id'],
               group = onshipdata_obj[0]['group'],

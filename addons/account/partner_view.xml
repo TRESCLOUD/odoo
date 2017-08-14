@@ -75,10 +75,11 @@
                 <page string="History" position="before" version="7.0">
                 <page string="Accounting" col="4" name="accounting" attrs="{'invisible': [('is_company','=',False),('parent_id','!=',False)]}">
                     <group>
-                        <group>
+                    	<!-- Es siguiente codigo fue modificado por TRESCLOUD -->
+                        <group name="account_position">
                             <field name="property_account_position" widget="selection"/>
                         </group>
-                        <group>
+                        <group name="reconciliation">
                             <field name="last_reconciliation_date"/>
                         </group>
                         <group>

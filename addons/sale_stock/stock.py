@@ -24,7 +24,7 @@ from openerp.osv import fields, osv
 class stock_move(osv.osv):
     _inherit = 'stock.move'
     _columns = {
-        'sale_line_id': fields.many2one('sale.order.line', 'Sales Order Line', ondelete='set null', select=True, readonly=True),
+        'sale_line_id': fields.many2one('sale.order.line', 'Sales Order Line', ondelete='restrict', select=True, readonly=True),
     }
 
     def _prepare_chained_picking(self, cr, uid, picking_name, picking, picking_type, moves_todo, context=None):

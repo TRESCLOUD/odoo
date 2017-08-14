@@ -26,7 +26,7 @@ class stock_move(osv.osv):
     _inherit = 'stock.move'
     _columns = {
         'purchase_line_id': fields.many2one('purchase.order.line',
-            'Purchase Order Line', ondelete='set null', select=True,
+            'Purchase Order Line', ondelete='restrict', select=True,
             readonly=True),
     }
 

@@ -103,8 +103,9 @@ class hr_timesheet_sheet(osv.osv):
         res = super(hr_timesheet_sheet, self).write(cr, uid, ids, vals, context=context)
         if vals.get('attendances_ids'):
             for timesheet in self.browse(cr, uid, ids):
-                if not self.pool['hr.attendance']._altern_si_so(cr, uid, [att.id for att in timesheet.attendances_ids]):
-                    raise osv.except_osv(_('Warning !'), _('Error ! Sign in (resp. Sign out) must follow Sign out (resp. Sign in)'))
+                # This function now triggers the exceptions directly.
+                # No need for catch False values directly and raise an exception.
+                self.pool['hr.attendance']._altern_si_so(cr, uid, [att.id for att in timesheet.attendances_ids])
         return res
 
     def sort_attendances(self, cr, uid, attendance_tuples, context=None):

@@ -227,7 +227,7 @@ instance.web.parse_value = function (value, descriptor, value_if_empty) {
                 tmp = value;
                 value = value.replace(instance.web._t.database.parameters.thousands_sep, "");
             } while(tmp !== value);
-            tmp = Number(value);
+            tmp = parseInt(value);
             // do not accept not numbers or float values
             if (isNaN(tmp) || tmp % 1)
                 throw new Error(_.str.sprintf(_t("'%s' is not a correct integer"), value));
@@ -240,7 +240,7 @@ instance.web.parse_value = function (value, descriptor, value_if_empty) {
                 tmp2 = tmp.replace(instance.web._t.database.parameters.thousands_sep, "");
             } while(tmp !== tmp2);
             var reformatted_value = tmp.replace(instance.web._t.database.parameters.decimal_point, ".");
-            var parsed = Number(reformatted_value);
+            var parsed = parseFloat(reformatted_value);
             if (isNaN(parsed))
                 throw new Error(_.str.sprintf(_t("'%s' is not a correct float"), value));
             return parsed;

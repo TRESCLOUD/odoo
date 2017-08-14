@@ -319,6 +319,54 @@ class account_analytic_account(osv.osv):
 class account_analytic_line(osv.osv):
     _name = 'account.analytic.line'
     _description = 'Analytic Line'
+    
+    #===========================================================================
+    # CODIGO REALIZADO POR TRESCLOUD RESTRICCIONES EN WRITE Y CREATE EN CUENTAS
+    # ANALITICAS CON RESTRICCIONES A LAS CUENTAS ANALITICAS
+    #===========================================================================
+    
+    def write(self, cr, uid, ids, vals, context=None):
+        """
+        Verifica si la cuenta contable analitica del apunte contable analitico
+        esta en estado cerrado o cancelado, y levanta un error si es que, la cuenta 
+        esta en dichos estados, ya que no se la deberia usar mas cuando 
+        :param cr: Cursor estándar de base de datos PostgreSQL.
+        :param uid: ID del usuario actual.
+        :param ids: IDs de las ordenes de venta sobre las que se actuará.
+        :param vals: Dict. con los valores modificados a escribirse en el registro. 
+        :param context: Datos de contexto adicionales.
+        :return: True
+        """
+        account_analytic_account = self.pool.get('account.analytic.account')
+        if vals.get('account_id',False):
+            aac_state = account_analytic_account.browse(cr, uid, vals.get('account_id'),context=context).state
+            if aac_state in ('close','cancel'):
+                raise osv.except_osv(_('¡Error!'),
+                                     _('No se puede crear un apunte analítico con cuentas analíticas cerradas o canceladas.\n\
+                                     Si desea usar esta cuenta reactivela.'))
+        return super(account_analytic_line,self).write(cr, uid, ids, vals,
+                context=context)
+    
+    def create(self, cr, uid, vals, context=None):
+        """
+        Verifica si la cuenta contable analitica del apunte contable analitico
+        esta en estado cerrado o cancelado, y levanta un error si es que, la cuenta 
+        esta en dichos estados, ya que no se la deberia usar mas cuando 
+        :param cr: Cursor estándar de base de datos PostgreSQL.
+        :param uid: ID del usuario actual.
+        :param ids: IDs de las ordenes de venta sobre las que se actuará.
+        :param vals: Dict. con los valores modificados a escribirse en el registro. 
+        :param context: Datos de contexto adicionales.
+        :return: True
+        """
+        account_analytic_account = self.pool.get('account.analytic.account')
+        if vals.get('account_id',False):
+            aac_state = account_analytic_account.browse(cr, uid, vals.get('account_id'),context=context).state
+            if aac_state in ('close','cancel'):
+                raise osv.except_osv(_('¡Error!'),
+                                     _('No se puede crear un apunte analítico con cuentas analíticas cerradas o canceladas.\n\
+                                     Si desea usar esta cuenta reactivela.'))
+        return super(account_analytic_line,self).create(cr, uid, vals, context=context)
 
     _columns = {
         'name': fields.char('Description', size=256, required=True),

@@ -414,6 +414,8 @@ class hr_applicant(base_stage, osv.Model):
             address_id = False
             if applicant.partner_id:
                 address_id = self.pool.get('res.partner').address_get(cr,uid,[applicant.partner_id.id],['contact'])['contact']
+            if not applicant.partner_id: 
+                raise osv.except_osv(_('Warning!'), _('You must define Contact for this applicant.'))
             if applicant.job_id:
                 applicant.job_id.write({'no_of_recruitment': applicant.job_id.no_of_recruitment - 1})
                 emp_id = hr_employee.create(cr,uid,{'name': applicant.partner_name or applicant.name,

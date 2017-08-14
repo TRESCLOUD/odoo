@@ -2,7 +2,9 @@
 _build/
 
 # dotfiles
-.*
+.project
+.pydevproject
+.settings/*
 !.gitignore
 # compiled python files
 *.py[co]
