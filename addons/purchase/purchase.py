@@ -37,10 +37,13 @@ from openerp.tools.safe_eval import safe_eval as eval
 
 class purchase_order(osv.osv):
 
-    def _amount_all(self, cr, uid, ids, field_name, arg, context=None):
+    def _amount_all(self, cr, uid, ids, field_name, arg, context=None):        
+        if context is None:
+            context = {}
         res = {}
         cur_obj=self.pool.get('res.currency')
         for order in self.browse(cr, uid, ids, context=context):
+            context.update({'document_date': order.date_order, 'force_vat': order.force_vat})
             res[order.id] = {
                 'amount_untaxed': 0.0,
                 'amount_tax': 0.0,
@@ -50,7 +53,7 @@ class purchase_order(osv.osv):
             cur = order.pricelist_id.currency_id
             for line in order.order_line:
                val1 += line.price_subtotal
-               for c in self.pool.get('account.tax').compute_all(cr, uid, line.taxes_id, line.price_unit, line.product_qty, line.product_id, order.partner_id)['taxes']:
+               for c in self.pool.get('account.tax').compute_all(cr, uid, line.taxes_id, line.price_unit, line.product_qty, line.product_id, order.partner_id, context=context)['taxes']:
                     val += c.get('amount', 0.0)
             res[order.id]['amount_tax']=cur_obj.round(cr, uid, cur, val)
             res[order.id]['amount_untaxed']=cur_obj.round(cr, uid, cur, val1)
@@ -209,15 +212,18 @@ class purchase_order(osv.osv):
         ),
         'amount_untaxed': fields.function(_amount_all, digits_compute= dp.get_precision('Account'), string='Untaxed Amount',
             store={
-                'purchase.order.line': (_get_order, None, 10),
+                'purchase.order': (lambda self, cr, uid, ids, c={}: ids, ['order_line', 'date_order', 'force_vat'], 10),
+                'purchase.order.line': (_get_order, ['price_unit', 'tax_id', 'discount', 'product_uom_qty'], 10),
             }, multi="sums", help="The amount without tax", track_visibility='always'),
         'amount_tax': fields.function(_amount_all, digits_compute= dp.get_precision('Account'), string='Taxes',
             store={
-                'purchase.order.line': (_get_order, None, 10),
+                'purchase.order': (lambda self, cr, uid, ids, c={}: ids, ['order_line', 'date_order', 'force_vat'], 10),
+                'purchase.order.line': (_get_order, ['price_unit', 'tax_id', 'discount', 'product_uom_qty'], 10),
             }, multi="sums", help="The tax amount"),
         'amount_total': fields.function(_amount_all, digits_compute= dp.get_precision('Account'), string='Total',
             store={
-                'purchase.order.line': (_get_order, None, 10),
+                'purchase.order': (lambda self, cr, uid, ids, c={}: ids, ['order_line', 'date_order', 'force_vat'], 10),
+                'purchase.order.line': (_get_order, ['price_unit', 'tax_id', 'discount', 'product_uom_qty'], 10),
             }, multi="sums",help="The total amount"),
         'fiscal_position': fields.many2one('account.fiscal.position', 'Fiscal Position'),
         'payment_term_id': fields.many2one('account.payment.term', 'Payment Term'),
@@ -530,6 +536,13 @@ class purchase_order(osv.osv):
             wf_service.trg_delete(uid, 'purchase.order', p_id, cr)
             wf_service.trg_create(uid, 'purchase.order', p_id, cr)
         return True
+    
+    def _get_invoice_currency(self, cr, uid, ids, order, context=None):
+        """
+        HOOK para cambiar la moneda de la factura cunado se crea 
+        la factura desde compras.
+        """
+        return order.pricelist_id.currency_id.id
 
     def action_invoice_create(self, cr, uid, ids, context=None):
         """Generates invoice for given ids of purchase orders and links that invoice ID to purchase order.
@@ -575,7 +588,8 @@ class purchase_order(osv.osv):
                 'account_id': pay_acc_id,
                 'type': 'in_invoice',
                 'partner_id': order.partner_id.id,
-                'currency_id': order.pricelist_id.currency_id.id,
+                # TRESCLOUD Se cambia por metodo para cambiar la moneda.
+                'currency_id': self._get_invoice_currency(cr, uid, ids, order, context=context),
                 'journal_id': len(journal_ids) and journal_ids[0] or False,
                 'invoice_line': [(6, 0, inv_lines)],
                 'origin': order.name,
@@ -749,6 +763,13 @@ class purchase_order(osv.osv):
     def copy(self, cr, uid, id, default=None, context=None):
         if not default:
             default = {}
+        # ESTE CODIGO FUE MODIFICADO POR TRESCLOUD
+        name = False
+        if not 'name' in default:
+            name = self.pool.get('ir.sequence').get(cr, uid, 'purchase.order')
+        else:
+            name = default.get('name')
+        #########################################
         default.update({
             'state':'draft',
             'shipped':False,
@@ -756,7 +777,7 @@ class purchase_order(osv.osv):
             'invoice_ids': [],
             'picking_ids': [],
             'partner_ref': '',
-            'name': self.pool.get('ir.sequence').get(cr, uid, 'purchase.order'),
+            'name': name,
         })
         return super(purchase_order, self).copy(cr, uid, id, default, context)
 
@@ -877,8 +898,10 @@ class purchase_order_line(osv.osv):
         res = {}
         cur_obj=self.pool.get('res.currency')
         tax_obj = self.pool.get('account.tax')
+        if context is None:
+            context = {}
         for line in self.browse(cr, uid, ids, context=context):
-            taxes = tax_obj.compute_all(cr, uid, line.taxes_id, line.price_unit, line.product_qty, line.product_id, line.order_id.partner_id)
+            taxes = tax_obj.compute_all(cr, uid, line.taxes_id, line.price_unit, line.product_qty, line.product_id, line.order_id.partner_id, context=context)
             cur = line.order_id.pricelist_id.currency_id
             res[line.id] = cur_obj.round(cr, uid, cur, taxes['total'])
         return res
@@ -1067,7 +1090,7 @@ class purchase_order_line(osv.osv):
 
         taxes = account_tax.browse(cr, uid, map(lambda x: x.id, product.supplier_taxes_id))
         fpos = fiscal_position_id and account_fiscal_position.browse(cr, uid, fiscal_position_id, context=context) or False
-        taxes_ids = account_fiscal_position.map_tax(cr, uid, fpos, taxes)
+        taxes_ids = account_fiscal_position.map_tax(cr, uid, fpos, taxes, context=context)
         res['value'].update({'price_unit': price, 'taxes_id': taxes_ids})
 
         return res

@@ -869,7 +869,7 @@ msgstr "Usuario"
 #. module: hr
 #: field:hr.job,expected_employees:0
 msgid "Total Forecasted Employees"
-msgstr "Previson de empleados totales"
+msgstr "Previsión de empleados totales"
 
 #. module: hr
 #: help:hr.job,state:0

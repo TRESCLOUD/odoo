@@ -129,7 +129,7 @@ class stock_partial_picking(osv.osv_memory):
         if 'picking_id' in fields:
             res.update(picking_id=picking_id)
         if 'move_ids' in fields:
-            picking = self.pool.get('stock.picking').browse(cr, uid, picking_id, context=context)
+            picking = self.pool.get(active_model).browse(cr, uid, picking_id, context=context)
             moves = [self._partial_move_for(cr, uid, m, context=context) for m in picking.move_lines if m.state not in ('done','cancel')]
             res.update(move_ids=moves)
         if 'date' in fields:
@@ -185,16 +185,24 @@ class stock_partial_picking(osv.osv_memory):
             line_uom = wizard_line.product_uom
             move_id = wizard_line.move_id.id
 
+            #Este código fue modificado por TRESCLOUD
+            ###################################################################################################
             #Quantiny must be Positive
-            if wizard_line.quantity < 0:
-                raise osv.except_osv(_('Warning!'), _('Please provide proper Quantity.'))
-
+            if not context.get('origin') == 'manual_adjustment':
+                if wizard_line.quantity < 0:
+                    raise osv.except_osv(_('Warning!'), _('Please provide proper Quantity.'))
+            ###################################################################################################
+            
             #Compute the quantity for respective wizard_line in the line uom (this jsut do the rounding if necessary)
             qty_in_line_uom = uom_obj._compute_qty(cr, uid, line_uom.id, wizard_line.quantity, line_uom.id)
-
+            #=======================================================================
+            # CODIGO MODIFICADO POR TRESCLOUD
+            #=======================================================================
+            stock_move_id = stock_move.browse(cr, uid, move_id)
+            prod_name = stock_move_id.product_id and stock_move_id.product_id.default_code or stock_move_id.product_id.name or stock_move_id.name or ''
             if line_uom.factor and line_uom.factor <> 0:
                 if float_compare(qty_in_line_uom, wizard_line.quantity, precision_rounding=line_uom.rounding) != 0:
-                    raise osv.except_osv(_('Warning!'), _('The unit of measure rounding does not allow you to ship "%s %s", only rounding of "%s %s" is accepted by the Unit of Measure.') % (wizard_line.quantity, line_uom.name, line_uom.rounding, line_uom.name))
+                    raise osv.except_osv(_('Warning!'), _('The unit of measure rounding does not allow you to ship "%s %s", only rounding of "%s %s" is accepted by the Unit of Measure of the product %s') % (wizard_line.quantity, line_uom.name, line_uom.rounding, line_uom.name, prod_name))
             if move_id:
                 #Check rounding Quantity.ex.
                 #picking: 1kg, uom kg rounding = 0.01 (rounding to 10g),
@@ -205,7 +213,7 @@ class stock_partial_picking(osv.osv_memory):
                 qty_in_initial_uom = uom_obj._compute_qty(cr, uid, line_uom.id, wizard_line.quantity, initial_uom.id)
                 without_rounding_qty = (wizard_line.quantity / line_uom.factor) * initial_uom.factor
                 if float_compare(qty_in_initial_uom, without_rounding_qty, precision_rounding=initial_uom.rounding) != 0:
-                    raise osv.except_osv(_('Warning!'), _('The rounding of the initial uom does not allow you to ship "%s %s", as it would let a quantity of "%s %s" to ship and only rounding of "%s %s" is accepted by the uom.') % (wizard_line.quantity, line_uom.name, wizard_line.move_id.product_qty - without_rounding_qty, initial_uom.name, initial_uom.rounding, initial_uom.name))
+                    raise osv.except_osv(_('Warning!'), _('The rounding of the initial uom does not allow you to ship "%s %s", as it would let a quantity of "%s %s" to ship and only rounding of "%s %s" is accepted by the uom of the product %s.') % (wizard_line.quantity, line_uom.name, wizard_line.move_id.product_qty - without_rounding_qty, initial_uom.name, initial_uom.rounding, initial_uom.name, prod_name))
             else:
                 seq_obj_name =  'stock.picking.' + picking_type
                 move_id = stock_move.create(cr,uid,{'name' : self.pool.get('ir.sequence').get(cr, uid, seq_obj_name),
@@ -230,6 +238,20 @@ class stock_partial_picking(osv.osv_memory):
         
         # Do the partial delivery and open the picking that was delivered
         # We don't need to find which view is required, stock.picking does it.
+        dif_uom_prod = "Los siguientes productos poseen problemas de conversion:\n"
+        prod_problem = ''
+        for move, value in partial_data.iteritems():
+            if isinstance(value, dict):
+                from_unit = uom_obj.browse(cr, uid, value.get('product_uom', 0))
+                move_id = stock_move.browse(cr, uid, int(move.split('move')[1]))
+                to_unit = move_id.product_uos or from_unit
+                print from_unit, to_unit, move_id
+                if from_unit.category_id.id <> to_unit.category_id.id:
+                    prod_problem += '\n' + (move_id.product_id.default_code or \
+                    move_id.product_id.name) + ', desde UdM: ' + \
+                    from_unit.name + ' a UdM: ' + to_unit.name
+        if prod_problem:
+            raise osv.except_osv(_('Error!'), _(dif_uom_prod + prod_problem))
         done = stock_picking.do_partial(
             cr, uid, [partial.picking_id.id], partial_data, context=context)
         if done[partial.picking_id.id]['delivered_picking'] == partial.picking_id.id:

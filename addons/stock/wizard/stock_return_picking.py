@@ -182,7 +182,8 @@ class stock_return_picking(osv.osv_memory):
                                         'type': new_type,
                                         'date':date_cur, 
                                         'invoice_state': data['invoice_state'],
-        })
+                                        },
+                                    context=context)
         
         val_id = data['product_return_moves']
         for v in val_id:
@@ -210,7 +211,7 @@ class stock_return_picking(osv.osv_memory):
                                             'location_dest_id': move.location_id.id,
                                             'date': date_cur,
                                             'prodlot_id': data_get.prodlot_id.id,
-                })
+                }, context=context)
                 move_obj.write(cr, uid, [move.id], {'move_history_ids2':[(4,new_move)]}, context=context)
         if not returned_lines:
             raise osv.except_osv(_('Warning!'), _("Please specify at least one non-zero quantity."))

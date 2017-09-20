@@ -117,10 +117,16 @@ msgid "Sources of Applicants"
 msgstr "Orígen de los solicitantes"
 
 #. module: hr_recruitment
-#: code:addons/hr_recruitment/hr_recruitment.py:427
+#: code:addons/hr_recruitment/hr_recruitment.py:429
 #, python-format
 msgid "You must define Applied Job for this applicant."
 msgstr "Debe definir el puesto a aplicar para este solicitante"
+
+#. module: hr_recruitment
+#: code:addons/hr_recruitment/hr_recruitment.py:418
+#, python-format
+msgid "You must define Contact for this applicant."
+msgstr "Debe definir un contacto para este solicitante"
 
 #. module: hr_recruitment
 #: view:hr.applicant:0
@@ -282,7 +288,13 @@ msgid ""
 msgstr "Contiene el resumen del chatter (nº de mensajes, ...). Este resumen viene directamente en formato HTML para poder ser insertado en las vistas kanban."
 
 #. module: hr_recruitment
-#: code:addons/hr_recruitment/hr_recruitment.py:427
+#: code:addons/hr_recruitment/hr_recruitment.py:429
+#, python-format
+msgid "Warning!"
+msgstr "¡Advertencia!"
+
+#. module: hr_recruitment
+#: code:addons/hr_recruitment/hr_recruitment.py:418
 #, python-format
 msgid "Warning!"
 msgstr "¡Advertencia!"

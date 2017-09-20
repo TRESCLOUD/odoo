@@ -1171,10 +1171,10 @@ msgid ""
 msgstr "El importe del comprobante debe ser el mismo que el de la línea del extracto."
 
 #. module: account_voucher
-#: code:addons/account_voucher/account_voucher.py:981
+#: code:addons/account_voucher/account_voucher.py:1012
 #, python-format
-msgid "Cannot delete voucher(s) which are already opened or paid."
-msgstr "No se pueden borrar comprobantes que ya están abiertos o pagados."
+msgid "Payments can only be deleted in draft status."
+msgstr "Los pagos solamente se pueden eliminar en estado borrador."
 
 #. module: account_voucher
 #: help:account.voucher,date:0

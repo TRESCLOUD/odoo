@@ -84,6 +84,7 @@
     <paraStyle name="terp_default_address" fontName="Helvetica" fontSize="10.0" leading="13" alignment="LEFT" spaceBefore="0.0" spaceAfter="0.0"/>
     <paraStyle name="terp_default_9" fontName="Helvetica" fontSize="9.0" leading="11" alignment="LEFT" spaceBefore="0.0" spaceAfter="0.0"/>
     <paraStyle name="terp_default_10" fontName="Helvetica" fontSize="9.0" leading="11" alignment="LEFT" spaceBefore="0.0" spaceAfter="2.0"/>
+    <paraStyle name="terp_default_11" fontName="Helvetica" fontSize="6.0" leading="11" alignment="LEFT" spaceBefore="0.0" spaceAfter="2.0"/>
     <paraStyle name="terp_default_Bold_9" fontName="Helvetica-Bold" fontSize="9.0" leading="11" alignment="LEFT" spaceBefore="0.0" spaceAfter="0.0"/>
     <paraStyle name="terp_default_Centre_9" fontName="Helvetica" fontSize="9.0" leading="11" alignment="CENTER" spaceBefore="0.0" spaceAfter="0.0"/>
     <paraStyle name="terp_default_Right_9" fontName="Helvetica" fontSize="9.0" leading="11" alignment="RIGHT" spaceBefore="0.0" spaceAfter="0.0"/>
@@ -161,7 +162,7 @@
             <font color="white"> </font>
           </para>
       </section>
-      <blockTable colWidths="56.0,136.0,51.0,72.0,54.0,56.0,66.0,18.0" style="Table1">
+      <blockTable colWidths="56.0,110.0,88.0,72.0,54.0,56.0,66.0,18.0" style="Table1">
       <tr>
         <td>
           <para style="terp_tblheader_Details">Date</para>
@@ -190,13 +191,13 @@
       </tr>
       </blockTable>
       <section>[[repeatIn(getLines(o), 'line') ]]
-      <blockTable colWidths="56.0,136.0,52.0,71.0,55.0,56.0,66.0,17.0" style="Table3">
+      <blockTable colWidths="56.0,100.0,88.0,71.0,55.0,56.0,66.0,17.0" style="Table3">
         <tr>
           <td>
             <para style="terp_default_9">[[ formatLang(line['date'],date=True) ]]</para>
           </td>
           <td>
-            <para style="terp_default_9">[[ line['name'] ]]</para>
+            <para style="terp_default_11">[[ line['name'] ]]</para>
           </td>
           <td>
             <para style="terp_default_Centre_9">[[ line['ref'] ]]</para>

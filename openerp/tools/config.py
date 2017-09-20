@@ -194,6 +194,11 @@ class configmanager(object):
         group.add_option('--log-level', dest='log_level', type='choice', choices=levels,
             my_default='info', help='specify the level of the logging. Accepted values: ' + str(levels))
 
+        # adding parameters for control the time of the log time and controlling the
+        # number of backups the system left
+        group.add_option("--logrotate-when", dest="logrotate_when", help="Describe when the log will be rotate, by default Day", my_default='D')
+        group.add_option("--logrotate-interval", dest="logrotate_interval", help="Describe the interval log will be rotate, by default 1", my_default=1)
+        group.add_option("--logrotate-backupcount", dest="logrotate_backupcount", help="Describe the number of backups the system left, by default 30", my_default=30)
         parser.add_option_group(group)
 
         # SMTP Group
@@ -404,7 +409,8 @@ class configmanager(object):
         keys = [
             'language', 'translate_out', 'translate_in', 'overwrite_existing_translations',
             'debug_mode', 'smtp_ssl', 'load_language',
-            'stop_after_init', 'logrotate', 'without_demo', 'netrpc', 'xmlrpc', 'syslog',
+            'stop_after_init', 'logrotate', 'logrotate_when', 'logrotate_interval' ,'logrotate_backupcount' ,
+            'without_demo', 'netrpc', 'xmlrpc', 'syslog',
             'list_db', 'xmlrpcs', 'proxy_mode',
             'test_file', 'test_enable', 'test_commit', 'test_report_directory',
             'osv_memory_count_limit', 'osv_memory_age_limit', 'max_cron_threads', 'unaccent',

@@ -739,9 +739,11 @@ class stock_picking(osv.osv):
     def fields_view_get(self, cr, uid, view_id=None, view_type=False, context=None, toolbar=False, submenu=False):
         if view_type == 'form' and not view_id:
             mod_obj = self.pool.get('ir.model.data')
-            if self._name == "stock.picking.in":
+            context = context or {}
+            type = context.get('type') or context.get('default_type') or False
+            if self._name == "stock.picking.in" or type == 'in':
                 model, view_id = mod_obj.get_object_reference(cr, uid, 'stock', 'view_picking_in_form')
-            if self._name == "stock.picking.out":
+            if self._name == "stock.picking.out" or type == 'out':
                 model, view_id = mod_obj.get_object_reference(cr, uid, 'stock', 'view_picking_out_form')
         return super(stock_picking, self).fields_view_get(cr, uid, view_id=view_id, view_type=view_type, context=context, toolbar=toolbar, submenu=submenu)
 
@@ -909,8 +911,13 @@ class stock_picking(osv.osv):
         "Done" pressed on a Picking view). 
         @return: True
         """
+        #=======================================================================
+        # CODIGO MODIFICADO POR TRESCLOUD
+        #=======================================================================
+        context = context or {}
         for pick in self.browse(cr, uid, ids, context=context):
             todo = []
+            context.update(partner_id=pick.partner_id.id)
             for move in pick.move_lines:
                 if move.state == 'draft':
                     self.pool.get('stock.move').action_confirm(cr, uid, [move.id],
@@ -1097,10 +1104,20 @@ class stock_picking(osv.osv):
             fiscal_position = fp_obj.browse(cr, uid, invoice_vals['fiscal_position'], context=context)
             account_id = fp_obj.map_account(cr, uid, fiscal_position, account_id)
         # set UoS if it's a sale and the picking doesn't have one
-        uos_id = move_line.product_uos and move_line.product_uos.id or False
+        #El siguiente código fue modificado por TRESCLOUD
+        ###########################################################################################################################
+        uos_id = move_line.product_uos and move_line.product_uos.id or move_line.product_uom and move_line.product_uom.id or False
+        ###########################################################################################################################
         if not uos_id and invoice_vals['type'] in ('out_invoice', 'out_refund'):
             uos_id = move_line.product_uom.id
-
+        #El siguiente codigo fue modificado por TRESCLOUD
+        ###########################################################################################################################
+        quantity = move_line.product_uos_qty or move_line.product_qty
+        module_ids = self.pool.get('ir.module.module').search(cr, uid, [('name','=','invoiced_stock'), ('state','=','installed')], context=context)
+        if module_ids:
+            if picking.manufacture:
+                quantity = move_line.product_qty
+        ###########################################################################################################################
         return {
             'name': name,
             'origin': origin,
@@ -1110,7 +1127,7 @@ class stock_picking(osv.osv):
             'account_id': account_id,
             'price_unit': self._get_price_unit_invoice(cr, uid, move_line, invoice_vals['type']),
             'discount': self._get_discount_invoice(cr, uid, move_line),
-            'quantity': move_line.product_uos_qty or move_line.product_qty,
+            'quantity': quantity,
             'invoice_line_tax_id': [(6, 0, self._get_taxes_invoice(cr, uid, move_line, invoice_vals['type']))],
             'account_analytic_id': self._get_account_analytic_invoice(cr, uid, picking, move_line),
         }
@@ -1234,7 +1251,20 @@ class stock_picking(osv.osv):
                 move_obj.unlink(cr, uid, ids2, ctx)
 
         return super(stock_picking, self).unlink(cr, uid, ids, context=context)
-
+    
+    #===================================================================
+    # Este codigo fue modificado por TRESCLOUD
+    #===================================================================
+    
+    def product_lot_hook(self, cr, uid, picking_id, context=None):
+        '''
+        This method is used for doing new things with product lots 
+        :param cr: Database Cursor
+        :param uid: User doing an action
+        :param picking_id: ID of stock picking
+        :param context: Context variables for use.
+        '''
+        return True
     # FIXME: needs refactoring, this code is partially duplicated in stock_move.do_partial()!
     def do_partial(self, cr, uid, ids, partial_datas, context=None):
         """ Makes partial picking and moves done.
@@ -1285,7 +1315,10 @@ class stock_picking(osv.osv):
                              'price_currency_id': product_currency})
 
             # every line of the picking is empty, do not generate anything
-            empty_picking = not any(q for q in move_product_qty.values() if q > 0)
+            if context.get('origin') == 'manual_adjustment':
+                empty_picking = not any(q for q in move_product_qty.values() if q > 0 or q < 0)
+            else:
+                empty_picking = not any(q for q in move_product_qty.values() if q > 0)
 
             for move in too_few:
                 product_qty = move_product_qty[move.id]
@@ -1301,7 +1334,7 @@ class stock_picking(osv.osv):
                                 'name': new_picking_name,
                                 'move_lines' : [],
                                 'state':'draft',
-                            })
+                            },context=context)
                 if product_qty != 0:
                     defaults = {
                             'product_qty' : product_qty,
@@ -1315,7 +1348,7 @@ class stock_picking(osv.osv):
                     prodlot_id = prodlot_ids[move.id]
                     if prodlot_id:
                         defaults.update(prodlot_id=prodlot_id)
-                    move_obj.copy(cr, uid, move.id, defaults)
+                    move_obj.copy(cr, uid, move.id, defaults, context=context)
                 move_obj.write(cr, uid, [move.id],
                         {
                             'product_qty': move.product_qty - partial_qty[move.id],
@@ -1349,7 +1382,7 @@ class stock_picking(osv.osv):
             if new_picking:
                 wf_service.trg_validate(uid, 'stock.picking', new_picking, 'button_confirm', cr)
                 # Then we finish the good picking
-                self.write(cr, uid, [pick.id], {'backorder_id': new_picking})
+                self.write(cr, uid, [pick.id], {'backorder_id': new_picking}, context=context)
                 self.action_move(cr, uid, [new_picking], context=context)
                 wf_service.trg_validate(uid, 'stock.picking', new_picking, 'button_done', cr)
                 wf_service.trg_write(uid, 'stock.picking', pick.id, cr)
@@ -1363,6 +1396,10 @@ class stock_picking(osv.osv):
                 delivered_pack_id = pick.id
 
             delivered_pack = self.browse(cr, uid, delivered_pack_id, context=context)
+            #===================================================================
+            # Este codigo fue modificado por TRESCLOUD
+            #===================================================================
+            self.product_lot_hook(cr, uid, delivered_pack_id, context=context)
             res[pick.id] = {'delivered_picking': delivered_pack.id or False}
 
         return res
@@ -1614,8 +1651,8 @@ class stock_move(osv.osv):
         'create_date': fields.datetime('Creation Date', readonly=True, select=True),
         'date': fields.datetime('Date', required=True, select=True, help="Move date: scheduled date until move is done, then date of actual move processing", states={'done': [('readonly', True)]}),
         'date_expected': fields.datetime('Scheduled Date', states={'done': [('readonly', True)]},required=True, select=True, help="Scheduled date for the processing of this move"),
-        'product_id': fields.many2one('product.product', 'Product', required=True, select=True, domain=[('type','<>','service')],states={'done': [('readonly', True)]}),
-
+        'product_id': fields.many2one('product.product', 'Product', required=True, select=True, domain=[('type','<>','service')],
+                                      states={'done': [('readonly', True)]}, ondelete='restrict'),
         'product_qty': fields.float('Quantity', digits_compute=dp.get_precision('Product Unit of Measure'),
             required=True,states={'done': [('readonly', True)]},
             help="This is the quantity of products from an inventory "
@@ -1626,24 +1663,31 @@ class stock_move(osv.osv):
                 "backorder. Changing this quantity on assigned moves affects "
                 "the product reservation, and should be done with care."
         ),
-        'product_uom': fields.many2one('product.uom', 'Unit of Measure', required=True,states={'done': [('readonly', True)]}),
+        'product_uom': fields.many2one('product.uom', 'Unit of Measure', required=True,states={'done': [('readonly', True)]},
+                                       ondelete='restrict'),
         'product_uos_qty': fields.float('Quantity (UOS)', digits_compute=dp.get_precision('Product UoS'), states={'done': [('readonly', True)]}),
-        'product_uos': fields.many2one('product.uom', 'Product UOS', states={'done': [('readonly', True)]}),
-        'product_packaging': fields.many2one('product.packaging', 'Packaging', help="It specifies attributes of packaging like type, quantity of packaging,etc."),
-
-        'location_id': fields.many2one('stock.location', 'Source Location', required=True, select=True,states={'done': [('readonly', True)]}, help="Sets a location if you produce at a fixed location. This can be a partner location if you subcontract the manufacturing operations."),
-        'location_dest_id': fields.many2one('stock.location', 'Destination Location', required=True,states={'done': [('readonly', True)]}, select=True, help="Location where the system will stock the finished products."),
-        'partner_id': fields.many2one('res.partner', 'Destination Address ', states={'done': [('readonly', True)]}, help="Optional address where goods are to be delivered, specifically used for allotment"),
-
-        'prodlot_id': fields.many2one('stock.production.lot', 'Serial Number', help="Serial number is used to put a serial number on the production", select=True, ondelete='restrict'),
-        'tracking_id': fields.many2one('stock.tracking', 'Pack', select=True, states={'done': [('readonly', True)]}, help="Logistical shipping unit: pallet, box, pack ..."),
-
+        'product_uos': fields.many2one('product.uom', 'Product UOS', states={'done': [('readonly', True)]}, ondelete='restrict'),
+        'product_packaging': fields.many2one('product.packaging', 'Packaging', ondelete='restrict', 
+                                             help="It specifies attributes of packaging like type, quantity of packaging,etc."),
+        'location_id': fields.many2one('stock.location', 'Source Location', required=True, ondelete='restrict', 
+                                       select=True,states={'done': [('readonly', True)]}, help="Sets a location if you produce at a fixed location. This can be a partner location if you subcontract the manufacturing operations."),
+        'location_dest_id': fields.many2one('stock.location', 'Destination Location', ondelete='restrict', 
+                                            required=True,states={'done': [('readonly', True)]}, select=True, help="Location where the system will stock the finished products."),
+        'partner_id': fields.many2one('res.partner', 'Destination Address ', ondelete='restrict', 
+                                      states={'done': [('readonly', True)]}, help="Optional address where goods are to be delivered, specifically used for allotment"),
+        'prodlot_id': fields.many2one('stock.production.lot', 'Serial Number',  
+                                      help="Serial number is used to put a serial number on the production", 
+                                      select=True, ondelete='restrict'),
+        'tracking_id': fields.many2one('stock.tracking', 'Pack', select=True, ondelete='restrict',
+                                        states={'done': [('readonly', True)]}, help="Logistical shipping unit: pallet, box, pack ..."),
         'auto_validate': fields.boolean('Auto Validate'),
-
-        'move_dest_id': fields.many2one('stock.move', 'Destination Move', help="Optional: next stock move when chaining them", select=True),
-        'move_history_ids': fields.many2many('stock.move', 'stock_move_history_ids', 'parent_id', 'child_id', 'Move History (child moves)'),
-        'move_history_ids2': fields.many2many('stock.move', 'stock_move_history_ids', 'child_id', 'parent_id', 'Move History (parent moves)'),
-        'picking_id': fields.many2one('stock.picking', 'Reference', select=True,states={'done': [('readonly', True)]}),
+        'move_dest_id': fields.many2one('stock.move', 'Destination Move', ondelete='restrict', 
+                                        help="Optional: next stock move when chaining them", select=True),
+        'move_history_ids': fields.many2many('stock.move', 'stock_move_history_ids', 'parent_id', 'child_id', 'Move History (child moves)',
+                                             ondelete='restrict',),
+        'move_history_ids2': fields.many2many('stock.move', 'stock_move_history_ids', 'child_id', 'parent_id', 'Move History (parent moves)',
+                                              ondelete='restrict'),
+        'picking_id': fields.many2one('stock.picking', 'Reference', select=True,states={'done': [('readonly', True)]},ondelete='restrict'),
         'note': fields.text('Notes'),
         'state': fields.selection([('draft', 'New'),
                                    ('cancel', 'Cancelled'),
@@ -1657,12 +1701,14 @@ class stock_move(osv.osv):
                        "* Waiting Availability: This state is reached when the procurement resolution is not straight forward. It may need the scheduler to run, a component to me manufactured...\n"\
                        "* Available: When products are reserved, it is set to \'Available\'.\n"\
                        "* Done: When the shipment is processed, the state is \'Done\'."),
-        'price_unit': fields.float('Unit Price', digits_compute= dp.get_precision('Product Price'), help="Technical field used to record the product cost set by the user during a picking confirmation (when average price costing method is used)"),
-        'price_currency_id': fields.many2one('res.currency', 'Currency for average price', help="Technical field used to record the currency chosen by the user during a picking confirmation (when average price costing method is used)"),
-        'company_id': fields.many2one('res.company', 'Company', required=True, select=True),
-        'backorder_id': fields.related('picking_id','backorder_id',type='many2one', relation="stock.picking", string="Back Order of", select=True),
+        'price_unit': fields.float('Unit Price', digits_compute= dp.get_precision('Product Price'), ondelete='restrict', 
+                                   help="Technical field used to record the product cost set by the user during a picking confirmation (when average price costing method is used)"),
+        'price_currency_id': fields.many2one('res.currency', 'Currency for average price', ondelete='restrict',
+                                             help="Technical field used to record the currency chosen by the user during a picking confirmation (when average price costing method is used)"),
+        'company_id': fields.many2one('res.company', 'Company', required=True, ondelete='restrict', select=True),
+        'backorder_id': fields.related('picking_id','backorder_id',type='many2one', relation="stock.picking", 
+                                       string="Back Order of", ondelete='restrict', select=True),
         'origin': fields.related('picking_id','origin',type='char', size=64, relation="stock.picking", string="Source", store=True),
-
         # used for colors in tree views:
         'scrapped': fields.related('location_dest_id','scrap_location',type='boolean',relation='stock.location',string='Scrapped', readonly=True),
         'type': fields.related('picking_id', 'type', type='selection', selection=[('out', 'Sending Goods'), ('in', 'Getting Goods'), ('internal', 'Internal')], string='Shipping Type'),
@@ -1787,11 +1833,19 @@ class stock_move(osv.osv):
         'company_id': lambda self,cr,uid,c: self.pool.get('res.company')._company_default_get(cr, uid, 'stock.move', context=c),
         'date_expected': lambda *a: time.strftime('%Y-%m-%d %H:%M:%S'),
     }
+    
+    #Este método fue agregado por TRESCLOUD
+    def user_return_product_consume(self, cr, uid, context=None):
+        if context is None:
+            context = {}
+        vals = [1] # Usuario administrador
+        return vals
 
     def write(self, cr, uid, ids, vals, context=None):
         if isinstance(ids, (int, long)):
             ids = [ids]
-        if uid != 1:
+        #La siguiente línea fue modificada por TRESCLOUD
+        if uid not in self.user_return_product_consume(cr, uid, context=context):
             frozen_fields = set(['product_qty', 'product_uom', 'product_uos_qty', 'product_uos', 'location_id', 'location_dest_id', 'product_id'])
             for move in self.browse(cr, uid, ids, context=context):
                 if move.state == 'done':
@@ -1850,7 +1904,7 @@ class stock_move(osv.osv):
         return {'warning': warning}
 
     def onchange_quantity(self, cr, uid, ids, product_id, product_qty,
-                          product_uom, product_uos):
+                          product_uom, product_uos, context=None):
         """ On change of product quantity finds UoM and UoS quantities
         @param product_id: Product id
         @param product_qty: Changed Quantity of product
@@ -1858,15 +1912,24 @@ class stock_move(osv.osv):
         @param product_uos: Unit of sale of product
         @return: Dictionary of values
         """
+        if context is None:
+            context = {}
         result = {
                   'product_uos_qty': 0.00
           }
         warning = {}
-
-        if (not product_id) or (product_qty <=0.0):
-            result['product_qty'] = 0.0
-            return {'value': result}
-
+        #Este código fue modificado por TRESCLOUD
+        ###################################################################################################
+        if context.get('origin') == 'manual_adjustment':
+            if not product_id:
+                result['product_qty'] = 0.0
+                return {'value': result}
+        ##################################################################################################
+        else:
+            if not product_id or product_qty <= 0.0:
+                result['product_qty'] = 0.0
+                return {'value': result}
+            
         product_obj = self.pool.get('product.product')
         uos_coeff = product_obj.read(cr, uid, product_id, ['uos_coeff'])
         
@@ -1952,7 +2015,8 @@ class stock_move(osv.osv):
             result['location_id'] = loc_id
         if loc_dest_id:
             result['location_dest_id'] = loc_dest_id
-        return {'value': result}
+        #El siguiente código fue modificado por TRESCLOUD
+        return {'value': result, 'domain': {'product_uom':[('category_id','=',product.uom_id.category_id.id)]}}
 
     def onchange_move_type(self, cr, uid, ids, type, context=None):
         """ On change of move type gives sorce and destination location.
@@ -2275,6 +2339,12 @@ class stock_move(osv.osv):
         :raise: osv.except_osv() is any mandatory account or journal is not defined.
         """
         product_obj=self.pool.get('product.product')
+        #=======================================================================
+        # CODIGO MODIFICADO POR TRESCLOUD
+        #=======================================================================
+        partner_obj=self.pool.get('res.partner')
+        fpos_obj = self.pool.get('account.fiscal.position')
+        fpos = False
         accounts = product_obj.get_product_accounts(cr, uid, move.product_id.id, context)
         if move.location_id.valuation_out_account_id:
             acc_src = move.location_id.valuation_out_account_id.id
@@ -2285,8 +2355,18 @@ class stock_move(osv.osv):
             acc_dest = move.location_dest_id.valuation_in_account_id.id
         else:
             acc_dest = accounts['stock_account_output']
-
-        acc_valuation = accounts.get('property_stock_valuation_account_id', False)
+        
+        if context and 'partner_id' in context:
+            partn_id = context.get('partner_id')
+            if partn_id:
+                partner_id = partner_obj.browse(cr, uid, partn_id, context=context)
+                fposition_id = partner_id.property_account_position.id
+                fpos = fposition_id and fpos_obj.browse(cr, uid, fposition_id, context=context) or False
+                acc_src = fpos_obj.map_account(cr, uid, fpos, acc_src)
+                acc_dest = fpos_obj.map_account(cr, uid, fpos, acc_dest)
+        
+        acc_valuation = fpos_obj.map_account(cr, uid, fpos, accounts.get('property_stock_valuation_account_id', False))
+        #=======================================================================
         journal_id = accounts['stock_journal']
 
         if acc_dest == acc_valuation:
@@ -2319,8 +2399,12 @@ class stock_move(osv.osv):
 
         # by default the reference currency is that of the move's company
         reference_currency_id = move.company_id.currency_id.id
-
+        # TRESCLOUD: en compras el costeo falla por que trata de convertir a la unidad base del producto
+        # lo cual no debe realizarse, en ventas si es necesario y por eso se usa la unidad de medida
+        # predeterminada del producto.
         default_uom = move.product_id.uom_id.id
+        if move.picking_id and move.picking_id.purchase_id and move.picking_id.purchase_id.id:
+            default_uom = move.product_uom.id
         qty = product_uom_obj._compute_qty(cr, uid, move.product_uom.id, move.product_qty, default_uom)
 
         # if product is set to average price and a specific value was entered in the picking wizard,
@@ -2337,6 +2421,17 @@ class stock_move(osv.osv):
             if context is None:
                 context = {}
             currency_ctx = dict(context, currency_id = move.company_id.currency_id.id)
+            #Logica agregada por TRESCLOUD para que el redondeo de los apuntes contables se hagan en base a la moneda configurada en el
+            #diario, en caso que no exista, se mantiene la logica nativa que es en base a la moneda de la compañia
+            ##############################################################################################################
+            accounts = self.pool.get('product.product').get_product_accounts(cr, uid, move.product_id.id, context=context)
+            journal_id = accounts.get('stock_journal')
+            if journal_id:
+                journal = self.pool.get('account.journal').browse(cr, uid, journal_id, context=context)
+                if journal.currency:
+                    currency_ctx.update({'currency_id': journal.currency.id})
+                    reference_currency_id = journal.currency.id
+            ##############################################################################################################
             amount_unit = move.product_id.price_get('standard_price', context=currency_ctx)[move.product_id.id]
             reference_amount = amount_unit * qty
 
@@ -2525,6 +2620,17 @@ class stock_move(osv.osv):
         src_main_currency_id = src_acct.company_id.currency_id.id
         dest_main_currency_id = dest_acct.company_id.currency_id.id
         cur_obj = self.pool.get('res.currency')
+        #Logica agregada por TRESCLOUD para que el redondeo de los apuntes contables se hagan en base a la moneda configurada en el
+        #diario, en caso que no exista, se mantiene la logica nativa que es en base a la moneda de la compañia
+        ##############################################################################################################
+        accounts = self.pool.get('product.product').get_product_accounts(cr, uid, move.product_id.id, context=context)
+        journal_id = accounts.get('stock_journal')
+        if journal_id:
+            journal = self.pool.get('account.journal').browse(cr, uid, journal_id, context=context)
+            if journal.currency:
+                src_main_currency_id = journal.currency.id
+                dest_main_currency_id = journal.currency.id
+        ##############################################################################################################
         if reference_currency_id != src_main_currency_id:
             # fix credit line:
             credit_line_vals['credit'] = cur_obj.compute(cr, uid, reference_currency_id, src_main_currency_id, reference_amount, context=context)

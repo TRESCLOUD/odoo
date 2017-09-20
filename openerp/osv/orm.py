@@ -5110,6 +5110,9 @@ class BaseModel(object):
 
         for field_name, field_def in fields.items():
             # removing the lang to compare untranslated values
+            if context and context.get('no_copy'):
+                if field_name in context.get('no_copy'):
+                    continue
             context_wo_lang = dict(context, lang=None)
             old_record, new_record = self.browse(cr, uid, [old_id, new_id], context=context_wo_lang)
             # we must recursively copy the translations for o2o and o2m

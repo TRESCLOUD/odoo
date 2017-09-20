@@ -70,21 +70,34 @@ class account_payment_term(osv.osv):
     }
     _order = "name"
 
+    #Este metodo fue modificado por Trescloud, para usar el redondeo de moneda, se estaban generando descuadres
     def compute(self, cr, uid, id, value, date_ref=False, context=None):
+        context = context or {}
+        currency_obj = self.pool.get('res.currency')
         if not date_ref:
             date_ref = datetime.now().strftime('%Y-%m-%d')
         pt = self.browse(cr, uid, id, context=context)
         amount = value
         result = []
         obj_precision = self.pool.get('decimal.precision')
-        prec = obj_precision.precision_get(cr, uid, 'Account')
+        curr_obj = self.pool.get('res.currency')
+        user_id = self.pool.get('res.users').browse(cr, uid, uid, context=context)
+        curr_id = 0
+        if 'currency_id' in context or context.get('currency_id'):
+            curr_id = curr_obj.browse(cr, uid, context.get('currency_id'), context=context)
+        else:
+            curr_id = user_id.company_id.currency_id
+        prec = curr_id.accuracy
         for line in pt.line_ids:
             if line.value == 'fixed':
-                amt = round(line.value_amount, prec)
+                #amt = round(line.value_amount, prec)
+                amt = currency_obj.round(cr, uid, curr_id, line.value_amount)
             elif line.value == 'procent':
-                amt = round(value * line.value_amount, prec)
+                #amt = round(value * line.value_amount, prec)
+                amt = currency_obj.round(cr, uid, curr_id, value * line.value_amount)
             elif line.value == 'balance':
-                amt = round(amount, prec)
+                #amt = round(amount, prec)
+                amt = currency_obj.round(cr, uid, curr_id, amount)
             if amt:
                 next_date = (datetime.strptime(date_ref, '%Y-%m-%d') + relativedelta(days=line.days))
                 if line.days2 < 0:
@@ -94,9 +107,9 @@ class account_payment_term(osv.osv):
                     next_date += relativedelta(day=line.days2, months=1)
                 result.append( (next_date.strftime('%Y-%m-%d'), amt) )
                 amount -= amt
-
         amount = reduce(lambda x,y: x+y[1], result, 0.0)
-        dist = round(value-amount, prec)
+        #dist = round(value-amount, prec)
+        dist = currency_obj.round(cr, uid, curr_id, value-amount)
         if dist:
             result.append( (time.strftime('%Y-%m-%d'), dist) )
         return result
@@ -654,7 +667,8 @@ class account_account(osv.osv):
         #Checking whether the account is set as a property to any Partner or not
         value = 'account.account,' + str(ids[0])
         partner_prop_acc = self.pool.get('ir.property').search(cr, uid, [('value_reference','=',value)], context=context)
-        if partner_prop_acc:
+        #El siguiente código fue modificado por TRESCLOUD
+        if partner_prop_acc and not context.get('origin') == 'object_merge':
             raise osv.except_osv(_('Warning!'), _('You cannot remove/deactivate an account which is set on a customer or supplier.'))
         return True
 
@@ -959,17 +973,18 @@ account_fiscalyear()
 class account_period(osv.osv):
     _name = "account.period"
     _description = "Account period"
+    _inherit = "mail.thread"
     _columns = {
-        'name': fields.char('Period Name', size=64, required=True),
-        'code': fields.char('Code', size=12),
-        'special': fields.boolean('Opening/Closing Period', size=12,
+        'name': fields.char('Period Name', size=64, required=True, track_visibility='onchange'),
+        'code': fields.char('Code', size=12, track_visibility='onchange'),
+        'special': fields.boolean('Opening/Closing Period', size=12, track_visibility='onchange',
             help="These periods can overlap."),
-        'date_start': fields.date('Start of Period', required=True, states={'done':[('readonly',True)]}),
-        'date_stop': fields.date('End of Period', required=True, states={'done':[('readonly',True)]}),
-        'fiscalyear_id': fields.many2one('account.fiscalyear', 'Fiscal Year', required=True, states={'done':[('readonly',True)]}, select=True),
-        'state': fields.selection([('draft','Open'), ('done','Closed')], 'Status', readonly=True,
+        'date_start': fields.date('Start of Period', required=True, states={'done':[('readonly',True)]}, track_visibility='onchange'),
+        'date_stop': fields.date('End of Period', required=True, states={'done':[('readonly',True)]}, track_visibility='onchange'),
+        'fiscalyear_id': fields.many2one('account.fiscalyear', 'Fiscal Year', required=True, states={'done':[('readonly',True)]}, select=True, track_visibility='onchange'),
+        'state': fields.selection([('draft','Open'), ('done','Closed')], 'Status', readonly=True, track_visibility='onchange',
                                   help='When monthly periods are created. The status is \'Draft\'. At the end of monthly period it is in \'Done\' status.'),
-        'company_id': fields.related('fiscalyear_id', 'company_id', type='many2one', relation='res.company', string='Company', store=True, readonly=True)
+        'company_id': fields.related('fiscalyear_id', 'company_id', type='many2one', relation='res.company', string='Company', store=True, readonly=True, track_visibility='onchange')
     }
     _defaults = {
         'state': 'draft',
@@ -2040,8 +2055,15 @@ class account_tax(osv.osv):
             else:
                 res.append(tax)
         return res
+    
+    def _compute_base_amount(self, cr, uid, taxes, tax, price_unit, product=None, partner=None, quantity=0, context=None):
+        """"Calcula base imponible para casos especiales
+        """
+        tax_base = price_unit
+        return tax_base
 
-    def _unit_compute(self, cr, uid, taxes, price_unit, product=None, partner=None, quantity=0):
+    def _unit_compute(self, cr, uid, taxes, price_unit, product=None, partner=None, quantity=0, context=None):
+        context = context or {}
         taxes = self._applicable(cr, uid, taxes, price_unit ,product, partner)
         res = []
         cur_price_unit=price_unit
@@ -2064,17 +2086,18 @@ class account_tax(osv.osv):
                     'tax_code_id': tax.tax_code_id.id,
                     'ref_tax_code_id': tax.ref_tax_code_id.id,
             }
+            data['price_unit'] = self._compute_base_amount(cr, uid, taxes, tax, price_unit, product=product, partner=partner, quantity=quantity, context=context)
+            cur_price_unit = data['price_unit']
             res.append(data)
             if tax.type=='percent':
                 amount = cur_price_unit * tax.amount
                 data['amount'] = amount
-
             elif tax.type=='fixed':
                 data['amount'] = tax.amount
                 data['tax_amount']=quantity
                # data['amount'] = quantity
             elif tax.type=='code':
-                localdict = {'price_unit':cur_price_unit, 'product':product, 'partner':partner}
+                localdict = {'price_unit':cur_price_unit, 'product':product, 'partner':partner, 'document_date': context.get('document_date'), 'force_vat': context.get('force_vat')}
                 eval(tax.python_compute, localdict, mode="exec", nocopy=True)
                 amount = localdict['result']
                 data['amount'] = amount
@@ -2109,7 +2132,7 @@ class account_tax(osv.osv):
                 cur_price_unit+=amount2
         return res
 
-    def compute_all(self, cr, uid, taxes, price_unit, quantity, product=None, partner=None, force_excluded=False):
+    def compute_all(self, cr, uid, taxes, price_unit, quantity, product=None, partner=None, force_excluded=False, context=None):
         """
         :param force_excluded: boolean used to say that we don't want to consider the value of field price_include of
             tax. It's used in encoding by line where you don't matter if you encoded a tax with that boolean to True or
@@ -2130,6 +2153,7 @@ class account_tax(osv.osv):
         # precision when we round the tax amount for each line (we use
         # the 'Account' decimal precision + 5), and that way it's like
         # rounding after the sum of the tax amounts of each line
+        context = context or {}
         precision = self.pool.get('decimal.precision').precision_get(cr, uid, 'Account')
         tax_compute_precision = precision
         if taxes and taxes[0].company_id.tax_calculation_rounding_method == 'round_globally':
@@ -2142,7 +2166,7 @@ class account_tax(osv.osv):
                 tex.append(tax)
             else:
                 tin.append(tax)
-        tin = self.compute_inv(cr, uid, tin, price_unit, quantity, product=product, partner=partner, precision=tax_compute_precision)
+        tin = self.compute_inv(cr, uid, tin, price_unit, quantity, product=product, partner=partner, precision=tax_compute_precision, context=context)
         for r in tin:
             totalex -= r.get('amount', 0.0)
         totlex_qty = 0.0
@@ -2150,7 +2174,7 @@ class account_tax(osv.osv):
             totlex_qty = totalex/quantity
         except:
             pass
-        tex = self._compute(cr, uid, tex, totlex_qty, quantity, product=product, partner=partner, precision=tax_compute_precision)
+        tex = self._compute(cr, uid, tex, totlex_qty, quantity, product=product, partner=partner, precision=tax_compute_precision, context=context)
         for r in tex:
             totalin += r.get('amount', 0.0)
         return {
@@ -2163,7 +2187,7 @@ class account_tax(osv.osv):
         _logger.warning("Deprecated, use compute_all(...)['taxes'] instead of compute(...) to manage prices with tax included.")
         return self._compute(cr, uid, taxes, price_unit, quantity, product, partner)
 
-    def _compute(self, cr, uid, taxes, price_unit, quantity, product=None, partner=None, precision=None):
+    def _compute(self, cr, uid, taxes, price_unit, quantity, product=None, partner=None, precision=None, context=None):
         """
         Compute tax values for given PRICE_UNIT, QUANTITY and a buyer/seller ADDRESS_ID.
 
@@ -2172,9 +2196,10 @@ class account_tax(osv.osv):
             tax = {'name':'', 'amount':0.0, 'account_collected_id':1, 'account_paid_id':2}
             one tax for each tax id in IDS and their children
         """
+        context = context or {}
         if not precision:
             precision = self.pool.get('decimal.precision').precision_get(cr, uid, 'Account')
-        res = self._unit_compute(cr, uid, taxes, price_unit, product, partner, quantity)
+        res = self._unit_compute(cr, uid, taxes, price_unit, product, partner, quantity, context=context)
         total = 0.0
         for r in res:
             if r.get('balance',False):
@@ -2184,7 +2209,9 @@ class account_tax(osv.osv):
                 total += r['amount']
         return res
 
-    def _unit_compute_inv(self, cr, uid, taxes, price_unit, product=None, partner=None):
+    def _unit_compute_inv(self, cr, uid, taxes, price_unit, product=None, partner=None, context=None):
+        if context is None:
+            context = {}
         taxes = self._applicable(cr, uid, taxes, price_unit,  product, partner)
         res = []
         taxes.reverse()
@@ -2209,8 +2236,25 @@ class account_tax(osv.osv):
             elif tax.type=='fixed':
                 amount = tax.amount
 
-            elif tax.type=='code':
-                localdict = {'price_unit':cur_price_unit, 'product':product, 'partner':partner}
+            elif tax.type=='code':                
+                #Determinamos el porcentaje total de impuesto a aplicar
+                percentage = 0.0                
+                tesdict = {                       
+                    'price_unit':1.0, 
+                    'product':False, 
+                    'partner':False, 
+                    'document_date': context.get('document_date'),
+                    'force_vat': context.get('force_vat')
+                }
+                eval(tax.python_compute_inv, tesdict, mode="exec", nocopy=True)
+                percentage = tesdict['result']
+                localdict = {
+                    'price_unit':cur_price_unit/(1+percentage), 
+                    'product':product, 
+                    'partner':partner, 
+                    'document_date': context.get('document_date'),
+                    'force_vat': context.get('force_vat')
+                }                
                 eval(tax.python_compute_inv, localdict, mode="exec", nocopy=True)
                 amount = localdict['result']
             elif tax.type=='balance':
@@ -2246,7 +2290,7 @@ class account_tax(osv.osv):
                     del res[-1]
                     amount = price_unit
 
-            parent_tax = self._unit_compute_inv(cr, uid, tax.child_ids, amount, product, partner)
+            parent_tax = self._unit_compute_inv(cr, uid, tax.child_ids, amount, product, partner, context=context)
             res.extend(parent_tax)
 
         total = 0.0
@@ -2258,7 +2302,7 @@ class account_tax(osv.osv):
             r['todo'] = 0
         return res
 
-    def compute_inv(self, cr, uid, taxes, price_unit, quantity, product=None, partner=None, precision=None):
+    def compute_inv(self, cr, uid, taxes, price_unit, quantity, product=None, partner=None, precision=None, context=None):
         """
         Compute tax values for given PRICE_UNIT, QUANTITY and a buyer/seller ADDRESS_ID.
         Price Unit is a Tax included price
@@ -2268,9 +2312,11 @@ class account_tax(osv.osv):
             tax = {'name':'', 'amount':0.0, 'account_collected_id':1, 'account_paid_id':2}
             one tax for each tax id in IDS and their children
         """
+        if context is None:
+            context = {}
         if not precision:
             precision = self.pool.get('decimal.precision').precision_get(cr, uid, 'Account')
-        res = self._unit_compute_inv(cr, uid, taxes, price_unit, product, partner=None)
+        res = self._unit_compute_inv(cr, uid, taxes, price_unit, product, partner=None, context=context)
         total = 0.0
         for r in res:
             if r.get('balance',False):

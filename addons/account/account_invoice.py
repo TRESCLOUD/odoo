@@ -179,7 +179,11 @@ class account_invoice(osv.osv):
             if invoice.move_id:
                 for m in invoice.move_id.line_id:
                     if m.account_id != invoice.account_id:
-                        continue
+                        #El siguiente código fue modificado por TRESCLOUD
+                        ###########################################################################################################
+                        if invoice.type != 'hr_advance':
+                            continue
+                        ###########################################################################################################
                     temp_lines = []
                     if m.reconcile_id:
                         temp_lines = map(lambda x: x.id, m.reconcile_id.line_id)
@@ -491,8 +495,11 @@ class account_invoice(osv.osv):
         osv.osv.unlink(self, cr, uid, unlink_ids, context=context)
         return True
 
+    #Código modificado por Trescloud
     def onchange_partner_id(self, cr, uid, ids, type, partner_id,\
-            date_invoice=False, payment_term=False, partner_bank_id=False, company_id=False):
+            date_invoice=False, payment_term=False, partner_bank_id=False, company_id=False, context=None):
+        if context is None:
+            context = {}
         partner_payment_term = False
         acc_id = False
         bank_id = False
@@ -573,6 +580,8 @@ class account_invoice(osv.osv):
 
     def onchange_payment_term_date_invoice(self, cr, uid, ids, payment_term_id, date_invoice):
         res = {}
+        #Variable agregada por TRESCLOUD
+        context = {}
         if isinstance(ids, (int, long)):
             ids = [ids]
         if not date_invoice:
@@ -581,7 +590,11 @@ class account_invoice(osv.osv):
             inv = self.browse(cr, uid, ids[0])
             #To make sure the invoice due date should contain due date which is entered by user when there is no payment term defined
             return {'value':{'date_due': inv.date_due and inv.date_due or date_invoice}}
-        pterm_list = self.pool.get('account.payment.term').compute(cr, uid, payment_term_id, value=1, date_ref=date_invoice)
+        #Código modificado por TRESCLOUD para pasar por contexto el id de la factura activa y hacer el cálculo
+        #de los plazos de pago correctamente
+        if len(ids) > 0:
+            context.update({'active_id': ids[0]})
+        pterm_list = self.pool.get('account.payment.term').compute(cr, uid, payment_term_id, value=1, date_ref=date_invoice, context=context)
         if pterm_list:
             pterm_list = [line[0] for line in pterm_list]
             pterm_list.sort()
@@ -719,7 +732,8 @@ class account_invoice(osv.osv):
             'number':False,
             'move_id':False,
             'move_name':False,
-            'internal_number': False,
+            #Código modificado por TRESCLOUD
+            #'internal_number': False,
             'period_id': False,
             'sent': False,
         })
@@ -831,7 +845,7 @@ class account_invoice(osv.osv):
             for tax in inv.tax_line:
                 if tax.manual:
                     continue
-                key = (tax.tax_code_id.id, tax.base_code_id.id, tax.account_id.id)
+                key = (tax.tax_code_id.id, tax.base_code_id.id, tax.account_id.id, tax.account_analytic_id.id)
                 tax_key.append(key)
                 if not key in compute_taxes:
                     raise osv.except_osv(_('Warning!'), _('Global taxes defined, but they are not in invoice lines !'))
@@ -912,6 +926,9 @@ class account_invoice(osv.osv):
         move_obj = self.pool.get('account.move')
         if context is None:
             context = {}
+        #Validación agregada por TRESCLOUD
+        if isinstance(ids, (int, long)):
+            ids = [ids]
         for inv in self.browse(cr, uid, ids, context=context):
             if not inv.journal_id.sequence_id:
                 raise osv.except_osv(_('Error!'), _('Please define sequence on the journal related to this invoice.'))
@@ -965,6 +982,7 @@ class account_invoice(osv.osv):
                     entry_type = 'cont_voucher'
 
             diff_currency_p = inv.currency_id.id <> company_currency
+            ctx.update({'currency_id': inv.currency_id.id})
             # create one move line for the total and possibly adjust the other lines amount
             total = 0
             total_currency = 0
@@ -974,6 +992,9 @@ class account_invoice(osv.osv):
             name = inv['name'] or inv['supplier_invoice_number'] or '/'
             totlines = False
             if inv.payment_term:
+                #Código modificado por TRESCLOUD para pasar por contexto el id de la factura activa y hacer el cálculo
+                #de los plazos de pago correctamente
+                ctx.update({'active_id': ids[0]})
                 totlines = payment_term_obj.compute(cr,
                         uid, inv.payment_term.id, total, inv.date_invoice or False, context=ctx)
             if totlines:
@@ -1387,13 +1408,23 @@ class account_invoice(osv.osv):
 
 class account_invoice_line(osv.osv):
 
-    def _amount_line(self, cr, uid, ids, prop, unknow_none, unknow_dict):
+    def _amount_line(self, cr, uid, ids, prop, unknow_none, unknow_dict, context=None):
+        if context is None:
+            context = {}
         res = {}
         tax_obj = self.pool.get('account.tax')
         cur_obj = self.pool.get('res.currency')
         for line in self.browse(cr, uid, ids):
+            if line.invoice_id:
+                if line.invoice_id.type in ('out_invoice','in_invoice'):
+                    context.update({'document_date': line.invoice_id.date_invoice, 'force_vat':line.invoice_id.force_vat})
+                else:
+                    if line.invoice_id.invoice_rectification_id:
+                        context.update({'document_date': line.invoice_id.invoice_rectification_id.date_invoice, 'force_vat':line.invoice_id.invoice_rectification_id.force_vat})
+                    else:
+                        context.update({'document_date': line.invoice_id.date_invoice, 'force_vat':line.invoice_id.force_vat})
             price = line.price_unit * (1-(line.discount or 0.0)/100.0)
-            taxes = tax_obj.compute_all(cr, uid, line.invoice_line_tax_id, price, line.quantity, product=line.product_id, partner=line.invoice_id.partner_id)
+            taxes = tax_obj.compute_all(cr, uid, line.invoice_line_tax_id, price, line.quantity, product=line.product_id, partner=line.invoice_id.partner_id, context=context)
             res[line.id] = taxes['total']
             if line.invoice_id:
                 cur = line.invoice_id.currency_id
@@ -1473,6 +1504,20 @@ class account_invoice_line(osv.osv):
                     node.set('domain', "[('sale_ok', '=', True)]")
             res['arch'] = etree.tostring(doc)
         return res
+    
+    def get_account_account(self, cr, uid, product, partner, type, context=None):
+        """
+        HOOK creado para cambiar de manera facil la cuenta contable
+        """
+        if type in ('out_invoice','out_refund'):
+            a = product.property_account_income.id
+            if not a:
+                a = product.categ_id.property_account_income_categ.id
+        else:
+            a = product.property_account_expense.id
+            if not a:
+                a = product.categ_id.property_account_expense_categ.id
+        return a
 
     def product_id_change(self, cr, uid, ids, product, uom_id, qty=0, name='', type='out_invoice', partner_id=False, fposition_id=False, price_unit=False, currency_id=False, context=None, company_id=None):
         if context is None:
@@ -1497,14 +1542,7 @@ class account_invoice_line(osv.osv):
         result = {}
         res = self.pool.get('product.product').browse(cr, uid, product, context=context)
 
-        if type in ('out_invoice','out_refund'):
-            a = res.property_account_income.id
-            if not a:
-                a = res.categ_id.property_account_income_categ.id
-        else:
-            a = res.property_account_expense.id
-            if not a:
-                a = res.categ_id.property_account_expense_categ.id
+        a = self.get_account_account(cr, uid, res, part, type, context=context)
         a = fpos_obj.map_account(cr, uid, fpos, a)
         if a:
             result['account_id'] = a
@@ -1513,8 +1551,12 @@ class account_invoice_line(osv.osv):
             taxes = res.taxes_id and res.taxes_id or (a and self.pool.get('account.account').browse(cr, uid, a, context=context).tax_ids or False)
         else:
             taxes = res.supplier_taxes_id and res.supplier_taxes_id or (a and self.pool.get('account.account').browse(cr, uid, a, context=context).tax_ids or False)
-        tax_id = fpos_obj.map_tax(cr, uid, fpos, taxes)
-
+        # Este código fue modificado por TRESCLOUD
+        ##################################################################################
+        ctx = context.copy()                                                             #
+        ctx.update({'product': product})                                                 #
+        tax_id = fpos_obj.map_tax(cr, uid, fpos, taxes, context=ctx)                     # 
+        ##################################################################################
         if type in ('in_invoice', 'in_refund'):
             result.update( {'price_unit': price_unit or res.standard_price,'invoice_line_tax_id': tax_id} )
         else:
@@ -1629,7 +1671,10 @@ class account_invoice_line(osv.osv):
     #
     # Set the tax field according to the account and the fiscal position
     #
-    def onchange_account_id(self, cr, uid, ids, product_id, partner_id, inv_type, fposition_id, account_id):
+    #Código modificado por Trescloud
+    def onchange_account_id(self, cr, uid, ids, product_id, partner_id, inv_type, fposition_id, account_id, context=None):
+        if context is None:
+            context = {}
         if not account_id:
             return {}
         unique_tax_ids = []
@@ -1640,7 +1685,7 @@ class account_invoice_line(osv.osv):
             unique_tax_ids = self.pool.get('account.fiscal.position').map_tax(cr, uid, fpos, taxes)
         else:
             product_change_result = self.product_id_change(cr, uid, ids, product_id, False, type=inv_type,
-                partner_id=partner_id, fposition_id=fposition_id,
+                partner_id=partner_id, fposition_id=fposition_id, context=context,
                 company_id=account.company_id.id)
             if product_change_result and 'value' in product_change_result and 'invoice_line_tax_id' in product_change_result['value']:
                 unique_tax_ids = product_change_result['value']['invoice_line_tax_id']

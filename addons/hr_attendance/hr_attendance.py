@@ -63,6 +63,32 @@ class hr_attendance(osv.osv):
         'employee_id': _employee_get,
     }
 
+    _conflict_prev = ''
+
+    def _altern_si_so_conflict_message(self, one, another=None):
+        """
+        Creates the conflict details message for two browsed hr_attendance objects.
+        If only one is specified, creates it for just that record.
+        :param one:
+        :param another:
+        :return:
+        """
+        if another:
+            return "hr_attendances: %s/%s [%d], %s/%s [record: %d]" % (
+                one.employee_id.name,
+                one.name,
+                one.id,
+                another.employee_id.name,
+                another.name,
+                another.id
+            )
+        else:
+            return "hr_attendance: %s/%s [record: %d]" % (
+                one.employee_id.name,
+                one.name,
+                one.id
+            )
+
     def _altern_si_so(self, cr, uid, ids, context=None):
         """ Alternance sign_in/sign_out check.
             Previous (if exists) must be of opposite action.
@@ -75,12 +101,15 @@ class hr_attendance(osv.osv):
             prev_atts = self.browse(cr, uid, prev_att_ids, context=context)
             next_atts = self.browse(cr, uid, next_add_ids, context=context)
             # check for alternance, return False if at least one condition is not satisfied
+            conflict = None
             if prev_atts and prev_atts[0].action == att.action: # previous exists and is same action
-                return False
-            if next_atts and next_atts[0].action == att.action: # next exists and is same action
-                return False
-            if (not prev_atts) and (not next_atts) and att.action != 'sign_in': # first attendance must be sign_in
-                return False
+                conflict = self._altern_si_so_conflict_message(prev_atts[0], att)
+            elif next_atts and next_atts[0].action == att.action: # next exists and is same action
+                conflict = self._altern_si_so_conflict_message(att, next_atts[0])
+            elif (not prev_atts) and (not next_atts) and att.action != 'sign_in': # first attendance must be sign_in
+                conflict = self._altern_si_so_conflict_message(att)
+            if conflict:
+                raise osv.except_osv(_('Error!'), _('Error ! Sign in (resp. Sign out) must follow Sign out (resp. Sign in)') + '. ' + conflict)
         return True
 
     _constraints = [(_altern_si_so, 'Error ! Sign in (resp. Sign out) must follow Sign out (resp. Sign in)', ['action'])]

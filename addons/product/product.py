@@ -294,41 +294,42 @@ product_category()
 class product_template(osv.osv):
     _name = "product.template"
     _description = "Product Template"
+    inherit = "mail.thread"
 
     _columns = {
-        'name': fields.char('Name', size=128, required=True, translate=True, select=True),
-        'product_manager': fields.many2one('res.users','Product Manager'),
-        'description': fields.text('Description',translate=True),
+        'name': fields.char('Name', size=128, required=True, translate=True, select=True, track_visibility='onchange'),
+        'product_manager': fields.many2one('res.users','Product Manager',ondelete='restrict',),
+        'description': fields.text('Description',translate=True, track_visibility='onchange'),
         'description_purchase': fields.text('Purchase Description',translate=True),
         'description_sale': fields.text('Sale Description',translate=True),
-        'type': fields.selection([('consu', 'Consumable'),('service','Service')], 'Product Type', required=True, help="Consumable are product where you don't manage stock, a service is a non-material product provided by a company or an individual."),
+        'type': fields.selection([('consu', 'Consumable'),('service','Service')], 'Product Type', required=True, track_visibility='onchange', help="Consumable are product where you don't manage stock, a service is a non-material product provided by a company or an individual."),
         'produce_delay': fields.float('Manufacturing Lead Time', help="Average delay in days to produce this product. In the case of multi-level BOM, the manufacturing lead times of the components will be added."),
         'rental': fields.boolean('Can be Rent'),
-        'categ_id': fields.many2one('product.category','Category', required=True, change_default=True, domain="[('type','=','normal')]" ,help="Select category for the current product"),
-        'list_price': fields.float('Sale Price', digits_compute=dp.get_precision('Product Price'), help="Base price to compute the customer price. Sometimes called the catalog price."),
-        'standard_price': fields.float('Cost', digits_compute=dp.get_precision('Product Price'), help="Cost price of the product used for standard stock valuation in accounting and used as a base price on purchase orders.", groups="base.group_user"),
+        'categ_id': fields.many2one('product.category','Category', required=True, change_default=True, ondelete='restrict', domain="[('type','=','normal')]", track_visibility='onchange', help="Select category for the current product"),
+        'list_price': fields.float('Sale Price', digits_compute=dp.get_precision('Product Price'), track_visibility='onchange', help="Base price to compute the customer price. Sometimes called the catalog price."),
+        'standard_price': fields.float('Cost', digits_compute=dp.get_precision('Product Price'), track_visibility='onchange', help="Cost price of the product used for standard stock valuation in accounting and used as a base price on purchase orders.", groups="base.group_user"),
         'volume': fields.float('Volume', help="The volume in m3."),
         'weight': fields.float('Gross Weight', digits_compute=dp.get_precision('Stock Weight'), help="The gross weight in Kg."),
         'weight_net': fields.float('Net Weight', digits_compute=dp.get_precision('Stock Weight'), help="The net weight in Kg."),
-        'cost_method': fields.selection([('standard','Standard Price'), ('average','Average Price')], 'Costing Method', required=True,
+        'cost_method': fields.selection([('standard','Standard Price'), ('average','Average Price')], 'Costing Method', required=True, track_visibility='onchange',
             help="Standard Price: The cost price is manually updated at the end of a specific period (usually every year). \nAverage Price: The cost price is recomputed at each incoming shipment."),
         'warranty': fields.float('Warranty'),
-        'sale_ok': fields.boolean('Can be Sold', help="Specify if the product can be selected in a sales order line."),
+        'sale_ok': fields.boolean('Can be Sold', track_visibility='onchange', help="Specify if the product can be selected in a sales order line."),
         'state': fields.selection([('',''),
             ('draft', 'In Development'),
             ('sellable','Normal'),
             ('end','End of Lifecycle'),
-            ('obsolete','Obsolete')], 'Status'),
-        'uom_id': fields.many2one('product.uom', 'Unit of Measure', required=True, help="Default Unit of Measure used for all stock operation."),
-        'uom_po_id': fields.many2one('product.uom', 'Purchase Unit of Measure', required=True, help="Default Unit of Measure used for purchase orders. It must be in the same category than the default unit of measure."),
-        'uos_id' : fields.many2one('product.uom', 'Unit of Sale',
+            ('obsolete','Obsolete')], 'Status', track_visibility='onchange'),
+        'uom_id': fields.many2one('product.uom', 'Unit of Measure', ondelete='restrict', required=True, track_visibility='onchange', help="Default Unit of Measure used for all stock operation."),
+        'uom_po_id': fields.many2one('product.uom', 'Purchase Unit of Measure', ondelete='restrict', required=True, help="Default Unit of Measure used for purchase orders. It must be in the same category than the default unit of measure."),
+        'uos_id' : fields.many2one('product.uom', 'Unit of Sale', ondelete='restrict',
             help='Sepcify a unit of measure here if invoicing is made in another unit of measure than inventory. Keep empty to use the default unit of measure.'),
         'uos_coeff': fields.float('Unit of Measure -> UOS Coeff', digits_compute= dp.get_precision('Product UoS'),
             help='Coefficient to convert default Unit of Measure to Unit of Sale\n'
             ' uos = uom * coeff'),
         'mes_type': fields.selection((('fixed', 'Fixed'), ('variable', 'Variable')), 'Measure Type'),
         'seller_ids': fields.one2many('product.supplierinfo', 'product_id', 'Supplier'),
-        'company_id': fields.many2one('res.company', 'Company', select=1),
+        'company_id': fields.many2one('res.company', 'Company', select=1, ondelete='restrict',),
     }
 
     def _get_uom_id(self, cr, uid, *args):
@@ -555,16 +556,16 @@ class product_product(osv.osv):
         'price': fields.function(_product_price, type='float', string='Price', digits_compute=dp.get_precision('Product Price')),
         'lst_price' : fields.function(_product_lst_price, type='float', string='Public Price', digits_compute=dp.get_precision('Product Price')),
         'code': fields.function(_product_code, type='char', string='Internal Reference'),
-        'partner_ref' : fields.function(_product_partner_ref, type='char', string='Customer ref'),
-        'default_code' : fields.char('Internal Reference', size=64, select=True),
+        'partner_ref' : fields.function(_product_partner_ref, type='char', string='Customer ref', track_visibility='onchange'),
+        'default_code' : fields.char('Internal Reference', size=64, select=True, track_visibility='onchange'),
         'active': fields.boolean('Active', help="If unchecked, it will allow you to hide the product without removing it."),
         'variants': fields.char('Variants', size=64),
         'product_tmpl_id': fields.many2one('product.template', 'Product Template', required=True, ondelete="cascade", select=True),
-        'ean13': fields.char('EAN13 Barcode', size=13, help="International Article Number used for product identification."),
+        'ean13': fields.char('EAN13 Barcode', size=13, track_visibility='onchange', help="International Article Number used for product identification."),
         'packaging' : fields.one2many('product.packaging', 'product_id', 'Logistical Units', help="Gives the different ways to package the same product. This has no impact on the picking order and is mainly used if you use the EDI module."),
         'price_extra': fields.float('Variant Price Extra', digits_compute=dp.get_precision('Product Price')),
         'price_margin': fields.float('Variant Price Margin', digits_compute=dp.get_precision('Product Price')),
-        'pricelist_id': fields.dummy(string='Pricelist', relation='product.pricelist', type='many2one'),
+        'pricelist_id': fields.dummy(string='Pricelist', relation='product.pricelist', type='many2one', ondelete='restrict'),
         'name_template': fields.related('product_tmpl_id', 'name', string="Template Name", type='char', size=128, store={
             'product.template': (_get_name_template_ids, ['name'], 10),
             'product.product': (lambda self, cr, uid, ids, c=None: ids, ['product_tmpl_id'], 10),
@@ -802,7 +803,7 @@ class product_product(osv.osv):
             qty_default_uos = qty_default_uom * product.uos_coeff
             return uom_obj._compute_qty_obj(cr, uid, product.uos_id, qty_default_uos, uos)
         else:
-            return uom_obj._compute_qty_obj(cr, uid, uom, qty, uos)
+            return uom_obj._compute_qty_obj(cr, uid, uom, qty, uos, context=context)
 
 
 product_product()
@@ -889,7 +890,7 @@ class product_supplierinfo(osv.osv):
 
     _columns = {
         'name' : fields.many2one('res.partner', 'Supplier', required=True,domain = [('supplier','=',True)], ondelete='cascade', help="Supplier of this product"),
-        'product_name': fields.char('Supplier Product Name', size=128, help="This supplier's product name will be used when printing a request for quotation. Keep empty to use the internal one."),
+        'product_name': fields.char('Supplier Product Name', size=180, help="This supplier's product name will be used when printing a request for quotation. Keep empty to use the internal one."),
         'product_code': fields.char('Supplier Product Code', size=64, help="This supplier's product code will be used when printing a request for quotation. Keep empty to use the internal one."),
         'sequence' : fields.integer('Sequence', help="Assigns the priority to the list of product supplier."),
         'product_uom': fields.related('product_id', 'uom_po_id', type='many2one', relation='product.uom', string="Supplier Unit of Measure", readonly="1", help="This comes from the product form."),
