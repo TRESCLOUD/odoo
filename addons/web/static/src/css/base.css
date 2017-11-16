@@ -829,7 +829,7 @@
   background-color: #f6cf3b;
 }
 .openerp .oe_dialog_warning {
-  width: 100%;
+  width: 100% !important;
 }
 .openerp .oe_dialog_warning p {
   text-align: center;
