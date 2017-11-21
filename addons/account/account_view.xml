@@ -769,9 +769,9 @@
                         <field name="type"/>
                     </group>
                     <separator string="Reconcile Entries"/>
-                    <field name="line_id"/>
+                    <field name="line_id" readonly="True"/>
                     <separator string="Partial Reconcile Entries"/>
-                    <field name="line_partial_ids"/>
+                    <field name="line_partial_ids" readonly="True" />
                 </form>
             </field>
         </record>

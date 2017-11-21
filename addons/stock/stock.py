@@ -1322,9 +1322,12 @@ class stock_picking(osv.osv):
                 product_qty = move_product_qty[move.id]
                 if not new_picking and not empty_picking:
                     new_picking_name = pick.name
+                    if pick.type == 'internal':
+                        picking = 'stock.picking'
+                    else:
+                        picking = 'stock.picking.%s'%(pick.type)
                     self.write(cr, uid, [pick.id], 
-                               {'name': sequence_obj.get(cr, uid,
-                                            'stock.picking.%s'%(pick.type)),
+                               {'name': sequence_obj.get(cr, uid, picking ),
                                })
                     pick.refresh()
                     new_picking = self.copy(cr, uid, pick.id,
