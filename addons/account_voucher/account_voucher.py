@@ -780,7 +780,15 @@ class account_voucher(osv.osv):
                 account_type = 'receivable'
 
         if not context.get('move_line_ids', False):
-            ids = move_line_pool.search(cr, uid, [('state','=','valid'), ('account_id.type', '=', account_type), ('reconcile_id', '=', False), ('partner_id', '=', partner_id)], order='date_created, date_maturity asc', context=context)
+            ids = move_line_pool.search(cr, uid, [
+                ('state','=','valid'),
+                ('account_id.type', '=', account_type),
+                ('reconcile_id', '=', False),
+                ('partner_id', '=', partner_id), '|',
+                #El or y las siguientes dos líneas fueron agregadas por TRESCLOUD
+                ('debit','>',0.0),
+                ('credit','>',0.0)
+            ], order='date_created, date_maturity asc', context=context)
         else:
             ids = context['move_line_ids']
         invoice_id = context.get('invoice_id', False)
