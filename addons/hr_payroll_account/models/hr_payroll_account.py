@@ -53,8 +53,6 @@ class HrPayslip(models.Model):
 
     @api.multi
     def action_payslip_done(self):
-        '''TRESCLOUD: lo reescribimos por completo en el core de TRESCLOUD
-        '''
         #TRESCLOUD, movemos el super al inicio para que primero
         #se ejecute el metodo compute_sheet (y se corrijan las lineas de nomina)
         #y posteriormente se realice el asiento contable
@@ -159,7 +157,7 @@ class HrPayslip(models.Model):
         Este metodo devuelve las líneas del haber del asiento contable que se deben generar, va ser modificado en ecua_hr
         '''
         credit_line = [(0, 0, {
-            'name': line.name,
+            'name': line.name + ', ' + line.employee_id.name,
             'partner_id': line._get_partner_id(credit_account=True),
             'account_id': credit_account_id,
             'journal_id': slip.journal_id.id,

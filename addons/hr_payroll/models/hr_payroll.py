@@ -565,9 +565,7 @@ class HrPayslip(models.Model):
             sorted_rules_and_moves = _get_rules_by_move(localdict, sorted_rules)
             for rule, move in sorted_rules_and_moves:
                 sequence += 1
-                key = rule.code + '-' + str(contract.id)
-                if move:
-                    key += '-'+str(move.id)
+                key = rule.code + '-' + str(contract.id) + '-'+str(move.id)
                 localdict['force_amount'] = move.amount_residual #todo en validar regla en satisfy_condition 
                 #fin seccion modificada por TRESCLOUD
                 
