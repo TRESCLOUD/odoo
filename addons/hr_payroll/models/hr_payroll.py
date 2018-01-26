@@ -568,6 +568,7 @@ class HrPayslip(models.Model):
             for rule, move in sorted_rules_and_moves:
                 sequence += 1
                 key = rule.code + '-' + str(contract.id) + '-'+str(move.id)
+                localdict['force_amount'] = 0.0
                 if move.amount_residual:
                     localdict['force_amount'] = move.amount_residual #todo en validar regla en satisfy_condition
                 elif not move.full_reconcile_id:
