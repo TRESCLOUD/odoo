@@ -5,7 +5,6 @@ from odoo import api, fields, models, tools, _
 from odoo.exceptions import UserError
 from odoo.tools import float_is_zero
 
-import odoo.addons.decimal_precision as dp
 
 
 class ProductTemplate(models.Model):
