@@ -129,7 +129,7 @@ class ProductProduct(models.Model):
                 diff = product.standard_price - new_price
                 #TRESCLOUD MA-735
                 #La precision debe ser del producto, no de la moneda, pues la presicion del campo es del producto
-                #esto causara que de haber una diferencia menor a la presision de la moneda y poco stock se haga un asiento
+                #esto causara que de haber una diferencia menor a la presicion de la moneda y poco stock se haga un asiento
                 #contable en cero, lo cual es adecuado pues demuestra que se hizo una alteracion.
                 #if float_is_zero(diff, precision_rounding=product.currency_id.rounding):
                 prec = self.env['decimal.precision'].precision_get('Product Price')
