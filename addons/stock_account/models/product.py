@@ -6,7 +6,6 @@ from odoo.exceptions import UserError
 from odoo.tools import float_is_zero
 
 
-
 class ProductTemplate(models.Model):
     _name = 'product.template'
     _inherit = 'product.template'
