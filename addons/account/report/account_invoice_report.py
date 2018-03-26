@@ -83,6 +83,7 @@ class account_invoice_report(osv.osv):
             ('in_invoice','Supplier Invoice'),
             ('out_refund','Customer Refund'),
             ('in_refund','Supplier Refund'),
+            ('hr_advance','Employee Advance'),
             ],'Type', readonly=True),
         'state': fields.selection([
             ('draft','Draft'),
