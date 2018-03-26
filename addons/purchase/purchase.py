@@ -43,7 +43,11 @@ class purchase_order(osv.osv):
         res = {}
         cur_obj=self.pool.get('res.currency')
         for order in self.browse(cr, uid, ids, context=context):
-            context.update({'document_date': order.date_order, 'force_vat': order.force_vat})
+            module_ids = self.pool.get('ir.module.module').search(cr, uid, [('name','=','vat_tax_fourteen_percent'), ('state','=','installed')], context=context)
+            force_vat = 'automatic'
+            if module_ids:
+                force_vat = order.force_vat
+            context.update({'document_date': order.date_order, 'force_vat': force_vat})
             res[order.id] = {
                 'amount_untaxed': 0.0,
                 'amount_tax': 0.0,

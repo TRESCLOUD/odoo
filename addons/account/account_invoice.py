@@ -1417,13 +1417,18 @@ class account_invoice_line(osv.osv):
         cur_obj = self.pool.get('res.currency')
         for line in self.browse(cr, uid, ids):
             if line.invoice_id:
+                module_ids = self.pool.get('ir.module.module').search(cr, uid, [('name','=','vat_tax_fourteen_percent'), ('state','=','installed')], context=context)
+                force_vat = 'automatic'
+                if module_ids:
+                    force_vat = line.invoice_id.force_vat
                 if line.invoice_id.type in ('out_invoice','in_invoice'):
-                    context.update({'document_date': line.invoice_id.date_invoice, 'force_vat':line.invoice_id.force_vat})
+                    context.update({'document_date': line.invoice_id.date_invoice, 'force_vat': force_vat})
                 else:
                     if line.invoice_id.invoice_rectification_id:
-                        context.update({'document_date': line.invoice_id.invoice_rectification_id.date_invoice, 'force_vat':line.invoice_id.invoice_rectification_id.force_vat})
+                        force_vat = line.invoice_id.invoice_rectification_id.force_vat
+                        context.update({'document_date': line.invoice_id.invoice_rectification_id.date_invoice, 'force_vat': force_vat})
                     else:
-                        context.update({'document_date': line.invoice_id.date_invoice, 'force_vat':line.invoice_id.force_vat})
+                        context.update({'document_date': line.invoice_id.date_invoice, 'force_vat': force_vat})
             price = line.price_unit * (1-(line.discount or 0.0)/100.0)
             taxes = tax_obj.compute_all(cr, uid, line.invoice_line_tax_id, price, line.quantity, product=line.product_id, partner=line.invoice_id.partner_id, context=context)
             res[line.id] = taxes['total']
