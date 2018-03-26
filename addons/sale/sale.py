@@ -96,6 +96,10 @@ class sale_order(osv.osv):
         cur_obj = self.pool.get('res.currency')
         res = {}
         for order in self.browse(cr, uid, ids, context=context):
+            module_ids = self.pool.get('ir.module.module').search(cr, uid, [('name','=','vat_tax_fourteen_percent'), ('state','=','installed')], context=context)
+            force_vat = 'automatic'
+            if module_ids:
+                force_vat = order.force_vat
             context.update({'document_date': order.date_order.split(' ')[0],'force_vat': order.force_vat})
             #Código modificado por TRESCLOUD para evitar error en caso que el módulo law_of_solidarity no este instalado
             solidarity_compensation = 0.0
