@@ -100,7 +100,7 @@ class sale_order(osv.osv):
             force_vat = 'automatic'
             if module_ids:
                 force_vat = order.force_vat
-            context.update({'document_date': order.date_order.split(' ')[0],'force_vat': order.force_vat})
+            context.update({'document_date': order.date_order.split(' ')[0],'force_vat': force_vat})
             #Código modificado por TRESCLOUD para evitar error en caso que el módulo law_of_solidarity no este instalado
             solidarity_compensation = 0.0
             module_ids = self.pool.get('ir.module.module').search(cr, uid, [('name','=','law_of_solidarity'), ('state','=','installed')], context=context)
