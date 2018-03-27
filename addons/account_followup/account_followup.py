@@ -317,7 +317,7 @@ class res_partner(osv.osv):
                                                                    ('company_id', '=', company_id),
                                                                    '|', ('date_maturity', '=', False), ('date_maturity', '<=', fields.date.context_today(self, cr, uid)),
                                                                   ], context=context):
-            raise osv.except_osv(_('Error!'),_("The partner does not have any accounting entries to print in the overdue report for the current company."))
+            raise osv.except_osv(_(u'Advertencia!'),_(u"El Cliente no tiene ningún pago vencido a partir del día de hoy para ser impreso en el reporte de Pagos vencidos."))
         self.message_post(cr, uid, [ids[0]], body=_('Printed overdue payments report'), context=context)
         #build the id of this partner in the psql view. Could be replaced by a search with [('company_id', '=', company_id),('partner_id', '=', ids[0])]
         wizard_partner_ids = [ids[0] * 10000 + company_id]
