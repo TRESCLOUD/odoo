@@ -362,13 +362,17 @@ class res_config_installer(osv.osv_memory, res_config_module_installation_mixin)
                         self.already_installed(cr, uid, context=context),
                         True))
 
-    def fields_get(self, cr, uid, fields=None, context=None, write_access=True):
+    def fields_get(self, cr, uid, fields=None, context=None, write_access=True, allfields=None):
         """ If an addon is already installed, set it to readonly as
         res.config.installer doesn't handle uninstallations of already
         installed addons
         """
+        # name of argument fields incorrect
+        if allfields:
+            fields=allfields
+        
         fields = super(res_config_installer, self).fields_get(
-            cr, uid, fields, context, write_access)
+            cr, uid, allfields=fields, context=context, write_access=write_access)
 
         for name in self.already_installed(cr, uid, context=context):
             if name not in fields:

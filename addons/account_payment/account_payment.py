@@ -413,8 +413,11 @@ class payment_line(osv.osv):
                         break
         return {'value': data}
 
-    def fields_get(self, cr, uid, fields=None, context=None):
-        res = super(payment_line, self).fields_get(cr, uid, fields, context)
+    def fields_get(self, cr, uid, fields=None, context=None, allfields=None):
+        # name of argument fields incorrect
+        if allfields:
+            fields=allfields
+        res = super(payment_line, self).fields_get(cr, uid, allfields=fields, context=context)
         if 'communication2' in res:
             res['communication2'].setdefault('states', {})
             res['communication2']['states']['structured'] = [('readonly', True)]
