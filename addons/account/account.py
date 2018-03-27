@@ -2066,6 +2066,7 @@ class account_tax(osv.osv):
         context = context or {}
         taxes = self._applicable(cr, uid, taxes, price_unit ,product, partner)
         res = []
+        precision = context.get('precision')
         cur_price_unit=price_unit
         for tax in taxes:
             # we compute the amount for the current tax object and append it to the result
@@ -2109,7 +2110,7 @@ class account_tax(osv.osv):
             if tax.child_ids:
                 if tax.child_depend:
                     latest = res.pop()
-                amount = amount2
+                amount = round(amount2, precision) if precision else amount2
                 child_tax = self._unit_compute(cr, uid, tax.child_ids, amount, product, partner, quantity)
                 res.extend(child_tax)
                 for child in child_tax:
@@ -2199,7 +2200,9 @@ class account_tax(osv.osv):
         context = context or {}
         if not precision:
             precision = self.pool.get('decimal.precision').precision_get(cr, uid, 'Account')
-        res = self._unit_compute(cr, uid, taxes, price_unit, product, partner, quantity, context=context)
+        ctxt = context.copy()
+        ctxt.update({'precision': precision})
+        res = self._unit_compute(cr, uid, taxes, price_unit, product, partner, quantity, context=ctxt)
         total = 0.0
         for r in res:
             if r.get('balance',False):
