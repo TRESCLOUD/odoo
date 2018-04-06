@@ -780,15 +780,14 @@ class account_voucher(osv.osv):
                 account_type = 'receivable'
 
         if not context.get('move_line_ids', False):
-            ids = move_line_pool.search(cr, uid, [
-                ('state','=','valid'),
-                ('account_id.type', '=', account_type),
-                ('reconcile_id', '=', False),
-                ('partner_id', '=', partner_id), '|',
-                #El or y las siguientes dos líneas fueron agregadas por TRESCLOUD
-                ('debit','>',0.0),
-                ('credit','>',0.0)
-            ], order='date_created, date_maturity asc', context=context)
+            #El siguiente codigo fue modificado por TRESCLOUD
+            ids = move_line_pool.search(
+                    cr,
+                    uid,
+                    self.get_domain_voucher_line(cr, uid, ids, account_type, partner_id, context=context), 
+                    order='date_created, date_maturity asc', 
+                    context=context
+                )
         else:
             ids = context['move_line_ids']
         invoice_id = context.get('invoice_id', False)
@@ -889,6 +888,23 @@ class account_voucher(osv.osv):
                 default['value']['pre_line'] = 1
             default['value']['writeoff_amount'] = self._compute_writeoff_amount(cr, uid, default['value']['line_dr_ids'], default['value']['line_cr_ids'], price, ttype)
         return default
+    
+    #El siguiente metodo fue agregado por TRESCLOUD
+    def get_domain_voucher_line(self, cr, uid, ids, account_type, partner_id, context=None):
+        '''
+        Este metodo devuleve el domain que va ser usado para encontrar las lineas del pago
+        '''
+        if context is None:
+            context = {}
+        return [
+            ('state','=','valid'),
+            ('account_id.type', '=', account_type),
+            ('reconcile_id', '=', False),
+            ('partner_id', '=', partner_id), '|',
+            #El or y las siguientes dos líneas fueron agregadas por TRESCLOUD
+            ('debit', '>', 0.0),
+            ('credit', '>', 0.0)
+        ]
 
     def onchange_payment_rate_currency(self, cr, uid, ids, currency_id, payment_rate, payment_rate_currency_id, date, amount, company_id, context=None):
         if context is None:
@@ -1318,21 +1334,8 @@ class account_voucher(osv.osv):
                 currency_rate_difference = sign * (line.move_line_id.amount_residual - amount)
             else:
                 currency_rate_difference = 0.0
-            move_line = {
-                'journal_id': voucher.journal_id.id,
-                'period_id': voucher.period_id.id,
-                #El siguiente codigo fue modificado por Trescloud
-                'name': self.get_line_name(cr, uid, line, context=context) or '/',
-                'account_id': line.account_id.id,
-                'move_id': move_id,
-                'partner_id': self._get_voucher_line_partner(voucher, line, context),
-                'currency_id': line.move_line_id and (company_currency <> line.move_line_id.currency_id.id and line.move_line_id.currency_id.id) or False,
-                'analytic_account_id': line.account_analytic_id and line.account_analytic_id.id or False,
-                'quantity': 1,
-                'credit': 0.0,
-                'debit': 0.0,
-                'date': voucher.date
-            }
+            #El siguiente codigo fue modificado por Trescloud
+            move_line = self.get_move_line_vals(cr, uid, voucher, line, move_id, company_currency, context=context)
             if amount < 0:
                 amount = -amount
                 if line.type == 'dr':
@@ -1407,6 +1410,30 @@ class account_voucher(osv.osv):
             if line.move_line_id.id:
                 rec_lst_ids.append(rec_ids)
         return (tot_line, rec_lst_ids)
+    
+    #El siguiente metodo fue agregado por TRESCLOUD
+    def get_move_line_vals(self, cr, uid, voucher, line, move_id, company_currency, context=None):
+        '''
+        Sacamos la logica a un metodo para poder ser herado y agregarle el punto de impresion en pagos
+        '''
+        if context is None:
+            context = {}
+        return {
+            'journal_id': voucher.journal_id.id,
+            'period_id': voucher.period_id.id,
+            #El siguiente codigo fue modificado por Trescloud
+            'name': self.get_line_name(cr, uid, line, context=context) or '/',
+            'account_id': line.account_id.id,
+            'move_id': move_id,
+            'partner_id': self._get_voucher_line_partner(voucher, line, context),
+            'currency_id': line.move_line_id and (company_currency <> line.move_line_id.currency_id.id and line.move_line_id.currency_id.id) or False,
+            'analytic_account_id': line.account_analytic_id and line.account_analytic_id.id or False,
+            'quantity': 1,
+            'credit': 0.0,
+            'debit': 0.0,
+            'date': voucher.date
+        }
+        
 
     def writeoff_move_line_get(self, cr, uid, voucher_id, line_total, move_id, name, company_currency, current_currency, context=None):
         '''
