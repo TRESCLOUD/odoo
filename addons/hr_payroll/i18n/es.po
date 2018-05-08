@@ -114,7 +114,7 @@ msgstr "Regla salarial"
 #. module: hr_payroll
 #: view:hr.payslip:0 view:hr.payslip.run:0
 msgid "to"
-msgstr "para"
+msgstr "Hasta"
 
 #. module: hr_payroll
 #: field:hr.payslip,payslip_run_id:0 view:hr.payslip.run:0

@@ -188,7 +188,7 @@
             <field name="name">hr.payslip.tree</field>
             <field name="model">hr.payslip</field>
             <field name="arch" type="xml">
-                <tree colors="blue:state in ('confirm','hr_check','accont_check');black:state == 'new';gray:state == 'cancel'" string="Payslips">
+                <tree colors="blue:state in ('draft','confirm','hr_check','accont_check');black:state == 'new';gray:state == 'cancel'" string="Payslips">
                     <field name="number"/>
                     <field name="employee_id"/>
                     <field name="name"/>
@@ -233,7 +233,7 @@
                             to <field name="date_to"/>
                         </h2>
                     </div>
-                    <group col="4">
+                    <group col="4" name="data">
                         <field name="contract_id" domain="[('employee_id','=',employee_id),('date_start','&lt;=',date_to),'|',('date_end','&gt;=',date_from),('date_end','=',False)]" on_change="onchange_contract_id(date_from, date_to, employee_id, contract_id)" context="{'default_employee_id': employee_id}"/>
                         <field name="number"/>
                         <field name="struct_id" attrs="{'required':[('contract_id','&lt;&gt;',False)]}"/>
