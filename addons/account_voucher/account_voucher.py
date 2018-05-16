@@ -1462,10 +1462,8 @@ class account_voucher(osv.osv):
                 account_id = voucher.writeoff_acc_id.id
                 write_off_name = voucher.comment
             elif voucher.partner_id:
-                if voucher.type in ('sale', 'receipt'):
-                    account_id = voucher.partner_id.property_account_receivable.id
-                else:
-                    account_id = voucher.partner_id.property_account_payable.id
+                #Codigo modificado por Trescloud
+                account_id = self.get_writeoff_move_line_get_account_id(cr, uid, voucher, context=context)
             else:
                 # fallback on account of voucher
                 account_id = voucher.account_id.id
@@ -1484,6 +1482,19 @@ class account_voucher(osv.osv):
             }
 
         return move_line
+    
+    def get_writeoff_move_line_get_account_id(self, cr, uid, voucher, context=None):
+        '''
+        Hook para setear la cuenta sera implementado en ecua_invoice
+        '''
+        if context is None:
+            context = {}
+        account_id = False
+        if voucher.type in ('sale', 'receipt'):
+            account_id = voucher.partner_id.property_account_receivable.id
+        else:
+            account_id = voucher.partner_id.property_account_payable.id
+        return account_id
 
     def _get_company_currency(self, cr, uid, voucher_id, context=None):
         '''
