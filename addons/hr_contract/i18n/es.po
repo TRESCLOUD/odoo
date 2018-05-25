@@ -330,7 +330,7 @@ msgstr "Secuencia"
 #. module: hr_contract
 #: model:ir.model.fields,field_description:hr_contract.field_hr_contract_date_start
 msgid "Start Date"
-msgstr "Fecha de inicio"
+msgstr "Fecha Inicio Versión"
 
 #. module: hr_contract
 #: model:ir.model.fields,field_description:hr_contract.field_hr_contract_state
@@ -362,7 +362,7 @@ msgstr "Duración del periodo de prueba"
 #. module: hr_contract
 #: model:ir.model.fields,field_description:hr_contract.field_hr_contract_trial_date_start
 msgid "Trial Start Date"
-msgstr "Fecha de inicio"
+msgstr "Fecha Inicio Período de Prueba"
 
 #. module: hr_contract
 #: model:ir.model.fields,field_description:hr_contract.field_base_action_rule_trg_date_resource_field_id
