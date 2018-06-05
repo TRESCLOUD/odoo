@@ -10,7 +10,6 @@ from odoo.tools import float_is_zero, float_compare
 from odoo.tools.safe_eval import safe_eval
 import odoo.addons.decimal_precision as dp
 from lxml import etree
-from tabulate import tabulate
 #----------------------------------------------------------
 # Entries
 #----------------------------------------------------------
@@ -213,35 +212,18 @@ class AccountMove(models.Model):
             HAVING      abs(sum(debit) - sum(credit)) > %s
             """, (tuple(self.ids), 10 ** (-max(5, prec))))
         if len(self._cr.fetchall()) != 0:
-            self._cr.execute("""\
-            SELECT      name , debit , credit
-            FROM        account_move_line
-            WHERE       move_id in (%s)
-            """,(tuple(self.ids)))
-            query_results = self.env.cr.dictfetchall()
-            list_items =[]
-            total_debit = 0.0
-            total_credit = 0.0
-            for index in range(0, len(query_results)):
-                description = query_results[index]['name']
-                debit = query_results[index].get('debit')
-                credit = query_results[index].get('credit')
-                list_items.append([description, debit, credit])
-                total_credit += credit
-                total_debit += debit
-            message = information = u''
-            if self.env.user.has_group('account.group_account_user'):
-                try:
-                    txt_entries = tabulate(list_items,headers=[u'DESCRIPCIÓN', u'DEBE', u'HABER'] , tablefmt='simple',
-                                   numalign="right").replace(u'  ', u'__').replace(u' ', u'_')
-                    information = u'''\n\n *Nota: Arregle el asiento descuadrado o pegue el siguente texto en un block de notas
-                                    para analizar el asiento contable: %s ''' %(txt_entries)
-                except:
-                    information = u''
-            message += u'El asiento descuadra por el valor de :'  + str(total_credit - total_debit) + u'\n'
-            raise UserError (u'No se puede crear un asiento contable descuadrado :\n%s %s'%(message, information))
+            #La siguente linea fue agregado por trescloud
+            self._message_with_entry()
+            raise UserError(_("Cannot create unbalanced journal entry."))
         return True
-
+    
+    #Siguiente metodo fue agregado por trescloud
+    def _message_with_entry(self):
+        '''
+        Hook para mejorar el mensaje de asientos descuadrados, sera utilizado en un metodo superior
+        '''
+        return True
+    
     @api.multi
     def _reverse_move(self, date=None, journal_id=None):
         self.ensure_one()
