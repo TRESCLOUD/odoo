@@ -33,14 +33,12 @@ class AccountAnalyticLine(models.Model):
     def on_change_unit_amount(self):
         if not self.product_id:
             return {}
-
         result = 0.0
         prod_accounts = self.product_id.product_tmpl_id._get_product_accounts()
         unit = self.product_uom_id
         account = prod_accounts['expense']
         if not unit or self.product_id.uom_po_id.category_id.id != unit.category_id.id:
             unit = self.product_id.uom_po_id
-
         # Compute based on pricetype
         amount_unit = self.product_id.price_compute('standard_price', uom=unit)[self.product_id.id]
         amount = amount_unit * self.unit_amount or 0.0
