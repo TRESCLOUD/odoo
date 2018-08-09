@@ -137,10 +137,11 @@ class Module(models.Model):
     @api.model
     def fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
         res = super(Module, self).fields_view_get(view_id, view_type, toolbar=toolbar, submenu=False)
-        if view_type == 'form' and res.get('toolbar',False):
-            install_id = self.env.ref('base.action_server_module_immediate_install').id
-            action = [rec for rec in res['toolbar']['action'] if rec.get('id', False) != install_id]
-            res['toolbar'] = {'action': action}
+        # TRESCLOUD: Removido boton de instalacion, la instalacion ahora por linea de comandos
+        #if view_type == 'form' and res.get('toolbar',False):
+        #    install_id = self.env.ref('base.action_server_module_immediate_install').id
+        #    action = [rec for rec in res['toolbar']['action'] if rec.get('id', False) != install_id]
+        #    res['toolbar'] = {'action': action}
         return res
 
     @classmethod

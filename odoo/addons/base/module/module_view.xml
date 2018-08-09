@@ -80,7 +80,6 @@
                             By <field name="author" class="oe_inline" placeholder="Author Name"/>
                         </h3>
                         <div>
-                            <button name="button_immediate_install" states="uninstalled" string="Install" type="object" class="btn btn-primary"/>
                             <button name="button_immediate_upgrade" states="installed" string="Upgrade" type="object" class="btn btn-primary"/>
                             <button name="button_uninstall" states="installed" string="Uninstall" type="object"  class="btn btn-default"/>
                             <button name="button_uninstall_cancel" states="to remove" string="Cancel Uninstall" type="object" class="btn btn-default"/>
@@ -170,7 +169,6 @@
                              <t t-if="record.summary.raw_value"><field name="summary"/><br/></t>
                              <i><field name="name" groups="base.group_no_one"/></i>
                           </p>
-                          <button type="object" class="btn btn-primary pull-right btn-sm" name="button_immediate_install" states="uninstalled">Install</button>
                           <button type="button" t-if="installed" class="btn btn-default pull-right btn-sm disabled" disabled="disabled">Installed</button>
                         </div>
                       </div>
