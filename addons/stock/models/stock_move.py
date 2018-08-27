@@ -888,7 +888,7 @@ class StockMove(models.Model):
             if not operation.product_id and operation.package_id and operation.result_package_id.id != operation.package_id.parent_id.id:
                 operation.package_id.sudo().write({'parent_id': operation.result_package_id.id})
 
-        # Check for remaining qtys and unreserve/check move_dest_id in
+        # Check for remaining qtys  and unreserve/check move_dest_id in
         move_dest_ids = set()
         for move in self:
             if float_compare(remaining_move_qty[move.id], 0, precision_rounding=move.product_id.uom_id.rounding) > 0:  # In case no pack operations in picking
