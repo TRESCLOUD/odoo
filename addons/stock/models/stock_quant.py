@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from odoo import api, fields, models
+import odoo.addons.decimal_precision as dp
 from odoo.tools.float_utils import float_compare, float_round
 from odoo.tools.translate import _
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
@@ -60,7 +61,10 @@ class Quant(models.Model):
         index=True, readonly=True, required=True,
         default=lambda self: self.env['res.company']._company_default_get('stock.quant'),
         help="The company to which the quants belong")
-    inventory_value = fields.Float('Inventory Value', compute='_compute_inventory_value', readonly=True)
+    # Codigo modificado por TRESCLOUD, debido a que la precision decimal 
+    # debe ser la del precio del producto. 
+    inventory_value = fields.Float('Inventory Value', digits=dp.get_precision('Product Price'),
+                                   compute='_compute_inventory_value', readonly=True)
     # Used for negative quants to reconcile after compensated by a new positive one
     propagated_from_id = fields.Many2one(
         'stock.quant', 'Linked Quant',
@@ -144,7 +148,8 @@ class Quant(models.Model):
         # split quants if needed
         for quant, qty in quants:
             if qty <= 0.0 or (quant and quant.qty <= 0.0):
-                raise UserError(_('You can not reserve a negative quantity or a negative quant.'))
+                #El siguiente codigo fue modificado por TRESCLOUD
+                raise UserError(_('No puede reservar una cantidad o un quant negativo, el proceso esta fallando con el siguiente producto: %s.') % (quant.product_id.name_get()[0][1]))
             if not quant:
                 continue
             quant._quant_split(qty)
@@ -334,11 +339,14 @@ class Quant(models.Model):
                 # price update + accounting entries adjustments
                 solved_quants._price_update(solving_quant.cost)
                 # merge history (and cost?)
-                solved_quants.write({
-                    'history_ids': [(4, history_move.id) for history_move in solving_quant.history_ids]
-                })
+                solved_quants.write(solving_quant._prepare_history())
             solving_quant.with_context(force_unlink=True).unlink()
             solving_quant = remaining_solving_quant
+
+    def _prepare_history(self):
+        return {
+            'history_ids': [(4, history_move.id) for history_move in self.history_ids],
+        }
 
     @api.multi
     def _price_update(self, newprice):
@@ -610,7 +618,7 @@ class QuantPackage(models.Model):
     @api.one
     @api.depends('parent_id', 'children_ids')
     def _compute_ancestor_ids(self):
-        self.ancestor_ids = self.env['stock.quant.package'].search(['id', 'parent_of', self.id]).ids
+        self.ancestor_ids = self.env['stock.quant.package'].search([('id', 'parent_of', self.id)]).ids
 
     @api.multi
     @api.depends('parent_id', 'children_ids', 'quant_ids.package_id')
@@ -690,6 +698,17 @@ class QuantPackage(models.Model):
             if len(locations) != 1:
                 raise UserError(_('Everything inside a package should be in the same location'))
         return True
+
+    @api.multi
+    def action_view_related_picking(self):
+        """ Returns an action that display the picking related to this
+        package (source or destination).
+        """
+        self.ensure_one()
+        pickings = self.env['stock.picking'].search(['|', ('pack_operation_ids.package_id', '=', self.id), ('pack_operation_ids.result_package_id', '=', self.id)])
+        action = self.env.ref('stock.action_picking_tree_all').read()[0]
+        action['domain'] = [('id', 'in', pickings.ids)]
+        return action
 
     @api.multi
     def unpack(self):

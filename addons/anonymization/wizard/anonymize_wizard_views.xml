@@ -23,6 +23,9 @@
                     <field name="file_import" />
                     <field name="msg" />
                 </group>
+                <group name="placeholder1" col="4">
+                    <field name="pickle"/>
+                </group>
             </form>
         </field>
     </record>

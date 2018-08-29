@@ -214,6 +214,19 @@ class account_payment(models.Model):
     # FIXME: ondelete='restrict' not working (eg. cancel a bank statement reconciliation with a payment)
     move_line_ids = fields.One2many('account.move.line', 'payment_id', readonly=True, copy=False, ondelete='restrict')
 
+    def open_payment_matching_screen(self):
+        # Open reconciliation view for customers/suppliers
+        action_context = {'company_ids': [self.company_id.id], 'partner_ids': [self.partner_id.commercial_partner_id.id]}
+        if self.partner_type == 'customer':
+            action_context.update({'mode': 'customers'})
+        elif self.partner_type == 'supplier':
+            action_context.update({'mode': 'suppliers'})
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'manual_reconciliation_view',
+            'context': action_context,
+        }
+
     @api.one
     @api.depends('invoice_ids', 'payment_type', 'partner_type', 'partner_id')
     def _compute_destination_account_id(self):
@@ -243,11 +256,13 @@ class account_payment(models.Model):
                 self.partner_type = 'customer'
             elif self.payment_type == 'outbound':
                 self.partner_type = 'supplier'
+            else:
+                self.partner_type = False
         # Set payment method domain
         res = self._onchange_journal()
         if not res.get('domain', {}):
             res['domain'] = {}
-        res['domain']['journal_id'] = self.payment_type == 'inbound' and [('at_least_one_inbound', '=', True)] or [('at_least_one_outbound', '=', True)]
+        res['domain']['journal_id'] = self.payment_type == 'inbound' and [('at_least_one_inbound', '=', True)] or self.payment_type == 'outbound' and [('at_least_one_outbound', '=', True)] or []
         res['domain']['journal_id'].append(('type', 'in', ('bank', 'cash')))
         return res
 
@@ -316,14 +331,31 @@ class account_payment(models.Model):
                 move.button_cancel()
                 move.unlink()
             rec.state = 'draft'
+    
+    # ESTE CODIGO FE MODIFICADO POR TRESCLOUD
+    @api.multi
+    def copy(self, default=None):
+        default = dict(default or {})
+        default.update(move_name=False)
+        return super(account_payment, self).copy(default)
 
     @api.multi
     def unlink(self):
         if any(bool(rec.move_line_ids) for rec in self):
             raise UserError(_("You can not delete a payment that is already posted"))
-        if any(rec.move_name for rec in self):
+        
+        #TRESCLOUD - se agrega el bypass_move_name_restriction
+        if not self._context.get('bypass_move_name_restriction') and any(rec.move_name for rec in self):
             raise UserError(_('It is not allowed to delete a payment that already created a journal entry since it would create a gap in the numbering. You should create the journal entry again and cancel it thanks to a regular revert.'))
         return super(account_payment, self).unlink()
+
+    #Metodo agregado por TRESCLOUD
+    @api.multi
+    def payment_sequence(self, payment_date, sequence_code):
+        '''
+        Este metodo devuelve la secuencia del pago, su logica va ser modificada en modulos superiores
+        '''
+        return self.env['ir.sequence'].with_context(ir_sequence_date=payment_date).next_by_code(sequence_code)
 
     @api.multi
     def post(self):
@@ -355,7 +387,10 @@ class account_payment(models.Model):
                         sequence_code = 'account.payment.supplier.refund'
                     if rec.payment_type == 'outbound':
                         sequence_code = 'account.payment.supplier.invoice'
-            rec.name = self.env['ir.sequence'].with_context(ir_sequence_date=rec.payment_date).next_by_code(sequence_code)
+            #La siguiente linea fue modificada por TRESCLOUD
+            rec.name = self.payment_sequence(rec.payment_date, sequence_code)
+            if not rec.name and rec.payment_type != 'transfer':
+                raise UserError(_("You have to define a sequence for %s in your company.") % (sequence_code,))
 
             # Create the journal entry
             amount = rec.amount * (rec.payment_type in ('outbound', 'transfer') and 1 or -1)

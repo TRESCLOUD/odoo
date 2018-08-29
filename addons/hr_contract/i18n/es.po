@@ -69,20 +69,20 @@ msgstr "Referencia contrato"
 
 #. module: hr_contract
 #: model:ir.model,name:hr_contract.model_hr_contract_type
-#: model:ir.model.fields,field_description:hr_contract.field_hr_contract_type_id_5769
+#: model:ir.model.fields,field_description:hr_contract.field_hr_contract_type_id
 #: model:ir.model.fields,field_description:hr_contract.field_hr_contract_type_name
 #: model:ir.ui.view,arch_db:hr_contract.hr_contract_type_view_form
 #: model:ir.ui.view,arch_db:hr_contract.hr_contract_type_view_search
 #: model:ir.ui.view,arch_db:hr_contract.hr_contract_type_view_tree
 #: model:ir.ui.view,arch_db:hr_contract.hr_contract_view_search
 msgid "Contract Type"
-msgstr "Tipo de contrato"
+msgstr "Estructura contable"
 
 #. module: hr_contract
 #: model:ir.actions.act_window,name:hr_contract.action_hr_contract_type
 #: model:ir.ui.menu,name:hr_contract.hr_menu_contract_type
 msgid "Contract Types"
-msgstr "Tipos de contrato"
+msgstr "Estructuras contable"
 
 #. module: hr_contract
 #: model:mail.message.subtype,description:hr_contract.mt_contract_pending
@@ -173,13 +173,13 @@ msgstr "Contrato de empleado"
 #. module: hr_contract
 #: model:ir.model.fields,field_description:hr_contract.field_hr_contract_date_end
 msgid "End Date"
-msgstr "Fecha finalización"
+msgstr "Fecha Salida"
 
 #. module: hr_contract
 #: selection:hr.contract,state:0
 #: model:mail.message.subtype,name:hr_contract.mt_contract_close
 msgid "Expired"
-msgstr "Expirado"
+msgstr "Finalizado"
 
 #. module: hr_contract
 #: model:ir.model.fields,help:hr_contract.field_hr_contract_type_sequence
@@ -240,7 +240,7 @@ msgstr "Puesto"
 #. module: hr_contract
 #: model:ir.model.fields,field_description:hr_contract.field_hr_contract_job_id
 msgid "Job Title"
-msgstr "Título del trabajo"
+msgstr "Puesto de trabajo"
 
 #. module: hr_contract
 #: model:ir.model.fields,field_description:hr_contract.field_hr_contract___last_update
@@ -278,7 +278,7 @@ msgstr "Fecha del examen médico"
 #. module: hr_contract
 #: selection:hr.contract,state:0
 msgid "New"
-msgstr "Nuevo"
+msgstr "Borrador"
 
 #. module: hr_contract
 #: model:ir.model.fields,field_description:hr_contract.field_hr_contract_notes
@@ -304,7 +304,7 @@ msgstr "Lugar de nacimiento"
 #. module: hr_contract
 #: selection:hr.contract,state:0
 msgid "Running"
-msgstr "En proceso"
+msgstr "En curso"
 
 #. module: hr_contract
 #: model:ir.ui.view,arch_db:hr_contract.hr_contract_view_form
@@ -319,7 +319,7 @@ msgstr "Buscar contrato"
 #. module: hr_contract
 #: model:ir.ui.view,arch_db:hr_contract.hr_contract_type_view_search
 msgid "Search Contract Type"
-msgstr "Buscar tipo contrato"
+msgstr "Buscar estructura contable"
 
 #. module: hr_contract
 #: model:ir.model.fields,field_description:hr_contract.field_hr_contract_type_sequence
@@ -330,7 +330,7 @@ msgstr "Secuencia"
 #. module: hr_contract
 #: model:ir.model.fields,field_description:hr_contract.field_hr_contract_date_start
 msgid "Start Date"
-msgstr "Fecha de inicio"
+msgstr "Fecha Inicio Versión"
 
 #. module: hr_contract
 #: model:ir.model.fields,field_description:hr_contract.field_hr_contract_state
@@ -352,7 +352,7 @@ msgstr "Para renovar"
 #. module: hr_contract
 #: model:ir.model.fields,field_description:hr_contract.field_hr_contract_trial_date_end
 msgid "Trial End Date"
-msgstr "Fecha de finalización"
+msgstr "Fecha de finalización período prueba"
 
 #. module: hr_contract
 #: model:ir.ui.view,arch_db:hr_contract.hr_contract_view_form
@@ -362,7 +362,7 @@ msgstr "Duración del periodo de prueba"
 #. module: hr_contract
 #: model:ir.model.fields,field_description:hr_contract.field_hr_contract_trial_date_start
 msgid "Trial Start Date"
-msgstr "Fecha de inicio"
+msgstr "Fecha de inicio período prueba"
 
 #. module: hr_contract
 #: model:ir.model.fields,field_description:hr_contract.field_base_action_rule_trg_date_resource_field_id
@@ -402,4 +402,4 @@ msgstr "Número de permiso de trabajo"
 #. module: hr_contract
 #: model:ir.model.fields,field_description:hr_contract.field_hr_contract_working_hours
 msgid "Working Schedule"
-msgstr "Planificación de trabajo"
+msgstr "Horario de trabajo"

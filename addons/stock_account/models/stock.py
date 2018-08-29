@@ -71,7 +71,10 @@ class StockQuant(models.Model):
             valuation_update = newprice - quant.cost
             # this is where we post accounting entries for adjustment, if needed
             # If neg quant period already closed (likely with manual valuation), skip update
-            if not quant.company_id.currency_id.is_zero(valuation_update) and move._check_lock_date():
+            lock_date = max(move.company_id.period_lock_date, move.company_id.fiscalyear_lock_date)
+            if self.user_has_groups('account.group_account_manager'):
+                lock_date = move.company_id.fiscalyear_lock_date
+            if not quant.company_id.currency_id.is_zero(valuation_update) and lock_date and move.date[:10] > lock_date:
                 quant.with_context(force_valuation_amount=valuation_update)._account_entry_move(move)
 
             # update the standard price of the product, only if we would have
@@ -119,24 +122,30 @@ class StockQuant(models.Model):
             # Creates an account entry from stock_input to stock_output on a dropship move. https://github.com/odoo/odoo/issues/12687
             journal_id, acc_src, acc_dest, acc_valuation = move._get_accounting_data_for_valuation()
             self.with_context(force_company=move.company_id.id)._create_account_move_line(move, acc_src, acc_dest, journal_id)
-
+    
+    #Metodo agregado por Trescloud
+    def move_lines(self, journal_id, move_lines, date, move):
+        '''hook para poder agrupar lineas del asiento contable'''
+        new_account_move = move.env['account.move'].create({
+            'journal_id': journal_id,
+            'line_ids': move_lines,
+            'date': date,
+            'ref': move.picking_id.name
+        })
+        new_account_move.post()
+        
     def _create_account_move_line(self, move, credit_account_id, debit_account_id, journal_id):
         # group quants by cost
         quant_cost_qty = defaultdict(lambda: 0.0)
         for quant in self:
             quant_cost_qty[quant.cost] += quant.qty
 
-        AccountMove = self.env['account.move']
         for cost, qty in quant_cost_qty.iteritems():
             move_lines = move._prepare_account_move_line(qty, cost, credit_account_id, debit_account_id)
             if move_lines:
                 date = self._context.get('force_period_date', fields.Date.context_today(self))
-                new_account_move = AccountMove.create({
-                    'journal_id': journal_id,
-                    'line_ids': move_lines,
-                    'date': date,
-                    'ref': move.picking_id.name})
-                new_account_move.post()
+                #Siguiente linea fue agregada por Trescloud
+                self.move_lines(journal_id, move_lines, date, move)
 
     def _quant_create_from_move(self, qty, move, lot_id=False, owner_id=False, src_package_id=False, dest_package_id=False, force_location_from=False, force_location_to=False):
         quant = super(StockQuant, self)._quant_create_from_move(qty, move, lot_id=lot_id, owner_id=owner_id, src_package_id=src_package_id, dest_package_id=dest_package_id, force_location_from=force_location_from, force_location_to=force_location_to)
@@ -192,6 +201,7 @@ class StockMove(models.Model):
         # adapt standard price on incomming moves if the product cost_method is 'average'
         std_price_update = {}
         for move in self.filtered(lambda move: move.location_id.usage in ('supplier', 'production') and move.product_id.cost_method == 'average'):
+            
             product_tot_qty_available = move.product_id.qty_available + tmpl_dict[move.product_id.id]
 
             # if the incoming move is for a purchase order with foreign currency, need to call this to get the same value that the quant will use.
@@ -220,7 +230,7 @@ class StockMove(models.Model):
             # product_obj = self.pool.get('product.product')
             if any(q.qty <= 0 for q in move.quant_ids) or move.product_qty == 0:
                 # if there is a negative quant, the standard price shouldn't be updated
-                return
+                continue
             # Note: here we can't store a quant.cost directly as we may have moved out 2 units
             # (1 unit to 5€ and 1 unit to 7€) and in case of a product return of 1 unit, we can't
             # know which of the 2 costs has to be used (5€ or 7€?). So at that time, thanks to the
@@ -287,7 +297,8 @@ class StockMove(models.Model):
         debit_value = self.company_id.currency_id.round(valuation_amount * qty)
 
         # check that all data is correct
-        if self.company_id.currency_id.is_zero(debit_value):
+        #La siguiente línea fue modificada por TRESCLOUD
+        if self.company_id.currency_id.is_zero(debit_value) and not self.env.context.get('generate_accounting_entry_price_zero', False):
             if self.product_id.cost_method == 'standard':
                 raise UserError(_("The found valuation amount for product %s is zero. Which means there is probably a configuration error. Check the costing method and the standard price") % (self.product_id.name,))
             return []
@@ -302,8 +313,34 @@ class StockMove(models.Model):
             # in case of a customer return in anglo saxon mode, for products in average costing method, the stock valuation
             # is made using the original average price to negate the delivery effect.
             if self.location_id.usage == 'customer' and self.origin_returned_move_id:
-                debit_value = self.origin_returned_move_id.price_unit * qty
-                credit_value = debit_value
+                #TRESCLOUD: Acorde a nuestros calculos en contabilidad anglosajona asì como la
+                #devolucion en compras es al costo promedio vigente, lo mismo debe pasar con la de ventas
+                #caso contrario no se netea la cuenta de bienes recibidos no facturados.
+                #debit_value = self.origin_returned_move_id.price_unit * qty
+                credit_value = self.origin_returned_move_id.price_unit * qty
+
+            #se deja la seccion comentada para habitilcion en el futuro
+#             #TRESCLOUD - devolucion en manufactura, caso materia prima
+#             # in case of raw material return in anglo saxon mode, for products in average costing method, the stock_input
+#             # account books the real purchase price, while the stock account books the average price. The difference is
+#             # booked in the dedicated price difference account.
+#             if self.location_dest_id.usage == 'internal' and \
+#                self.location_id.usage == 'production' and \
+#                self.origin_returned_move_id and \
+#                self.origin_returned_move_id.raw_material_production_id:
+#                 debit_value = self.origin_returned_move_id.price_unit * qty
+#             #TRESCLOUD - devolucion en manufactura, caso producto terminado
+#             # in case of raw material return in anglo saxon mode, for products in average costing method, the stock_input
+#             # account books the real purchase price, while the stock account books the average price. The difference is
+#             # booked in the dedicated price difference account.
+#             if self.location_dest_id.usage == 'production' and \
+#                self.location_id.usage == 'internal' and \
+#                self.origin_returned_move_id and \
+#                self.origin_returned_move_id.production_id:
+#                 debit_value = self.origin_returned_move_id.price_unit * qty
+#             #FIN MODIFICACION TRESCLOUD
+
+            
         partner_id = (self.picking_id.partner_id and self.env['res.partner']._find_accounting_partner(self.picking_id.partner_id).id) or False
         debit_line_vals = {
             'name': self.name,
@@ -312,8 +349,8 @@ class StockMove(models.Model):
             'product_uom_id': self.product_id.uom_id.id,
             'ref': self.picking_id.name,
             'partner_id': partner_id,
-            'debit': debit_value,
-            'credit': 0,
+            'debit': debit_value if debit_value > 0 else 0,
+            'credit': -debit_value if debit_value < 0 else 0,
             'account_id': debit_account_id,
         }
         credit_line_vals = {
@@ -323,8 +360,8 @@ class StockMove(models.Model):
             'product_uom_id': self.product_id.uom_id.id,
             'ref': self.picking_id.name,
             'partner_id': partner_id,
-            'credit': credit_value,
-            'debit': 0,
+            'credit': credit_value if credit_value > 0 else 0,
+            'debit': -credit_value if credit_value < 0 else 0,
             'account_id': credit_account_id,
         }
         res = [(0, 0, debit_line_vals), (0, 0, credit_line_vals)]

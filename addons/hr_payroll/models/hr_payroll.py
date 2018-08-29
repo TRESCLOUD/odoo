@@ -74,7 +74,8 @@ class HrContract(models.Model):
     _inherit = 'hr.contract'
     _description = 'Employee Contract'
 
-    struct_id = fields.Many2one('hr.payroll.structure', string='Salary Structure')
+    struct_id = fields.Many2one('hr.payroll.structure', string='Salary Structure',
+                                track_visibility='onchange')
     schedule_pay = fields.Selection([
         ('monthly', 'Monthly'),
         ('quarterly', 'Quarterly'),
@@ -157,6 +158,7 @@ class HrPayslipRun(models.Model):
 class HrPayslip(models.Model):
     _name = 'hr.payslip'
     _description = 'Pay Slip'
+    _inherit = 'mail.thread'
 
     struct_id = fields.Many2one('hr.payroll.structure', string='Structure',
         readonly=True, states={'draft': [('readonly', False)]},
@@ -181,13 +183,13 @@ class HrPayslip(models.Model):
         ('verify', 'Waiting'),
         ('done', 'Done'),
         ('cancel', 'Rejected'),
-    ], string='Status', index=True, readonly=True, copy=False, default='draft',
+    ], string='Status', index=True, readonly=True, copy=False, default='draft', track_visibility='onchange',
         help="""* When the payslip is created the status is \'Draft\'
                 \n* If the payslip is under verification, the status is \'Waiting\'.
                 \n* If the payslip is confirmed then status is set to \'Done\'.
                 \n* When user cancel payslip the status is \'Rejected\'.""")
     line_ids = fields.One2many('hr.payslip.line', 'slip_id', string='Payslip Lines', readonly=True,
-        states={'draft': [('readonly', False)]})
+        states={'draft': [('readonly', False)]}, domain=[('appears_on_payslip', '=', True)])
     company_id = fields.Many2one('res.company', string='Company', readonly=True, copy=False,
         default=lambda self: self.env['res.company']._company_default_get(),
         states={'draft': [('readonly', False)]})
@@ -213,7 +215,7 @@ class HrPayslip(models.Model):
     @api.multi
     def _compute_details_by_salary_rule_category(self):
         for payslip in self:
-            payslip.details_by_salary_rule_category = payslip.mapped('line_ids').filtered(lambda line: line.category_id)
+            payslip.details_by_salary_rule_category = self.env['hr.payslip.line'].search([('slip_id','=',payslip.id)]).filtered(lambda line: line.category_id)
 
     @api.multi
     def _compute_payslip_count(self):
@@ -234,16 +236,26 @@ class HrPayslip(models.Model):
         self.compute_sheet()
         return self.write({'state': 'done'})
 
+    #Metodo agregado por TRESCLOUD
     @api.multi
-    def action_payslip_cancel(self):
+    def check_payslip_state(self):
+        '''
+        Este metodo sera modificado en ecua_hr por el estado paid que agregamos
+        '''
         if self.filtered(lambda slip: slip.state == 'done'):
             raise UserError(_("Cannot cancel a payslip that is done."))
+        
+    @api.multi
+    def action_payslip_cancel(self):
+        #La siguiente linea fue modificada por TRESCLOUD
+        self.check_payslip_state()
         return self.write({'state': 'cancel'})
 
     @api.multi
     def refund_sheet(self):
         for payslip in self:
             copied_payslip = payslip.copy({'credit_note': True, 'name': _('Refund: ') + payslip.name})
+            copied_payslip.compute_sheet()
             copied_payslip.action_payslip_done()
         formview_ref = self.env.ref('hr_payroll.view_hr_payslip_form', False)
         treeview_ref = self.env.ref('hr_payroll.view_hr_payslip_tree', False)
@@ -293,7 +305,11 @@ class HrPayslip(models.Model):
         for payslip in self:
             number = payslip.number or self.env['ir.sequence'].next_by_code('salary.slip')
             #delete old payslip lines
-            payslip.line_ids.unlink()
+            #La siguiente linea fue comentada por TRESCLOUD
+            #payslip.line_ids.unlink()
+            #La siguiente linea fue agregada por TRESCLOUD
+            line_ids = self.env['hr.payslip.line'].search([('slip_id','=',payslip.id)])
+            line_ids.unlink()
             # set the list of contract for which the rules have to be applied
             # if we don't give the contract, then the rules to apply should be for all current contracts of the employee
             contract_ids = payslip.contract_id.ids or \
@@ -394,10 +410,20 @@ class HrPayslip(models.Model):
                 input_data = {
                     'name': input.name,
                     'code': input.code,
+                    #La siguiente línea fue agregada por TRESCLOUD
+                    'type': self.get_input_type(input),
                     'contract_id': contract.id,
                 }
                 res += [input_data]
         return res
+    
+    #El siguiente método fue agregado por TRESCLOUD
+    @api.model
+    def get_input_type(self, input):
+        '''
+        Este metodo devuelve el tipo de entrada de la nómina, va ser implementado en ecua_hr
+        '''
+        return False
 
     @api.model
     def get_payslip_lines(self, contract_ids, payslip_id):
@@ -466,6 +492,41 @@ class HrPayslip(models.Model):
                 res = self.env.cr.fetchone()
                 return res and res[0] or 0.0
 
+        def _get_rules_by_move(localdict, sorted_rules):
+            '''Buscamos los moves en las reglas de tipo move, y retornamos la
+            permutacion de reglas y moves'''
+            rules_by_move = []
+            aml_obj = self.sudo().env['account.move.line'] #usamos sudo para poder acceder a los registros contables
+            for rule in sorted_rules:
+                move_ids = []
+                if rule.amount_select in ['account_move']:
+                    #si es del nuevo tipo, basado en movimientos contables, buscamos
+                    #los movimiento
+                    payslip = self.search([('id','=',localdict['payslip'].id)])
+                    partner = payslip.employee_id.address_home_id.commercial_partner_id
+                    if not partner:
+                        raise UserError(u'El empleado %s no tiene una empresa configurada' % payslip.employee_id.name)
+                    account = rule.account_credit
+                    if not account:
+                        raise UserError(u'La regla salarial %s es de tipo Neteo Saldo Contable, solo debe tener una cuenta acreedora configurada' % rule.name)
+                    if rule.account_debit or rule.condition_acc:
+                        raise UserError(u'La regla salarial %s es de tipo Neteo Saldo Contable, solo debe tener una cuenta acreedora configurada' % rule.name)
+                    move_ids = aml_obj.search([
+                        ('partner_id','=',partner.id), 
+                        ('date_maturity','>=',payslip.date_from),
+                        ('date_maturity','<=',payslip.date_to),
+                        ('account_id','=',account.id),
+                        ('debit','>',0.0), #escuchamos en el debe
+                        ('full_reconcile_id','=',False),
+                    ])
+                if move_ids:
+                    for move in move_ids:
+                        rules_by_move.append((rule,move))
+                else:
+                    #se retonra el objeto vacio aml_obj para facilitar la programacion
+                    rules_by_move.append((rule,aml_obj))
+            return rules_by_move
+
         #we keep a dict with the result because a value can be overwritten by another rule with the same code
         result_dict = {}
         rules_dict = {}
@@ -476,29 +537,49 @@ class HrPayslip(models.Model):
         for worked_days_line in payslip.worked_days_line_ids:
             worked_days_dict[worked_days_line.code] = worked_days_line
         for input_line in payslip.input_line_ids:
-            inputs_dict[input_line.code] = input_line
-
+            if not input_line.code in inputs_dict:
+                inputs_dict[input_line.code] = [input_line]
+            else:
+                inputs_dict[input_line.code].append(input_line)
         categories = BrowsableObject(payslip.employee_id.id, {}, self.env)
         inputs = InputLine(payslip.employee_id.id, inputs_dict, self.env)
         worked_days = WorkedDays(payslip.employee_id.id, worked_days_dict, self.env)
         payslips = Payslips(payslip.employee_id.id, payslip, self.env)
         rules = BrowsableObject(payslip.employee_id.id, rules_dict, self.env)
-
-        baselocaldict = {'categories': categories, 'rules': rules, 'payslip': payslips, 'worked_days': worked_days, 'inputs': inputs}
+        #La siguiente línea fue modificada por TRESCLOUD
+        baselocaldict = {'float_round': tools.float_round, 'categories': categories, 'rules': rules, 'payslip': payslips, 'worked_days': worked_days, 'inputs': inputs}
         #get the ids of the structures on the contracts and their parent id as well
         contracts = self.env['hr.contract'].browse(contract_ids)
         structure_ids = contracts.get_all_structures()
         #get the rules of the structure and thier children
         rule_ids = self.env['hr.payroll.structure'].browse(structure_ids).get_all_rules()
         #run the rules by sequence
-        sorted_rule_ids = [id for id, sequence in sorted(rule_ids, key=lambda x:x[1])]
+        #La siguiente línea fue modificada por TRESCLOUD
+        sorted_rule_ids = self.get_sorted_rules(rule_ids)
         sorted_rules = self.env['hr.salary.rule'].browse(sorted_rule_ids)
 
         for contract in contracts:
             employee = contract.employee_id
             localdict = dict(baselocaldict, employee=employee, contract=contract)
-            for rule in sorted_rules:
-                key = rule.code + '-' + str(contract.id)
+            
+            
+            #Seccion modificada por TRESCLOUD
+            sequence = 0
+            sorted_rules_and_moves = _get_rules_by_move(localdict, sorted_rules)
+            for rule, move in sorted_rules_and_moves:
+                sequence += 1
+                key = rule.code + '-' + str(contract.id) + '-'+str(move.id)
+                localdict['force_amount'] = 0.0
+                if move.amount_residual:
+                    localdict['force_amount'] = move.amount_residual #todo en validar regla en satisfy_condition
+                elif not move.full_reconcile_id:
+                    #cuando la cuenta no es de tipo por pagar no tiene amount_Residual
+                    #en este caso tomamos el valor de debito
+                    localdict['force_amount'] = abs(move.debit)
+                #fin seccion modificada por TRESCLOUD
+                
+                
+                
                 localdict['result'] = None
                 localdict['result_qty'] = 1.0
                 localdict['result_rate'] = 100
@@ -510,18 +591,30 @@ class HrPayslip(models.Model):
                     previous_amount = rule.code in localdict and localdict[rule.code] or 0.0
                     #set/overwrite the amount computed for this rule in the localdict
                     tot_rule = amount * qty * rate / 100.0
-                    localdict[rule.code] = tot_rule
+                    
+                    
+                    #MODIFICADO POR TRESCLOUD PARA PERMITIR SUMAR VARIOS REGISTROS
+                    #DE LA MISMA REGLA SALARIAL
+                    if localdict.get(rule.code):
+                        localdict[rule.code] += tot_rule
+                    else:
+                        localdict[rule.code] = tot_rule
                     rules_dict[rule.code] = rule
                     #sum the amount for its salary category
-                    localdict = _sum_salary_rule_category(localdict, rule.category_id, tot_rule - previous_amount)
+                    localdict = _sum_salary_rule_category(localdict, rule.category_id, localdict[rule.code] - previous_amount)
+                    #FIN MODIFICACION TRESCLOUD
+                    
+                    
                     #create/overwrite the rule in the temporary results
                     result_dict[key] = {
                         'salary_rule_id': rule.id,
                         'contract_id': contract.id,
-                        'name': rule.name,
+                        #La siguiente línea fue modificada por TRESCLOUD
+                        'name': payslip.get_name_rule(rule),
                         'code': rule.code,
                         'category_id': rule.category_id.id,
-                        'sequence': rule.sequence,
+                        #La siguiente línea fue modificada por TRESCLOUD
+                        'sequence': sequence,
                         'appears_on_payslip': rule.appears_on_payslip,
                         'condition_select': rule.condition_select,
                         'condition_python': rule.condition_python,
@@ -538,12 +631,29 @@ class HrPayslip(models.Model):
                         'employee_id': contract.employee_id.id,
                         'quantity': qty,
                         'rate': rate,
+                        'receivable_move_line_id': move.id, #TRESCLOUD agregado
                     }
                 else:
                     #blacklist this rule and its children
                     blacklist += [id for id, seq in rule._recursive_search_of_rules()]
 
         return [value for code, value in result_dict.items()]
+    
+    #El siguiente método fue agregado por TRESCLOUD
+    @api.model
+    def get_name_rule(self, rule):
+        '''
+        Este metodo devuelve el nombre de la regla salarial, su logica va ser modificada en ecua_hr
+        '''
+        return rule.name
+    
+    #El siguiente método fue agregado por TRESCLOUD
+    @api.model
+    def get_sorted_rules(self, rule_ids):
+        '''
+        Este metodo ordena las reglas salariales en base a la secuencia, su logica va ser modificada en ecua_hr
+        '''
+        return [id for id, sequence in sorted(rule_ids, key=lambda x:x[1])]
 
     # YTI TODO To rename. This method is not really an onchange, as it is not in any view
     # employee_id and contract_id could be browse records
@@ -567,7 +677,7 @@ class HrPayslip(models.Model):
             return res
         ttyme = datetime.fromtimestamp(time.mktime(time.strptime(date_from, "%Y-%m-%d")))
         employee = self.env['hr.employee'].browse(employee_id)
-        locale = self.env.context.get('lang', 'en_US')
+        locale = self.env.context.get('lang') or 'en_US'
         res['value'].update({
             'name': _('Salary Slip of %s for %s') % (employee.name, tools.ustr(babel.dates.format_date(date=ttyme, format='MMMM-y', locale=locale))),
             'company_id': employee.company_id.id,
@@ -616,7 +726,7 @@ class HrPayslip(models.Model):
         date_to = self.date_to
 
         ttyme = datetime.fromtimestamp(time.mktime(time.strptime(date_from, "%Y-%m-%d")))
-        locale = self.env.context.get('lang', 'en_US')
+        locale = self.env.context.get('lang') or 'en_US'
         self.name = _('Salary Slip of %s for %s') % (employee.name, tools.ustr(babel.dates.format_date(date=ttyme, format='MMMM-y', locale=locale)))
         self.company_id = employee.company_id
 
@@ -631,13 +741,13 @@ class HrPayslip(models.Model):
         self.struct_id = self.contract_id.struct_id
 
         #computation of the salary input
-        worked_days_line_ids = self.get_worked_day_lines(contract_ids, date_from, date_to)
+        worked_days_line_ids = self.get_worked_day_lines([self.contract_id.id], date_from, date_to)
         worked_days_lines = self.worked_days_line_ids.browse([])
         for r in worked_days_line_ids:
             worked_days_lines += worked_days_lines.new(r)
         self.worked_days_line_ids = worked_days_lines
 
-        input_line_ids = self.get_inputs(contract_ids, date_from, date_to)
+        input_line_ids = self.get_inputs([self.contract_id.id], date_from, date_to)
         input_lines = self.input_line_ids.browse([])
         for r in input_line_ids:
             input_lines += input_lines.new(r)

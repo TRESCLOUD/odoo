@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from odoo import models, fields, api
+from odoo import models, fields, api, tools
 from odoo.tools.safe_eval import safe_eval
 
 
@@ -30,16 +30,19 @@ class AccountTaxPython(models.Model):
         self.ensure_one()
         if self.amount_type == 'code':
             company = self.env.user.company_id
-            localdict = {'base_amount': base_amount, 'price_unit':price_unit, 'quantity': quantity, 'product':product, 'partner':partner, 'company': company}
+            #Código modificado por TRESCLOD para usar el float_round del core de odoo en el redondeo de impuestos
+            ############################################################################################################################################################################
+            localdict = {'float_round': tools.float_round,'base_amount': base_amount, 'price_unit':price_unit, 'quantity': quantity, 'product':product, 'partner':partner, 'company': company}
+            ############################################################################################################################################################################
             safe_eval(self.python_compute, localdict, mode="exec", nocopy=True)
             return localdict['result']
         return super(AccountTaxPython, self)._compute_amount(base_amount, price_unit, quantity, product, partner)
 
     @api.multi
     def compute_all(self, price_unit, currency=None, quantity=1.0, product=None, partner=None):
-        taxes = self.env['account.tax']
+        taxes = self.filtered(lambda r: r.amount_type != 'code')
         company = self.env.user.company_id
-        for tax in self:
+        for tax in self.filtered(lambda r: r.amount_type == 'code'):
             localdict = {'price_unit': price_unit, 'quantity': quantity, 'product': product, 'partner': partner, 'company': company}
             safe_eval(tax.python_applicable, localdict, mode="exec", nocopy=True)
             if localdict.get('result', False):

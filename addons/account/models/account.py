@@ -100,7 +100,7 @@ class AccountAccount(models.Model):
         help="Forces all moves for this account to have this account currency.")
     code = fields.Char(size=64, required=True, index=True)
     deprecated = fields.Boolean(index=True, default=False)
-    user_type_id = fields.Many2one('account.account.type', string='Type', required=True, oldname="user_type", 
+    user_type_id = fields.Many2one('account.account.type', string='Type', required=True, oldname="user_type",
         help="Account Type is used for information purpose, to generate country-specific legal reports, and set the rules to close a fiscal year and generate opening entries.")
     internal_type = fields.Selection(related='user_type_id.type', string="Internal Type", store=True, readonly=True)
     #has_unreconciled_entries = fields.Boolean(compute='_compute_has_unreconciled_entries',
@@ -181,10 +181,12 @@ class AccountAccount(models.Model):
         # If user change the reconcile flag, all aml should be recomputed for that account and this is very costly.
         # So to prevent some bugs we add a constraint saying that you cannot change the reconcile field if there is any aml existing
         # for that account.
-        if vals.get('reconcile'):
-            move_lines = self.env['account.move.line'].search([('account_id', 'in', self.ids)], limit=1)
-            if len(move_lines):
-                raise UserError(_('You cannot change the value of the reconciliation on this account as it already has some moves'))
+
+        # Modificado por TresCloud para permitir cambio de campo internal type para cuentas de tipo a cobrar y a pagar.
+        if vals.get('reconcile') and not self._context.get('change_internal_type'):
+                move_lines = self.env['account.move.line'].search([('account_id', 'in', self.ids)], limit=1)
+                if len(move_lines):
+                    raise UserError(_('You cannot change the value of the reconciliation on this account as it already has some moves'))
         return super(AccountAccount, self).write(vals)
 
     @api.multi
@@ -349,6 +351,8 @@ class AccountJournal(models.Model):
             if ('company_id' in vals and journal.company_id.id != vals['company_id']):
                 if self.env['account.move'].search([('journal_id', 'in', self.ids)], limit=1):
                     raise UserError(_('This journal already contains items, therefore you cannot modify its company.'))
+                if self.bank_account_id:
+                    self.bank_account_id.company_id = vals['company_id']
             if ('code' in vals and journal.code != vals['code']):
                 if self.env['account.move'].search([('journal_id', 'in', self.ids)], limit=1):
                     raise UserError(_('This journal already contains items, therefore you cannot modify its short name.'))
@@ -362,6 +366,8 @@ class AccountJournal(models.Model):
                     self.default_debit_account_id.currency_id = vals['currency_id']
                 if not 'default_credit_account_id' in vals and self.default_credit_account_id:
                     self.default_credit_account_id.currency_id = vals['currency_id']
+                if self.bank_account_id:
+                    self.bank_account_id.currency_id = vals['currency_id']
             if 'bank_acc_number' in vals and not vals.get('bank_acc_number') and journal.bank_account_id:
                 raise UserError(_('You cannot empty the account number once set.\nIf you would like to delete the account number, you can do it from the Bank Accounts list.'))
         result = super(AccountJournal, self).write(vals)
@@ -510,7 +516,10 @@ class AccountJournal(models.Model):
     @api.model
     def name_search(self, name='', args=None, operator='ilike', limit=100):
         args = args or []
-        recs = self.search(['|', ('code', operator, name), ('name', operator, name)] + args, limit=limit)
+        connector = '|'
+        if operator in expression.NEGATIVE_TERM_OPERATORS:
+            connector = '&'
+        recs = self.search([connector, ('code', operator, name), ('name', operator, name)] + args, limit=limit)
         return recs.name_get()
 
     @api.multi
@@ -564,36 +573,48 @@ class AccountTaxGroup(models.Model):
 class AccountTax(models.Model):
     _name = 'account.tax'
     _description = 'Tax'
-    _order = 'sequence'
+    _inherit = ['mail.thread']
+    _order = 'sequence,id'
 
     @api.model
     def _default_tax_group(self):
         return self.env['account.tax.group'].search([], limit=1)
 
-    name = fields.Char(string='Tax Name', required=True, translate=True)
-    type_tax_use = fields.Selection([('sale', 'Sales'), ('purchase', 'Purchases'), ('none', 'None')], string='Tax Scope', required=True, default="sale",
-        help="Determines where the tax is selectable. Note : 'None' means a tax can't be used by itself, however it can still be used in a group.")
-    tax_adjustment = fields.Boolean(help='Set this field to true if this tax can be used in the tax adjustment wizard, used to manually fill some data in the tax declaration')
-    amount_type = fields.Selection(default='percent', string="Tax Computation", required=True, oldname='type',
+    name = fields.Char(string='Tax Name', required=True, translate=True, track_visibility='onchange')
+    type_tax_use = fields.Selection([('sale', 'Sales'), ('purchase', 'Purchases'), ('none', 'None')],
+                                    string='Tax Scope', required=True, default="sale", 
+                                    track_visibility='onchange',
+                                    help="Determines where the tax is selectable. Note : 'None' means a tax can't be used by itself, however it can still be used in a group.")
+    tax_adjustment = fields.Boolean(track_visibility='onchange',
+                                    help='Set this field to true if this tax can be used in the tax adjustment wizard, used to manually fill some data in the tax declaration')
+    amount_type = fields.Selection(default='percent', string="Tax Computation", required=True, oldname='type', track_visibility='onchange',
         selection=[('group', 'Group of Taxes'), ('fixed', 'Fixed'), ('percent', 'Percentage of Price'), ('division', 'Percentage of Price Tax Included')])
-    active = fields.Boolean(default=True, help="Set active to false to hide the tax without removing it.")
+    active = fields.Boolean(default=True, track_visibility='onchange',
+                            help="Set active to false to hide the tax without removing it.")
     company_id = fields.Many2one('res.company', string='Company', required=True, default=lambda self: self.env.user.company_id)
     children_tax_ids = fields.Many2many('account.tax', 'account_tax_filiation_rel', 'parent_tax', 'child_tax', string='Children Taxes')
     sequence = fields.Integer(required=True, default=1,
         help="The sequence field is used to define order in which the tax lines are applied.")
-    amount = fields.Float(required=True, digits=(16, 4))
-    account_id = fields.Many2one('account.account', domain=[('deprecated', '=', False)], string='Tax Account', ondelete='restrict',
-        help="Account that will be set on invoice tax lines for invoices. Leave empty to use the expense account.", oldname='account_collected_id')
-    refund_account_id = fields.Many2one('account.account', domain=[('deprecated', '=', False)], string='Tax Account on Refunds', ondelete='restrict',
-        help="Account that will be set on invoice tax lines for refunds. Leave empty to use the expense account.", oldname='account_paid_id')
-    description = fields.Char(string='Label on Invoices', translate=True)
+    amount = fields.Float(required=True, digits=(16, 4), track_visibility='onchange')
+    account_id = fields.Many2one('account.account', domain=[('deprecated', '=', False)], 
+                                 track_visibility='onchange', string='Tax Account', ondelete='restrict',
+                                 help="Account that will be set on invoice tax lines for invoices. Leave empty to use the expense account.", oldname='account_collected_id')
+    refund_account_id = fields.Many2one('account.account', domain=[('deprecated', '=', False)], 
+                                        string='Tax Account on Refunds', ondelete='restrict',
+                                        track_visibility='onchange',
+                                        help="Account that will be set on invoice tax lines for refunds. Leave empty to use the expense account.", oldname='account_paid_id')
+    description = fields.Char(string='Label on Invoices', translate=True, track_visibility='onchange')
     price_include = fields.Boolean(string='Included in Price', default=False,
-        help="Check this if the price you use on the product and invoices includes this tax.")
+                                   track_visibility='onchange',
+                                   help="Check this if the price you use on the product and invoices includes this tax.")
     include_base_amount = fields.Boolean(string='Affect Base of Subsequent Taxes', default=False,
-        help="If set, taxes which are computed after this one will be computed based on the price tax included.")
-    analytic = fields.Boolean(string="Include in Analytic Cost", help="If set, the amount computed by this tax will be assigned to the same analytic account as the invoice line (if any)")
-    tag_ids = fields.Many2many('account.account.tag', 'account_tax_account_tag', string='Tags', help="Optional tags you may want to assign for custom reporting")
-    tax_group_id = fields.Many2one('account.tax.group', string="Tax Group", default=_default_tax_group, required=True)
+                                         track_visibility='onchange',
+                                         help="If set, taxes which are computed after this one will be computed based on the price tax included.")
+    analytic = fields.Boolean(string="Include in Analytic Cost", track_visibility='onchange',
+                              help="If set, the amount computed by this tax will be assigned to the same analytic account as the invoice line (if any)")
+    tag_ids = fields.Many2many('account.account.tag', 'account_tax_account_tag', string='Tags', track_visibility='onchange',
+                               help="Optional tags you may want to assign for custom reporting")
+    tax_group_id = fields.Many2one('account.tax.group', string="Tax Group", default=_default_tax_group, required=True, track_visibility='onchange')
 
     _sql_constraints = [
         ('name_company_uniq', 'unique(name, company_id, type_tax_use)', 'Tax names must be unique !'),
@@ -793,9 +814,11 @@ class AccountTax(models.Model):
                 base -= tax_amount
             else:
                 total_included += tax_amount
-
+                
+            #TRESCLOUD: Ponemos un metodo para que sea heredable para casos especiales de bases imponibles
             # Keep base amount used for the current tax
-            tax_base = base
+            #tax_base = base
+            tax_base = self._compute_base_amount(tax, base, total_excluded, price_unit, currency=currency, quantity=quantity, product=product, partner=partner)                
 
             if tax.include_base_amount:
                 base += tax_amount
@@ -818,6 +841,13 @@ class AccountTax(models.Model):
             'base': base,
         }
 
+
+    def _compute_base_amount(self, tax, base, total_excluded, price_unit, currency=None, quantity=1.0, product=None, partner=None):
+        """"Calcula base imponible para casos especiales
+        """
+        tax_base = base
+        return tax_base    
+    
     @api.model
     def _fix_tax_included_price(self, price, prod_taxes, line_taxes):
         """Subtract tax amount from price when corresponding "price included" taxes do not apply"""
@@ -826,6 +856,14 @@ class AccountTax(models.Model):
         if incl_tax:
             return incl_tax.compute_all(price)['total_excluded']
         return price
+
+    @api.model
+    def _fix_tax_included_price_company(self, price, prod_taxes, line_taxes, company_id):
+        if company_id:
+            #To keep the same behavior as in _compute_tax_id
+            prod_taxes = prod_taxes.filtered(lambda tax: tax.company_id == company_id)
+            line_taxes = line_taxes.filtered(lambda tax: tax.company_id == company_id)
+        return self._fix_tax_included_price(price, prod_taxes, line_taxes)
 
 class AccountReconcileModel(models.Model):
     _name = "account.reconcile.model"
