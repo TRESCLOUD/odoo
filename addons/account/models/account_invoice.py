@@ -547,7 +547,10 @@ class AccountInvoice(models.Model):
             self.date_due = self.date_due or self.date_invoice
         else:
             pterm = self.payment_term_id
-            pterm_list = pterm.with_context(currency_id=self.company_id.currency_id.id).compute(value=1, date_ref=date_invoice)[0]
+            
+            #TRESCLOUD: Removemos el [0] pues deprecamos el api.one en metodos que retornan valores
+            pterm_list = pterm.with_context(currency_id=self.company_id.currency_id.id).compute(value=1, date_ref=date_invoice)
+            
             self.date_due = max(line[0] for line in pterm_list)[0]
 
     @api.multi
@@ -841,14 +844,14 @@ class AccountInvoice(models.Model):
         permita pasar por contexto un listado de criterios de agrupacion, util para usar
         divisiones.
         
-        #NOTA: Es redefinido por completo en alguns proyectos (Proyecto X)
+        #NOTA: Es redefinido por completo en algunos proyectos (Proyecto X)
         """
         diff_currency = self.currency_id != self.company_currency_id
         if self.payment_term_id:
+            # Se elimina la llamada del metodo anteriormente usado "compute(total,date)", debido a que hacia uso de la tabla y logica anterior.
             totlines = self.with_context(ctx).payment_term_id.with_context(currency_id=self.company_currency_id.id,
                                                                            active_model='account.invoice',
-                                                                           active_id=self.id).compute(total,
-                                                                           self.date_invoice)[0][0]
+                                                                           active_id=self.id).compute_custom_payment_term(total)
             res_amount_currency = total_currency
             ctx['date'] = self.date_invoice
             count = 0
@@ -1532,9 +1535,13 @@ class AccountPaymentTerm(models.Model):
         if len(lines) > 1:
             raise ValidationError(_('A Payment Term should have only one line of type Balance.'))
 
-    @api.one
+    #TRESCLOUD: Deprecamos api.one para metodos que retornan valor
+    @api.multi
     def compute(self, value, date_ref=False):
+        if self: #caso en que no se aplica ninguna forma de pago, el sistema internamente asumira que es pago inmediato
+            self.ensure_one() #antes era api.one, se depreco por api.multi
         date_ref = date_ref or fields.Date.today()
+        
         amount = value
         sign = value < 0 and -1 or 1
         result = []
@@ -1566,7 +1573,11 @@ class AccountPaymentTerm(models.Model):
         amount = reduce(lambda x, y: x + y[1], result, 0.0)
         dist = round(value - amount, prec)
         if dist:
-            last_date = result and result[-1][0] or fields.Date.today()
+            
+            #TRESCLOD: Se corrige date_now por date_ref para el caso de que no se seleccion
+            #ninguna forma de pago
+            last_date = result and result[-1][0] or date_ref
+            
             result.append((last_date, dist))
         return result
 
