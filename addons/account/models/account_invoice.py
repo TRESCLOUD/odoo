@@ -844,14 +844,14 @@ class AccountInvoice(models.Model):
         permita pasar por contexto un listado de criterios de agrupacion, util para usar
         divisiones.
         
-        #NOTA: Es redefinido por completo en alguns proyectos (Proyecto X)
+        #NOTA: Es redefinido por completo en algunos proyectos (Proyecto X)
         """
         diff_currency = self.currency_id != self.company_currency_id
         if self.payment_term_id:
+            # Se elimina la llamada del metodo anteriormente usado "compute(total,date)", debido a que hacia uso de la tabla y logica anterior.
             totlines = self.with_context(ctx).payment_term_id.with_context(currency_id=self.company_currency_id.id,
                                                                            active_model='account.invoice',
-                                                                           active_id=self.id).compute(total,
-                                                                           self.date_invoice)
+                                                                           active_id=self.id).compute_custom_payment_term(total)
             res_amount_currency = total_currency
             ctx['date'] = self.date_invoice
             count = 0
