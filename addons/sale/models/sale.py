@@ -385,11 +385,15 @@ class SaleOrder(models.Model):
             # Necessary to force computation of taxes. In account_invoice, they are triggered
             # by onchanges, which are not triggered when doing a create.
             invoice.compute_taxes()
+            
+            #modificado por trescloud
+            invoice._finish_invoice_creation()
+                    
             invoice.message_post_with_view('mail.message_origin_link',
                 values={'self': invoice, 'origin': references[invoice]},
                 subtype_id=self.env.ref('mail.mt_note').id)
         return [inv.id for inv in invoices.values()]
-
+    
     @api.multi
     def action_draft(self):
         orders = self.filtered(lambda s: s.state in ['cancel', 'sent'])

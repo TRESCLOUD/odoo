@@ -547,12 +547,11 @@ class AccountInvoice(models.Model):
             self.date_due = self.date_due or self.date_invoice
         else:
             pterm = self.payment_term_id
-            pterm_list = pterm.with_context(currency_id=self.company_id.currency_id.id).compute(value=1, date_ref=date_invoice)[0]
-            #Siguiente linea fue modificado por trescloud.
-            res = max(line[0] for line in pterm_list)
-            if not isinstance(res, (str)):
-                res = res[0]
-            self.date_due = res
+            
+            #TRESCLOUD: Removemos el [0] pues deprecamos el api.one en metodos que retornan valores
+            pterm_list = pterm.with_context(currency_id=self.company_id.currency_id.id).compute(value=1, date_ref=date_invoice)
+            
+            self.date_due = max(line[0] for line in pterm_list)[0]
 
     @api.multi
     def action_invoice_draft(self):
@@ -704,6 +703,14 @@ class AccountInvoice(models.Model):
         return move_lines
 
     @api.multi
+    def _finish_invoice_creation(self):
+        '''
+        Procesamientos finales luego de crear una factura, util para extender la funcionalidad
+        desde otros metodos, como la creacion de facturas desde ventas
+        '''
+        pass
+    
+    @api.multi
     def compute_invoice_totals(self, company_currency, invoice_move_lines):
         total = 0
         total_currency = 0
@@ -832,6 +839,17 @@ class AccountInvoice(models.Model):
                 line.append((0, 0, val))
         return line
 
+    def _get_totlines(self,total,date_invoice):
+        '''
+        Hook agregado por trescloud, en plazos de pago personalizados se redefine para no usar compute()
+        sino tomar los valores de la tabla de plazos de pago personalizdos
+        '''
+        totlines = self.with_context(ctx).payment_term_id.with_context(currency_id=self.company_currency_id.id,
+                                                                       active_model='account.invoice',
+                                                                       active_id=self.id).compute(total,
+                                                                       self.date_invoice)
+
+
     #Este metodo es agregado por TresCloud
     def _payable_receivable_moves_get(self, total, total_currency, iml, ctx):
         """"
@@ -849,12 +867,7 @@ class AccountInvoice(models.Model):
         """
         diff_currency = self.currency_id != self.company_currency_id
         if self.payment_term_id:
-            totlines = self.with_context(ctx).payment_term_id.with_context(currency_id=self.company_currency_id.id,
-                                                                           active_model='account.invoice',
-                                                                           active_id=self.id).compute(total,
-                                                                           self.date_invoice)[0][0]
-            if type(totlines) is tuple:
-                totlines = [totlines]
+            totlines = self.with_context(ctx)._get_totlines(total,date_invoice) #hook agregado por trescloud
             res_amount_currency = total_currency
             ctx['date'] = self.date_invoice
             count = 0
@@ -1538,9 +1551,13 @@ class AccountPaymentTerm(models.Model):
         if len(lines) > 1:
             raise ValidationError(_('A Payment Term should have only one line of type Balance.'))
 
-    @api.one
+    #TRESCLOUD: Deprecamos api.one para metodos que retornan valor
+    @api.multi
     def compute(self, value, date_ref=False):
+        if self: #caso en que no se aplica ninguna forma de pago, el sistema internamente asumira que es pago inmediato
+            self.ensure_one() #antes era api.one, se depreco por api.multi
         date_ref = date_ref or fields.Date.today()
+        
         amount = value
         sign = value < 0 and -1 or 1
         result = []
@@ -1572,7 +1589,11 @@ class AccountPaymentTerm(models.Model):
         amount = reduce(lambda x, y: x + y[1], result, 0.0)
         dist = round(value - amount, prec)
         if dist:
-            last_date = result and result[-1][0] or fields.Date.today()
+            
+            #TRESCLOD: Se corrige date_now por date_ref para el caso de que no se seleccion
+            #ninguna forma de pago
+            last_date = result and result[-1][0] or date_ref
+            
             result.append((last_date, dist))
         return result
 
