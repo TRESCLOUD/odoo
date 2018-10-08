@@ -40,7 +40,7 @@ class AccountInvoice(models.Model):
     _inherit = ['mail.thread']
     _description = "Invoice"
     _order = "date_invoice desc, number desc, id desc"
-
+    
     @api.one
     @api.depends('invoice_line_ids.price_subtotal', 'tax_line_ids.amount', 'currency_id', 'company_id', 'date_invoice', 'type')
     def _compute_amount(self):
@@ -844,10 +844,14 @@ class AccountInvoice(models.Model):
         Hook agregado por trescloud, en plazos de pago personalizados se redefine para no usar compute()
         sino tomar los valores de la tabla de plazos de pago personalizdos
         '''
-        totlines = self.with_context(ctx).payment_term_id.with_context(currency_id=self.company_currency_id.id,
+        #por compatibilidad dejamos que si no viene termino de pago el totlines se
+        #considere con el pago de contado
+        payment_term = self.payment_term_id or self.env.ref('account.account_payment_term_immediate')
+        totlines = payment_term.with_context(currency_id=self.company_currency_id.id,
                                                                        active_model='account.invoice',
                                                                        active_id=self.id).compute(total,
-                                                                       self.date_invoice)
+                                                                       date_invoice)
+        return totlines
 
 
     #Este metodo es agregado por TresCloud
@@ -866,8 +870,13 @@ class AccountInvoice(models.Model):
         #NOTA: Es redefinido por completo en alguns proyectos (Proyecto X)
         """
         diff_currency = self.currency_id != self.company_currency_id
-        if self.payment_term_id:
-            totlines = self.with_context(ctx)._get_totlines(total,date_invoice) #hook agregado por trescloud
+        
+        #En nuestra localización siempre dependemos de los terminos de pago, pongo if True para que se facil de comparar
+        #con el core de Odoo para actualizaciones futuras
+        if True: #self.payment_term_id:
+
+            totlines = self.with_context(ctx)._get_totlines(total,self.date_invoice) #hook agregado por trescloud
+
             res_amount_currency = total_currency
             ctx['date'] = self.date_invoice
             count = 0
