@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-        <menuitem id="menu_link_tracker_root" name="Link Tracker" groups="base.group_no_one" sequence="30"/>
+        <delete id="utm.menu_link_tracker_root" model="ir.ui.menu"/>
+        <menuitem id="menu_link_tracker_root" name="Link Tracker" groups="base.group_erp_manager" sequence="30"/>
         <menuitem name="UTMs" id="marketing_utm" parent="menu_link_tracker_root" sequence="99" groups="base.group_no_one"/>
 
     	<!-- utm.campaign -->

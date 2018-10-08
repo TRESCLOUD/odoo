@@ -196,7 +196,7 @@
                         </group>
                     </group>
                     <notebook>
-                        <page string="Order Lines">
+                        <page name="order_line" string="Order Lines">
                             <field name="order_line" mode="tree,kanban"
                                 attrs="{'readonly': [('state', 'in', ('done','cancel'))]}">
                                 <form string="Sales Order Lines">
@@ -241,9 +241,9 @@
                                             <div>
                                                 <field name="customer_lead" class="oe_inline"/> days
                                             </div>
-                                            <label for="analytic_tag_ids"/>
+                                            <label for="analytic_tag_ids" groups="analytic.group_analytic_accounting"/>
                                             <div>
-                                                <field name="analytic_tag_ids" widget="many2many_tags"/>
+                                                <field name="analytic_tag_ids" widget="many2many_tags" groups="analytic.group_analytic_accounting"/>
                                             </div>
                                         </group>
                                     </group>
@@ -461,7 +461,7 @@
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">sale.order</field>
             <field name="view_type">form</field>
-            <field name="view_mode">tree,form,calendar,graph,pivot</field>
+            <field name="view_mode">tree,kanban,form,calendar,graph,pivot</field>
             <field name="context">{}</field>
             <field name="domain">[('invoice_status','=','to invoice')]</field>
             <field name="search_view_id" ref="view_sales_order_filter"/>
@@ -486,7 +486,7 @@
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">sale.order</field>
             <field name="view_type">form</field>
-            <field name="view_mode">tree,form,calendar,graph,pivot</field>
+            <field name="view_mode">tree,kanban,form,calendar,graph,pivot</field>
             <field name="domain">[('invoice_status','=','upselling')]</field>
             <field name="context">{}</field>
             <field name="search_view_id" ref="view_sales_order_filter"/>
@@ -612,7 +612,7 @@
                     <group string="Warning when Selling this Product" colspan="2" groups="sale.group_warning_sale">
                         <field name="sale_line_warn" nolabel="1"/>
                         <field name="sale_line_warn_msg" colspan="3" nolabel="1"
-                                attrs="{'required':[('sale_line_warn','!=','no-message')],'readonly':[('sale_line_warn','=','no-message')]}"/>
+                                attrs="{'required':[('sale_line_warn','!=','no-message')],'readonly':[('sale_line_warn','=','no-message')], 'invisible':[('sale_line_warn','=','no-message')]}"/>
                     </group>
                 </group>
             </field>

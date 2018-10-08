@@ -5,16 +5,17 @@
 # Translators:
 # RGB Consulting <odoo@rgbconsulting.com>, 2016
 # Carles Antoli <carlesantoli@hotmail.com>, 2016
-# Martin Trigaux <mat@odoo.com>, 2016
+# Martin Trigaux, 2016
 # Marc Tormo i Bochaca <mtbochaca@gmail.com>, 2016
 # Josep Sànchez <papapep@gmx.com>, 2016
+# Sandra Franch <sandra.franch@upc.edu>, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 10.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-10-10 08:44+0000\n"
-"PO-Revision-Date: 2016-10-10 08:44+0000\n"
-"Last-Translator: Josep Sànchez <papapep@gmx.com>, 2016\n"
+"POT-Creation-Date: 2017-06-23 13:28+0000\n"
+"PO-Revision-Date: 2017-06-23 13:28+0000\n"
+"Last-Translator: Sandra Franch <sandra.franch@upc.edu>, 2018\n"
 "Language-Team: Catalan (https://www.transifex.com/odoo/teams/41243/ca/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -78,7 +79,7 @@ msgstr "&amp;vegade;"
 #. module: website_blog
 #: model:ir.ui.view,arch_db:website_blog.blog_feed
 msgid "&lt;?xml version=\"1.0\" encoding=\"utf-8\"?&gt;"
-msgstr ""
+msgstr "&lt;?xml version=\"1.0\" encoding=\"utf-8\"?&gt;"
 
 #. module: website_blog
 #: model:ir.ui.view,arch_db:website_blog.view_blog_blog_form
@@ -299,7 +300,7 @@ msgstr "Canvi de coberta"
 #: code:addons/website_blog/static/src/js/website.tour.blog.js:35
 #, python-format
 msgid "Choose an image from the library."
-msgstr ""
+msgstr "Triï una imatge de la col·lecció."
 
 #. module: website_blog
 #. openerp-web
@@ -324,7 +325,7 @@ msgstr ""
 #. module: website_blog
 #: model:ir.actions.act_window,help:website_blog.action_blog_post
 msgid "Click to create a new blog post."
-msgstr ""
+msgstr "Feu clic per crear una nova entrada al bloc. "
 
 #. module: website_blog
 #: model:ir.model.fields,field_description:website_blog.field_blog_post_content
@@ -335,7 +336,7 @@ msgstr "Contingut"
 #. module: website_blog
 #: model:ir.model.fields,field_description:website_blog.field_blog_post_cover_properties
 msgid "Cover Properties"
-msgstr ""
+msgstr "Propietats de la portada"
 
 #. module: website_blog
 #: model:ir.model.fields,field_description:website_blog.field_blog_blog_create_uid
@@ -353,6 +354,7 @@ msgstr "Creat el"
 
 #. module: website_blog
 #: model:ir.model.fields,field_description:website_blog.field_mail_compose_message_path
+#: model:ir.model.fields,field_description:website_blog.field_mail_mail_path
 #: model:ir.model.fields,field_description:website_blog.field_mail_message_path
 #: model:ir.model.fields,field_description:website_blog.field_survey_mail_compose_message_path
 msgid "Discussion Path"
@@ -369,16 +371,6 @@ msgstr "Mostrar Nom"
 #: model:ir.ui.view,arch_db:website_blog.blog_post_complete
 msgid "Duplicate"
 msgstr "Duplicar"
-
-#. module: website_blog
-#: model:ir.model,name:website_blog.model_mail_compose_message
-msgid "Email composition wizard"
-msgstr "Assistent de composició de correu electrònic"
-
-#. module: website_blog
-#: model:ir.model,name:website_blog.model_survey_mail_compose_message
-msgid "Email composition wizard for Survey"
-msgstr "Assistent de composició de correu electrònic per Enquesta"
 
 #. module: website_blog
 #: model:blog.post,content:website_blog.blog_post_1
@@ -490,7 +482,7 @@ msgstr ""
 #. module: website_blog
 #: model:ir.ui.view,arch_db:website_blog.latest_blogs
 msgid "In"
-msgstr ""
+msgstr "Dins"
 
 #. module: website_blog
 #: model:blog.post,name:website_blog.blog_post_2
@@ -617,7 +609,7 @@ msgstr "Notícies"
 #. module: website_blog
 #: model:ir.ui.view,arch_db:website_blog.website_blog
 msgid "No Cover"
-msgstr ""
+msgstr "Sense portada"
 
 #. module: website_blog
 #: model:ir.ui.view,arch_db:website_blog.blog_post_short
@@ -662,7 +654,7 @@ msgstr ""
 #. module: website_blog
 #: model:blog.blog,name:website_blog.blog_blog_1
 msgid "Our Blog"
-msgstr ""
+msgstr "El Nostre Bloc"
 
 #. module: website_blog
 #: model:ir.ui.view,arch_db:website_blog.opt_blog_rc_blogs
@@ -733,7 +725,7 @@ msgstr "Classificació"
 #. module: website_blog
 #: model:ir.ui.view,arch_db:website_blog.opt_blog_post_complete_read_next
 msgid "Read Next <span class=\"fa fa-long-arrow-right\"/>"
-msgstr ""
+msgstr "Llegir el següent <span class=\"fa fa-long-arrow-right\"/>"
 
 #. module: website_blog
 #: model:blog.post,content:website_blog.blog_post_1
@@ -790,7 +782,7 @@ msgstr ""
 #: code:addons/website_blog/static/src/js/website.tour.blog.js:52
 #, python-format
 msgid "Start writing here..."
-msgstr ""
+msgstr "Començar a escriure aquí..."
 
 #. module: website_blog
 #: model:ir.ui.view,arch_db:website_blog.opt_blog_rc_status
@@ -898,12 +890,12 @@ msgstr ""
 #. module: website_blog
 #: model:ir.ui.view,arch_db:website_blog.opt_blog_rc_status
 msgid "Unpublished"
-msgstr ""
+msgstr "No publicat"
 
 #. module: website_blog
 #: model:ir.ui.view,arch_db:website_blog.blog_post_short
 msgid "Untitled Post"
-msgstr ""
+msgstr "Entrada no titulada"
 
 #. module: website_blog
 #. openerp-web
@@ -919,6 +911,7 @@ msgstr "Utilitzat en:"
 
 #. module: website_blog
 #: model:ir.model.fields,help:website_blog.field_mail_compose_message_path
+#: model:ir.model.fields,help:website_blog.field_mail_mail_path
 #: model:ir.model.fields,help:website_blog.field_mail_message_path
 #: model:ir.model.fields,help:website_blog.field_survey_mail_compose_message_path
 msgid ""
@@ -969,7 +962,7 @@ msgstr ""
 #. module: website_blog
 #: model:ir.ui.view,arch_db:website_blog.website_blog
 msgid "Yellow"
-msgstr ""
+msgstr "Groc"
 
 #. module: website_blog
 #: model:ir.ui.view,arch_db:website_blog.latest_blogs
@@ -996,6 +989,11 @@ msgid "comments"
 msgstr "comentaris"
 
 #. module: website_blog
+#: model:blog.tag,name:website_blog.blog_tag_1
+msgid "functional"
+msgstr ""
+
+#. module: website_blog
 #: model:ir.ui.view,arch_db:website_blog.blog_post_template_new_post
 msgid "has been published on the"
 msgstr ""
@@ -1009,14 +1007,19 @@ msgstr "pull-right"
 #. module: website_blog
 #: model:ir.ui.view,arch_db:website_blog.blog_post_short
 msgid "unpublished"
-msgstr ""
+msgstr "no publicat"
 
 #. module: website_blog
 #: model:ir.ui.view,arch_db:website_blog.blog_post_short
 msgid "view"
-msgstr ""
+msgstr "vista"
 
 #. module: website_blog
 #: model:ir.ui.view,arch_db:website_blog.blog_post_short
 msgid "views"
 msgstr "vistes"
+
+#. module: website_blog
+#: model:blog.tag,name:website_blog.blog_tag_2
+msgid "website"
+msgstr "pàgina web"

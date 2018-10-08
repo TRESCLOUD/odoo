@@ -47,7 +47,7 @@ class AccountInvoice(models.Model):
             'uom_id': line.product_uom.id,
             'product_id': line.product_id.id,
             'account_id': invoice_line.with_context({'journal_id': self.journal_id.id, 'type': 'in_invoice'})._default_account(),
-            'price_unit': line.order_id.currency_id.compute(line.price_unit, self.currency_id, round=False),
+            'price_unit': line.order_id.currency_id.with_context(date=self.date_invoice).compute(line.price_unit, self.currency_id, round=False),
             'quantity': qty,
             'discount': 0.0,
             'account_analytic_id': line.account_analytic_id.id,
@@ -58,6 +58,13 @@ class AccountInvoice(models.Model):
         if account:
             data['account_id'] = account.id
         return data
+
+    def _onchange_product_id(self):
+        domain = super(AccountInvoice, self)._onchange_product_id()
+        if self.purchase_id:
+            # Use the purchase uom by default
+            self.uom_id = self.product_id.uom_po_id
+        return domain
 
     # Load all unsold PO lines
     @api.onchange('purchase_id')
@@ -82,7 +89,7 @@ class AccountInvoice(models.Model):
     def _onchange_currency_id(self):
         if self.currency_id:
             for line in self.invoice_line_ids.filtered(lambda r: r.purchase_line_id):
-                line.price_unit = line.purchase_id.currency_id.compute(line.purchase_line_id.price_unit, self.currency_id, round=False)
+                line.price_unit = line.purchase_id.currency_id.with_context(date=self.date_invoice).compute(line.purchase_line_id.price_unit, self.currency_id, round=False)
 
     @api.onchange('invoice_line_ids')
     def _onchange_origin(self):
@@ -115,7 +122,13 @@ class AccountInvoice(models.Model):
                 for i_line in self.invoice_line_ids:
                     res.extend(self._anglo_saxon_purchase_move_lines(i_line, res))
         return res
-
+    #Metodo agregado por Trescloud
+    def validation_adj_price_unit(self, valuation_price_unit, i_line, line, acc):
+        '''
+        Hook sera utilizado en un modulo superior
+        '''
+        return float_compare(valuation_price_unit,i_line.price_unit,precision_digits=self.company_id.currency_id.decimal_places) != 0 and line['price_unit'] == i_line.price_unit and acc
+        
     @api.model
     def _anglo_saxon_purchase_move_lines(self, i_line, res):
         """Return the additional move lines for purchase invoices and refunds.
@@ -155,9 +168,18 @@ class AccountInvoice(models.Model):
                                 valuation_total_qty += val_stock_move.product_qty
                             valuation_price_unit = valuation_price_unit_total / valuation_total_qty
                             valuation_price_unit = i_line.product_id.uom_id._compute_price(valuation_price_unit, i_line.uom_id)
+                    
+                    
+                    # SECCION MODIFICADA POR TRESCLOUD
                     if inv.currency_id.id != company_currency.id:
+                        if 'is_foreign_purchase' not in i_line.purchase_line_id._fields:
+                            #si el modulo de importaciones ecuatoriano no esta instalado
+                            #se bypasea pues en la version ecuatoriana el valor ya se encontraba en USD
                             valuation_price_unit = company_currency.with_context(date=inv.date_invoice).compute(valuation_price_unit, inv.currency_id, round=False)
-                    if valuation_price_unit != i_line.price_unit and line['price_unit'] == i_line.price_unit and acc:
+                    if self.validation_adj_price_unit(valuation_price_unit, i_line, line, acc):
+                        #FIN SECCION MODIFICADA POR TRESCLOUD
+
+                    
                         # price with discount and without tax included
                         price_unit = i_line.price_unit * (1 - (i_line.discount or 0.0) / 100.0)
                         tax_ids = []

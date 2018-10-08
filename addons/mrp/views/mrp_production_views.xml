@@ -48,7 +48,7 @@
                     <button name="button_plan" attrs="{'invisible': ['|', ('state', '!=', 'confirmed'), ('routing_id', '=', False)]}" type="object" string="Create Workorders" class="oe_highlight"/>
                     <button name="open_produce_product" attrs="{'invisible': ['|', '|', '|', ('check_to_done', '=', True), ('availability', 'not in', ['partially_available', 'assigned']), ('state', 'not in', ('confirmed','progress')), ('routing_id', '!=', False)]}" string="Produce" type="object" class="oe_highlight"/>
                     <button name="open_produce_product" attrs="{'invisible': ['|', '|', '|', ('check_to_done', '=', True), ('availability', '!=', 'waiting'), ('state', 'not in', ('confirmed','progress')), ('routing_id', '!=', False)]}" string="Produce" type="object"/>
-                    <button name="post_inventory" string="Post Inventory" type="object" attrs="{'invisible': [('post_visible', '=', False)]}"/>
+                    <button name="post_inventory" string="Post Inventory" type="object" attrs="{'invisible': [('post_visible', '=', False)]}" groups="base.group_no_one"/>
                     <button name="action_cancel" type="object" string="Cancel" attrs="{'invisible': ['|', ('state', 'in', ('done','cancel')), ('check_to_done', '=', True)]}"/>
                     <button name="button_scrap" type="object" string="Scrap" attrs="{'invisible': ['|', ('availability', '=', 'none'), ('state', 'in', ('cancel'))]}"/>
                     <button name="button_unreserve" type="object" string="Unreserve" attrs="{'invisible': [('unreserve_visible', '=', False)]}"/>
@@ -77,7 +77,7 @@
                     <div class="oe_title">
                         <h1><field name="name" placeholder="Manufacturing Reference" nolabel="1"/></h1>
                     </div>
-                    <group>
+                    <group name="headerproduction">
                         <group>
                             <field name="has_moves" invisible="1"/>
                             <field name="check_to_done" invisible="1"/>
@@ -89,7 +89,7 @@
                                 <field name="product_uom_id" options="{'no_open':True,'no_create':True}" groups="product.group_uom" attrs="{'readonly': [('has_moves', '=', True)]}"/>
                                 <button type="action"
                                     name="%(mrp.action_change_production_qty)d"
-                                    string="Update" states="confirmed,planned,progress" class="oe_link" attrs="{'invisible': [('state','=','done')]}"/>
+                                    string="Update" states="confirmed,planned,progress" class="oe_link"/>
                             </div>
                             <field name="bom_id"
                                 domain="['&amp;', '|',
@@ -112,7 +112,7 @@
                     <notebook>
                         <page string="Consumed Materials">
                             <field name="move_raw_ids" options="{'reload_on_button': True}" context="{'default_location_id': location_src_id, 'default_location_dest_id': location_dest_id}">
-                                <tree editable="bottom" delete="0" default_order="is_done desc,sequence" decoration-muted="is_done" decoration-warning="quantity_done&gt;product_uom_qty" decoration-success="quantity_done==product_uom_qty" decoration-danger="quantity_available &lt; product_uom_qty" create="0">
+                                <tree editable="bottom" delete="0" decoration-muted="is_done" decoration-warning="quantity_done&gt;product_uom_qty" decoration-success="quantity_done==product_uom_qty" decoration-danger="quantity_available &lt; product_uom_qty" create="0">
                                     <field name="product_id" required="1"/>
                                     <field name="product_uom" groups="product.group_uom"/>
                                     <field name="has_tracking" invisible="1"/>
@@ -147,10 +147,10 @@
                                 </tree>
                             </field>
                         </page>
-                        <page string="Miscellaneous">
+                        <page string="Miscellaneous" name="miscellaneous">
                             <group>
                                 <group groups="stock.group_stock_multi_locations">
-                                    <field name="picking_type_id" attrs="{'readonly': [('has_moves', '=', True)]}"/>
+                                    <field name="picking_type_id" domain="[('code', '=', 'mrp_operation')]" attrs="{'readonly': [('has_moves', '=', True)]}"/>
                                     <field name="location_src_id" domain="[('usage','=','internal')]" attrs="{'readonly': [('has_moves', '=', True)]}"/>
                                     <field name="location_dest_id" domain="[('usage','=','internal')]" attrs="{'readonly': [('has_moves', '=', True)]}"/>
                                 </group>
