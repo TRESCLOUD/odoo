@@ -24,22 +24,42 @@
                 </div>
                 <group name="main_group">
                     <group>
-                        <field name="product_id"/>
+                        <field name="product_id" attrs="{'readonly':[('quant_ids','!=',[])]}"/>
                             <label for="product_qty"/>
                             <div class="o_row">
                                 <field name="product_qty"/>
-                                <field name="product_uom_id" groups="product.group_uom"/>
+                                <field name="product_uom_id" readonly="1" groups="product.group_uom"/>
                             </div>
                         <field name="ref"/>
                     </group>
                 </group>
                 <notebook>
                     <page string="Products">
-                        <field name="quant_ids">
+                        <field name="quant_ids" mode="tree,kanban">
                             <tree string="Stock Moves">
                                 <field name="location_id" groups="stock.group_stock_multi_locations"/>
                                 <field name="qty"/>
                             </tree>
+                            <!--Codigo modificado por TRESCLOUD-->
+                            <kanban class="o_kanban_mobile">
+                                <field name="location_id" groups="stock.group_stock_multi_locations"/>
+                                <field name="qty"/>
+                                <templates>
+                                    <t t-name="kanban-box">
+                                        <div t-attf-class="oe_kanban_card oe_kanban_global_click">
+                                            <div class="row">
+                                                <div class="col-xs-8 text-muted">
+                                                    <strong><span><t t-esc="record.location_id.value or ''"/></span></strong>
+                                                </div>
+                                                <div class="col-xs-4 text-muted">
+                                                    <strong><span><t t-esc="record.qty.value or ''"/></span></strong>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </t>
+                                </templates>
+                            </kanban>
+                            <!--Fin del Codigo modificado por TRESCLOUD-->
                          </field>
                     </page>
                 </notebook>

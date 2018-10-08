@@ -6,7 +6,7 @@
 # Grzegorz Grzelak <grzegorz.grzelak@openglobe.pl>, 2016
 # Marcin Młynarczyk <mlynarczyk@gmail.com>, 2016
 # zbik2607 <darek@krokus.com.pl>, 2016
-# Martin Trigaux <mat@odoo.com>, 2016
+# Martin Trigaux, 2016
 # Piotr Szlązak <szlazakpiotr@gmail.com>, 2016
 # Judyta Kaźmierczak <judyta.kazmierczak@openglobe.pl>, 2016
 # Arek Smagacz <arek.smagacz@gmail.com>, 2016
@@ -16,19 +16,21 @@
 # Annunnaky <doublemiu@gmail.com>, 2016
 # Maciej Wichowski <maciej.wichowski@openglobe.pl>, 2016
 # zieloo <zieloo@gmail.com>, 2016
+# Monika Grzelak <m.e.grzelak@gmail.com>, 2017
+# Tomasz Leppich <t.leppich@gmail.com>, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 10.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-26 13:35+0000\n"
-"PO-Revision-Date: 2017-04-26 13:35+0000\n"
-"Last-Translator: zieloo <zieloo@gmail.com>, 2016\n"
+"POT-Creation-Date: 2017-06-23 13:27+0000\n"
+"PO-Revision-Date: 2017-06-23 13:27+0000\n"
+"Last-Translator: Tomasz Leppich <t.leppich@gmail.com>, 2018\n"
 "Language-Team: Polish (https://www.transifex.com/odoo/teams/41243/pl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Language: pl\n"
-"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>=14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
+"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
 
 #. module: product
 #: selection:product.pricelist.item,applied_on:0
@@ -234,7 +236,7 @@ msgstr ""
 #: model:product.product,website_description:product.product_product_9
 #: model:product.template,website_description:product.product_product_9_product_template
 msgid "A great Keyboard. Cordless."
-msgstr ""
+msgstr "Świetna klawiatura. Bezprzewodowa."
 
 #. module: product
 #: model:ir.model.fields,help:product.field_product_product_description
@@ -255,7 +257,7 @@ msgstr ""
 #: model:product.product,website_description:product.product_product_6
 #: model:product.template,website_description:product.product_product_6_product_template
 msgid "A screen worthy of iPad."
-msgstr ""
+msgstr "Ekran wart iPada"
 
 #. module: product
 #: model:ir.model.fields,help:product.field_product_product_type
@@ -321,7 +323,7 @@ msgstr ""
 #: model:product.template,website_description:product.product_product_4c_product_template
 #: model:product.template,website_description:product.product_product_4d_product_template
 msgid "And because it’s so easy to use, it’s easy to love."
-msgstr ""
+msgstr "A ponieważ jest tak łatwy w użyciu, łatwo go pokochać."
 
 #. module: product
 #: model:product.product,name:product.product_product_7
@@ -462,7 +464,7 @@ msgstr "Piękny 7.9-calowy wyświetlacz"
 #: model:product.product,website_description:product.product_product_8
 #: model:product.template,website_description:product.product_product_8_product_template
 msgid "Beautiful widescreen display."
-msgstr ""
+msgstr "Piękny szerokokątny wyświetlacz"
 
 #. module: product
 #: model:ir.model.fields,field_description:product.field_product_product_image
@@ -512,7 +514,7 @@ msgstr ""
 #: model:product.product,website_description:product.product_product_8
 #: model:product.template,website_description:product.product_product_8_product_template
 msgid "Brilliance onscreen. And behind it."
-msgstr ""
+msgstr "Rewelacyjny na ekranie i za nim."
 
 #. module: product
 #: model:product.product,website_description:product.product_product_11
@@ -815,7 +817,6 @@ msgid ""
 msgstr ""
 
 #. module: product
-#: model:ir.model,name:product.model_res_currency
 #: model:ir.model.fields,field_description:product.field_product_pricelist_currency_id
 #: model:ir.model.fields,field_description:product.field_product_pricelist_item_currency_id
 #: model:ir.model.fields,field_description:product.field_product_product_currency_id
@@ -902,7 +903,7 @@ msgstr "Opis do oferty"
 #: model:product.template,website_description:product.product_product_11_product_template
 #: model:product.template,website_description:product.product_product_11b_product_template
 msgid "Design. The thinnest iPod ever."
-msgstr ""
+msgstr "Design. Najcieńszy iPod w historii."
 
 #. module: product
 #: model:ir.model.fields,help:product.field_product_attribute_sequence
@@ -1144,7 +1145,7 @@ msgstr ""
 #: model:product.product,website_description:product.product_product_8
 #: model:product.template,website_description:product.product_product_8_product_template
 msgid "Friendly to the environment."
-msgstr ""
+msgstr "Przyjazny dla środowiska"
 
 #. module: product
 #: model:product.product,name:product.product_product_1
@@ -1163,7 +1164,7 @@ msgstr "Informacje ogólne"
 #: model:product.template,website_description:product.product_product_11_product_template
 #: model:product.template,website_description:product.product_product_11b_product_template
 msgid "Genius. Your own personal DJ."
-msgstr ""
+msgstr "Genialne. Twój osobisty DJ."
 
 #. module: product
 #: model:ir.model.fields,help:product.field_product_product_packaging_ids
@@ -1367,7 +1368,7 @@ msgstr "Zdjęcie wariantu produktu (Małe zdjęcie szablonu jeśli Fałsz)"
 #: model:product.product,website_description:product.product_product_8
 #: model:product.template,website_description:product.product_product_8_product_template
 msgid "Individually calibrated for true-to-life color."
-msgstr ""
+msgstr "Indywidualnie skalibrowane dla prawdziwego koloru."
 
 #. module: product
 #: model:ir.model,name:product.model_product_supplierinfo
@@ -1391,6 +1392,7 @@ msgstr "Wewnętrzne"
 #. module: product
 #: model:ir.model.fields,field_description:product.field_product_product_categ_id
 #: model:ir.model.fields,field_description:product.field_product_template_categ_id
+#: model:ir.ui.view,arch_db:product.product_template_form_view
 msgid "Internal Category"
 msgstr "Kategoria wewnętrzna"
 
@@ -1417,7 +1419,7 @@ msgstr ""
 #: model:product.product,website_description:product.product_product_8
 #: model:product.template,website_description:product.product_product_8_product_template
 msgid "Key Features"
-msgstr ""
+msgstr "Kluczowe cechy"
 
 #. module: product
 #: model:product.product,name:product.product_product_27
@@ -1612,7 +1614,7 @@ msgstr "Minimalna ilość"
 #: model:product.product,website_description:product.product_product_8
 #: model:product.template,website_description:product.product_product_8_product_template
 msgid "More energy efficient."
-msgstr ""
+msgstr "Bardziej energooszczędny."
 
 #. module: product
 #: model:product.product,website_description:product.product_product_5b
@@ -1644,7 +1646,7 @@ msgstr "Mysz, bezprzewodowa"
 #: model:product.template,website_description:product.product_product_11_product_template
 #: model:product.template,website_description:product.product_product_11b_product_template
 msgid "Music. It's what beats inside."
-msgstr ""
+msgstr "Muzyka. To właśnie bije w środku."
 
 #. module: product
 #: model:ir.model.fields,field_description:product.field_product_attribute_name
@@ -1691,7 +1693,7 @@ msgstr "Inny cennik"
 #: model:product.product,website_description:product.product_product_6
 #: model:product.template,website_description:product.product_product_6_product_template
 msgid "Over 375,000 apps."
-msgstr ""
+msgstr "Ponad 375000 aplikacji."
 
 #. module: product
 #: model:ir.model,name:product.model_product_packaging
@@ -2067,11 +2069,6 @@ msgid "Public Price"
 msgstr "Cena katalogowa"
 
 #. module: product
-#: model:product.pricelist,name:product.list0
-msgid "Public Pricelist"
-msgstr "Cennik katalogowy"
-
-#. module: product
 #: model:ir.model.fields,field_description:product.field_product_product_description_purchase
 #: model:ir.model.fields,field_description:product.field_product_template_description_purchase
 msgid "Purchase Description"
@@ -2202,6 +2199,7 @@ msgstr "Cena sprzedaży"
 
 #. module: product
 #: model:ir.model.fields,field_description:product.field_res_partner_property_product_pricelist
+#: model:ir.model.fields,field_description:product.field_res_users_property_product_pricelist
 msgid "Sale Pricelist"
 msgstr "Cennik sprzedaży"
 
@@ -2434,7 +2432,7 @@ msgstr "Switch, 24 porty"
 #: model:product.template,website_description:product.product_product_11_product_template
 #: model:product.template,website_description:product.product_product_11b_product_template
 msgid "Sync to your heart’s content."
-msgstr ""
+msgstr "Synchronizuj treść z sercem."
 
 #. module: product
 #: model:product.product,website_description:product.product_product_11
@@ -2514,7 +2512,7 @@ msgstr "Współczynnik konwersji jednostki miary nie może być 0!"
 #: model:product.product,website_description:product.product_product_8
 #: model:product.template,website_description:product.product_product_8_product_template
 msgid "The desktop. In its most advanced form ever"
-msgstr ""
+msgstr "Pulpit. W swojej najbardziej zaawansowanej formie w historii"
 
 #. module: product
 #: model:ir.model.fields,help:product.field_product_packaging_sequence
@@ -2716,6 +2714,7 @@ msgstr "Ta notatka będzie wyświetlana na ofertach cenowych."
 
 #. module: product
 #: model:ir.model.fields,help:product.field_res_partner_property_product_pricelist
+#: model:ir.model.fields,help:product.field_res_users_property_product_pricelist
 msgid ""
 "This pricelist will be used, instead of the default one, for sales to the "
 "current partner"
@@ -2761,16 +2760,21 @@ msgid ""
 msgstr ""
 
 #. module: product
+#: model:product.pricelist,name:product.list0
+msgid "USD"
+msgstr ""
+
+#. module: product
 #: model:product.product,website_description:product.product_product_6
 #: model:product.template,website_description:product.product_product_6_product_template
 msgid "Ultrafast wireless."
-msgstr ""
+msgstr "Ultraszybki bezprzewodowy."
 
 #. module: product
 #: model:product.product,website_description:product.product_product_8
 #: model:product.template,website_description:product.product_product_8_product_template
 msgid "Ultrathin design"
-msgstr ""
+msgstr "Ultracienki design"
 
 #. module: product
 #: model:ir.model.fields,help:product.field_product_uom_active
@@ -3038,14 +3042,6 @@ msgstr ""
 #: model:product.uom.categ,name:product.uom_categ_wtime
 msgid "Working Time"
 msgstr "Czas pracy"
-
-#. module: product
-#: code:addons/product/models/res_currency.py:17
-#, python-format
-msgid ""
-"You cannot define a rounding factor for the company's main currency that is "
-"smaller than the decimal precision of 'Account'."
-msgstr ""
 
 #. module: product
 #: code:addons/product/models/decimal_precision.py:16
