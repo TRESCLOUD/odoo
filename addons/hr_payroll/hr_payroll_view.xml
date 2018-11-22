@@ -227,11 +227,11 @@
                     <div class="oe_title">
                         <label for="employee_id" class="oe_edit_only"/>
                         <h1><field name="employee_id" on_change="onchange_employee_id(date_from, date_to, employee_id, contract_id)"/></h1>
-                        <label for="date_from" class="oe_edit_only" string="Period"/>
-                        <h2>
+                        <label for="date_from" class="oe_edit_only" string="Período"/>
+                        <h3>
                             From <field name="date_from" on_change="onchange_employee_id(date_from, date_to, employee_id, contract_id)"/>
                             to <field name="date_to"/>
-                        </h2>
+                        </h3>
                     </div>
                     <group col="4" name="data">
                         <field name="contract_id" domain="[('employee_id','=',employee_id),('date_start','&lt;=',date_to),'|',('date_end','&gt;=',date_from),('date_end','=',False)]" on_change="onchange_contract_id(date_from, date_to, employee_id, contract_id)" context="{'default_employee_id': employee_id}"/>
@@ -673,7 +673,7 @@
             <field name="name">hr.payslip.run.tree</field>
             <field name="model">hr.payslip.run</field>
             <field name="arch" type="xml">
-                <tree string="Payslips Batches">
+                <tree string="Payslips Batches" colors="blue:state == 'draft'">
                     <field name="name"/>
                     <field name="date_start"/>
                     <field name="date_end"/>
@@ -698,16 +698,19 @@
                     <label for="name" class="oe_edit_only"/>
                     <h1>
                         <field name="name"/>
+                        <label for="date_start" class="oe_edit_only" string="Período"/>
                     </h1>
-                    <h2>
-                        Period from 
-                        <field name="date_start"/> 
-                        to 
-                        <field name="date_end"/>
-                    </h2>
-                    <group col="4">
-                        <field name="credit_note"/>
-                    </group>
+                    <h3>
+                        Desde <field name="date_start"/>
+                        Hasta <field name="date_end"/>
+                    </h3>
+                    <group col="4" colspan="4">
+                   		<group col="2" colspan="2">
+                   			<field name="credit_note"/>
+                   		</group>
+                   		<group col="2" colspan="2">
+                   		</group>
+                   	</group>
                     <separator string="Payslips"/>
                     <field name="slip_ids"/>
                 </sheet>
