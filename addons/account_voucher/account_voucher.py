@@ -767,17 +767,17 @@ class account_voucher(osv.osv):
 
         total_credit = 0.0
         total_debit = 0.0
-        account_type = None
+        account_type = []
         if context.get('account_id'):
-            account_type = self.pool['account.account'].browse(cr, uid, context['account_id'], context=context).type
+            account_type = [self.pool['account.account'].browse(cr, uid, context['account_id'], context=context).type]
         if ttype == 'payment':
             if not account_type:
-                account_type = 'payable'
+                account_type = ['payable']
             total_debit = price or 0.0
         else:
             total_credit = price or 0.0
             if not account_type:
-                account_type = 'receivable'
+                account_type = ['receivable', 'payable']
 
         if not context.get('move_line_ids', False):
             #El siguiente codigo fue modificado por TRESCLOUD
@@ -898,7 +898,7 @@ class account_voucher(osv.osv):
             context = {}
         return [
             ('state','=','valid'),
-            ('account_id.type', '=', account_type),
+            ('account_id.type', 'in', account_type),
             ('reconcile_id', '=', False),
             ('partner_id', '=', partner_id), '|',
             #El or y las siguientes dos líneas fueron agregadas por TRESCLOUD
