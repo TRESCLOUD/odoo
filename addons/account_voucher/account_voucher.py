@@ -767,6 +767,9 @@ class account_voucher(osv.osv):
 
         total_credit = 0.0
         total_debit = 0.0
+        #Codigo modificado por TRESCLOUD, el account_type solo tenia receivable o payable
+        #Se transforma a lista pues en los debitos(line_dr_ids) deben aparecer tantos cxc
+        #como cxp
         account_type = []
         if context.get('account_id'):
             account_type = [self.pool['account.account'].browse(cr, uid, context['account_id'], context=context).type]
