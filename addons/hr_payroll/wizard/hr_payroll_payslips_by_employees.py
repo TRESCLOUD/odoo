@@ -3,6 +3,9 @@
 
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
+import logging
+
+_logger = logging.getLogger(__name__)
 
 
 class HrPayslipEmployees(models.TransientModel):
@@ -22,7 +25,10 @@ class HrPayslipEmployees(models.TransientModel):
         to_date = run_data.get('date_end')
         if not data['employee_ids']:
             raise UserError(_("You must select employee(s) to generate payslip(s)."))
+        count = 1
+        total = len (data['employee_ids'])
         for employee in self.env['hr.employee'].browse(data['employee_ids']):
+            _logger.info(u'Generando nómina %s de un total de %s.' % (str(count), str(total)))
             slip_data = self.env['hr.payslip'].onchange_employee_id(from_date, to_date, employee.id, contract_id=False)
             res = {
                 'employee_id': employee.id,
@@ -38,5 +44,8 @@ class HrPayslipEmployees(models.TransientModel):
                 'company_id': employee.company_id.id,
             }
             payslips += self.env['hr.payslip'].create(res)
+            count += 1
+        _logger.info(u'Iniciado el cálculo masivo de nóminas.')
         payslips.compute_sheet()
+        _logger.info(u'Finalizado el cálculo masivo de nóminas.')
         return {'type': 'ir.actions.act_window_close'}
