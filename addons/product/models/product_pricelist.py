@@ -305,8 +305,26 @@ class Pricelist(models.Model):
 
         if not pl:
             if p.country_id.code:
-                pls = self.env['product.pricelist'].search([('country_group_ids.country_ids.code', '=', p.country_id.code)], order='id', limit=1)
-                pl = pls and pls[0].id
+                #pls = self.env['product.pricelist'].search([('country_group_ids.country_ids.code', '=', p.country_id.code)], order='id', limit=1)
+                #pl = pls and pls[0].id
+                #Las siguientes lineas de codigo fueron agregadas por Trescloud, sustituyen las dos comentadas en busca de eficiencia
+                self.env.cr.execute('''
+                    select 
+                        pp.id
+                    from product_pricelist pp join
+                        res_country_group_pricelist_rel rcgp 
+                            on pp.id=rcgp.pricelist_id join
+                        res_country_res_country_group_rel rcrg 
+                            on rcgp.res_country_group_id=rcrg.res_country_group_id join
+                        res_country rc
+                            on rcrg.res_country_id=rc.id
+                    where rc.code='%s'
+                    order by pp.id
+                    limit 1
+                ''' % (p.country_id.code))
+                record = self.env.cr.fetchall()
+                if record:
+                    pl = record[0][0]
 
         if not pl:
             # search pl where no country
