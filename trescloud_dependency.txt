@@ -1,0 +1,14 @@
+# Autor: 
+#   Trescloud Cia. Ltda., Patricio Rangles
+#
+# Listado de librerias requeridas por modulos
+# para Odoo, puede comentarse una linea antes 
+# del nombre de la(s) libreria(s) a instalarse
+# puede indicarse mas de una libreria por linea
+# simplemente dejando un espacio entre nombres
+#
+# Librerias para:
+#   Odoo 14, Debian Buster (10), x64
+
+# Usada para mostrar graficamente el uso de recursos
+htop
