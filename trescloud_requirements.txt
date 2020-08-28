@@ -1,0 +1,2 @@
+acme-tiny==4.1.0 # Necesario para el modulo letsencrypt del repositorio server-tools
+IPy==1.0 # Necesario para el modulo letsencrypt del repositorio server-tools
