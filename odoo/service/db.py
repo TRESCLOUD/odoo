@@ -20,7 +20,7 @@ import psycopg2
 
 import odoo
 from odoo import SUPERUSER_ID
-from odoo.exceptions import AccessDenied
+from odoo.exceptions import AccessDenied, UserError
 import odoo.release
 import odoo.sql_db
 import odoo.tools
@@ -232,7 +232,15 @@ def dump_db(db_name, stream, backup_format='zip'):
         with tempfile.TemporaryDirectory() as dump_dir:
             filestore = odoo.tools.config.filestore(db_name)
             if os.path.exists(filestore):
-                shutil.copytree(filestore, os.path.join(dump_dir, 'filestore'))
+                # MODIFICADO POR TRESCLOUD
+                # Problemas con respaldos, se reemplaza el metodo y solo es valido
+                # para usarse en linux (usa directamente cp)
+                if os.name == 'posix':
+                    if os.system('cp -r %s %s' % (filestore, os.path.join(dump_dir, 'filestore'))) !=0:
+                        raise UserError(u'No se pudo respaldar el filestore!')
+                else:
+                    shutil.copytree(filestore, os.path.join(dump_dir, 'filestore'))
+                # FIN DE MODIFICACION
             with open(os.path.join(dump_dir, 'manifest.json'), 'w') as fh:
                 db = odoo.sql_db.db_connect(db_name)
                 with db.cursor() as cr:
