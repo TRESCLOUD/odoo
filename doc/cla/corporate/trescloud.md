@@ -14,3 +14,4 @@ List of contributors:
 
 Andrés Calle andres.calle@trescloud.com https://github.com/pepetreshere
 José Rivero jose.rivero@trescloud.com https://github.com/JoseMiguelRivero
+Victor Salazar victor.salazar@trescloud.com https://github.com/vsalazar2017
