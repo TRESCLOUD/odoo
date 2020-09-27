@@ -629,8 +629,7 @@ class AccountMove(models.Model):
         # ==== Process taxes_map ====
         for taxes_map_entry in taxes_map.values():
             # Don't create tax lines with zero balance.
-            if self.currency_id.is_zero(taxes_map_entry['balance']) and self.currency_id.is_zero(taxes_map_entry['amount_currency']):
-                taxes_map_entry['grouping_dict'] = False
+            taxes_map_entry = self.generate_zero_entry(taxes_map_entry)
 
             tax_line = taxes_map_entry['tax_line']
             tax_base_amount = -taxes_map_entry['tax_base_amount'] if self.is_inbound() else taxes_map_entry['tax_base_amount']
@@ -674,6 +673,14 @@ class AccountMove(models.Model):
             if in_draft_mode:
                 tax_line._onchange_amount_currency()
                 tax_line._onchange_balance()
+
+    def generate_zero_entry(self, taxes_map_entry):
+        '''
+        Hook for generate zero entries
+        '''
+        if self.currency_id.is_zero(taxes_map_entry['balance']) and self.currency_id.is_zero(taxes_map_entry['amount_currency']):
+            taxes_map_entry['grouping_dict'] = False
+        return taxes_map_entry
 
     def _recompute_cash_rounding_lines(self):
         ''' Handle the cash rounding feature on invoices.
