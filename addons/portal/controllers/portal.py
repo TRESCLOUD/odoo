@@ -157,6 +157,17 @@ class CustomerPortal(Controller):
         values = self._prepare_portal_layout_values()
         return request.render("portal.portal_my_home", values)
 
+    # INICIO DEL CODIGO AGREGADO POR TRESCLOUD
+    def update_my_account_partner_fields(self, values):
+        """
+        Permite actualizar los valores que se van a escribir en el partner
+        de my account justo antes de que se haga el write. Util por ejemplo
+        para eliminar valores que no pertenecen al modelo y que se envian
+        para hacer validaciones
+        """
+        return values
+    # FIN DEL CODIGO AGREGADO POR TRESCLOUD
+
     @route(['/my/account'], type='http', auth='user', website=True)
     def account(self, redirect=None, **post):
         values = self._prepare_portal_layout_values()
@@ -179,7 +190,9 @@ class CustomerPortal(Controller):
                     except:
                         values[field] = False
                 values.update({'zip': values.pop('zipcode', '')})
-                partner.sudo().write(values)
+                # INICIO DEL CODIGO AGREGADO POR TRESCLOUD
+                partner.sudo().write(self.update_my_account_partner_fields(values))
+                # FIN DEL CODIGO AGREGADO POR TRESCLOUD
                 if redirect:
                     return request.redirect(redirect)
                 return request.redirect('/my/home')
