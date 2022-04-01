@@ -8,6 +8,7 @@ from psycopg2 import IntegrityError
 from psycopg2.errorcodes import UNIQUE_VIOLATION
 
 from odoo import http
+from odoo.exceptions import UserError
 from odoo.http import request
 from odoo.tools import consteq, file_open
 from odoo.tools.misc import get_lang
@@ -80,13 +81,21 @@ class DiscussController(http.Controller):
             channel_sudo = channel_partner_sudo.channel_id  # ensure guest is in context
         else:
             if not channel_sudo.env.user._is_public():
-                channel_sudo.add_members([channel_sudo.env.user.partner_id.id])
+                try:
+                    channel_sudo.add_members([channel_sudo.env.user.partner_id.id])
+                except UserError:
+                    raise NotFound()
             else:
                 guest = channel_sudo.env['mail.guest']._get_guest_from_request(request)
                 if guest:
                     channel_sudo = channel_sudo.with_context(guest=guest)
-                    channel_sudo.add_members(guest_ids=[guest.id])
+                    try:
+                        channel_sudo.add_members(guest_ids=[guest.id])
+                    except UserError:
+                        raise NotFound()
                 else:
+                    if channel_sudo.public == 'groups':
+                        raise NotFound()
                     guest = channel_sudo.env['mail.guest'].create({
                         'country_id': channel_sudo.env['res.country'].search([('code', '=', request.session.get('geoip', {}).get('country_code'))], limit=1).id,
                         'lang': get_lang(channel_sudo.env).code,
@@ -359,7 +368,10 @@ class DiscussController(http.Controller):
         # Do not add the guest to channel members if they are already member.
         if not channel_partner:
             channel_sudo = channel_sudo.with_context(guest=guest)
-            channel_sudo.add_members(guest_ids=[guest.id])
+            try:
+                channel_sudo.add_members(guest_ids=[guest.id])
+            except UserError:
+                raise NotFound()
 
     @http.route('/mail/channel/messages', methods=['POST'], type='json', auth='public')
     def mail_channel_messages(self, channel_id, max_id=None, min_id=None, limit=30, **kwargs):
@@ -392,6 +404,14 @@ class DiscussController(http.Controller):
     # --------------------------------------------------------------------------
     # Chatter API
     # --------------------------------------------------------------------------
+
+    @http.route('/mail/thread/data', methods=['POST'], type='json', auth='user')
+    def mail_thread_data(self, thread_model, thread_id, request_list, **kwargs):
+        res = {}
+        thread = request.env[thread_model].with_context(active_test=False).search([('id', '=', thread_id)])
+        if 'attachments' in request_list:
+            res['attachments'] = thread.env['ir.attachment'].search([('res_id', '=', thread.id), ('res_model', '=', thread._name)], order='id desc')._attachment_format(commands=True)
+        return res
 
     @http.route('/mail/thread/messages', methods=['POST'], type='json', auth='user')
     def mail_thread_messages(self, thread_model, thread_id, max_id=None, min_id=None, limit=30, **kwargs):

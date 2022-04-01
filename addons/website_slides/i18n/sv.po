@@ -4384,6 +4384,12 @@ msgid "Security Token"
 msgstr "Säkerhetstoken"
 
 #. module: website_slides
+#: code:addons/website_slides/models/res_users.py:0
+#, python-format
+msgid "See our eLearning"
+msgstr ""
+
+#. module: website_slides
 #. openerp-web
 #: code:addons/website_slides/static/src/js/tours/slides_tour.js:0
 #, python-format
@@ -5620,7 +5626,7 @@ msgstr "Du är inskriven"
 #. module: website_slides
 #: model_terms:ir.ui.view,arch_db:website_slides.mail_notification_channel_invite
 msgid "Your"
-msgstr ""
+msgstr "Ditt"
 
 #. module: website_slides
 #: code:addons/website_slides/models/slide_slide.py:0

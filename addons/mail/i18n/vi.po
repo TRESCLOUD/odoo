@@ -58,6 +58,14 @@ msgid "%(activity_name)s: %(summary)s assigned to you"
 msgstr "%(activity_name)s: %(summary)s được giao cho bạn"
 
 #. module: mail
+#: code:addons/mail/models/res_partner.py:0
+#, python-format
+msgid ""
+"%(email)s is not recognized as a valid email. This is required to create a "
+"new customer."
+msgstr ""
+
+#. module: mail
 #: code:addons/mail/wizard/mail_wizard_invite.py:0
 #, python-format
 msgid "%(user_name)s invited you to follow %(document)s document: %(title)s"
@@ -1020,6 +1028,13 @@ msgid ""
 msgstr ""
 "Bạn có chắc muốn xóa %s gửi thư thất bại không? Sau đó bạn sẽ không thể gửi "
 "lại các thư này!"
+
+#. module: mail
+#: code:addons/mail/models/mail_blacklist.py:0
+#: code:addons/mail/models/mail_thread_blacklist.py:0
+#, python-format
+msgid "Are you sure you want to unblacklist this Email Address?"
+msgstr ""
 
 #. module: mail
 #. openerp-web
@@ -5962,6 +5977,11 @@ msgid "Restrict mail templates and Jinja rendering."
 msgstr "Giới hạn mẫu thư và kết xuất Jinja."
 
 #. module: mail
+#: model_terms:ir.ui.view,arch_db:mail.res_config_settings_view_form
+msgid "Restrict mail templates edition and QWEB placeholders usage."
+msgstr ""
+
+#. module: mail
 #: model_terms:ir.ui.view,arch_db:mail.view_mail_form
 #: model_terms:ir.ui.view,arch_db:mail.view_mail_tree
 msgid "Retry"
@@ -7819,6 +7839,14 @@ msgid ""
 "address (%s)."
 msgstr ""
 "Bạn chỉ có thể dùng các ký tự latin không dấu cho địa chỉ bí danh (%s)."
+
+#. module: mail
+#: code:addons/mail/models/mail_thread_blacklist.py:0
+#, python-format
+msgid ""
+"You do not have the access right to unblacklist emails. Please contact your "
+"administrator."
+msgstr ""
 
 #. module: mail
 #: code:addons/mail/models/mail_thread.py:0

@@ -24,6 +24,7 @@ export class MockModels {
         return {
             'ir.attachment': {
                 fields: {
+                    checksum: { string: 'cheksum', type: 'char' },
                     create_date: { type: 'date' },
                     create_uid: { string: "Created By", type: "many2one", relation: 'res.users' },
                     datas: { string: "File Content (base64)", type: 'binary' },
@@ -239,7 +240,7 @@ export class MockModels {
                     email_cc: { type: 'char' },
                     partner_ids: {
                         string: "Related partners",
-                        type: 'many2one',
+                        type: 'one2many',
                         relation: 'res.partner'
                     },
                 },
