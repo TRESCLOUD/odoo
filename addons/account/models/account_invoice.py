@@ -656,13 +656,13 @@ class AccountInvoice(models.Model):
         #en los onchange de las facturas
         round_curr = self.currency_id.round
         base = round_curr(tax['base']) 
-
+        
         vals = {
             'invoice_id': self.id,
             'name': tax['name'],
             'tax_id': tax['id'],
             'amount': tax['amount'],
-            'base': tax['base'],
+            'base': base,
             'manual': False,
             'sequence': tax['sequence'],
             'account_analytic_id': tax['analytic'] and line.account_analytic_id.id or False,
