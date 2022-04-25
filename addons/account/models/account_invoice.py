@@ -651,18 +651,12 @@ class AccountInvoice(models.Model):
         The line parameter is an account.invoice.line, and the
         tax parameter is the output of account.tax.compute_all().
         """
-        #MODIFICADO POR TRESCLOUD #Fixes CLIENTES-2442
-        #aunque podría afectar un poco el performance pues se computa muchas veces
-        #en los onchange de las facturas
-        round_curr = self.currency_id.round
-        base = round_curr(tax['base']) 
-        
         vals = {
             'invoice_id': self.id,
             'name': tax['name'],
             'tax_id': tax['id'],
             'amount': tax['amount'],
-            'base': base,
+            'base': tax['base'],
             'manual': False,
             'sequence': tax['sequence'],
             'account_analytic_id': tax['analytic'] and line.account_analytic_id.id or False,
