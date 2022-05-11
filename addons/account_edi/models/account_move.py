@@ -131,6 +131,19 @@ class AccountMove(models.Model):
                     move.edi_show_abandon_cancel_button = True
                     break
 
+    def _is_edi_invoice(self):
+        """To be overridden for special cases where entry types need to be sent. """
+        self.ensure_one()
+        return self._get_edi_document_type() == 'invoice'
+
+    def _get_edi_document_type(self, edi_format=None):
+        """Defines the document types that are exchanged through the EDI. """
+        self.ensure_one()
+        if self.is_invoice(include_receipts=False):
+            return 'invoice'
+        elif self.payment_id or self.statement_line_id:
+            return 'payment'
+
     ####################################################
     # Export Electronic Document
     ####################################################

@@ -151,7 +151,7 @@ class AccountEdiDocument(models.Model):
                         'blocking_level': False,
                     })
 
-                    if move.is_invoice(include_receipts=True) and move.state == 'posted':
+                    if move._is_edi_invoice() and move.state == 'posted':
                         # The user requested a cancellation of the EDI and it has been approved. Then, the invoice
                         # can be safely cancelled.
                         invoice_ids_to_cancel.add(move.id)
