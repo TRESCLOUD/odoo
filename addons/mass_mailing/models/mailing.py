@@ -85,7 +85,7 @@ class MassMailing(models.Model):
         help="Date at which the mailing was or will be sent.")
     # don't translate 'body_arch', the translations are only on 'body_html'
     body_arch = fields.Html(string='Body', translate=False, sanitize=False)
-    body_html = fields.Html(string='Body converted to be sent by mail', sanitize=False)
+    body_html = fields.Html(string='Body converted to be sent by mail', render_engine='qweb', sanitize=False)
     is_body_empty = fields.Boolean(compute="_compute_is_body_empty",
                                    help='Technical field used to determine if the mail body is empty')
     attachment_ids = fields.Many2many('ir.attachment', 'mass_mailing_ir_attachments_rel',
@@ -883,7 +883,7 @@ class MassMailing(models.Model):
             extra_context = mailing._get_mass_mailing_context()
             composer = composer.with_context(active_ids=res_ids, **extra_context)
             # auto-commit except in testing mode
-            auto_commit = not getattr(threading.currentThread(), 'testing', False)
+            auto_commit = not getattr(threading.current_thread(), 'testing', False)
             composer._action_send_mail(auto_commit=auto_commit)
             mailing.write({
                 'state': 'done',

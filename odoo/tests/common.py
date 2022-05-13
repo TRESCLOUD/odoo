@@ -1551,7 +1551,7 @@ class HttpCase(TransactionCase):
 
         return session
 
-    def browser_js(self, url_path, code, ready='', login=None, timeout=60, **kw):
+    def browser_js(self, url_path, code, ready='', login=None, timeout=60, cookies=None, **kw):
         """ Test js code running in the browser
         - optionnally log as 'login'
         - load page given by url_path
@@ -1583,6 +1583,9 @@ class HttpCase(TransactionCase):
             if self.browser.screencasts_dir:
                 self._logger.info('Starting screencast')
                 self.browser.start_screencast()
+            if cookies:
+                for name, value in cookies.items():
+                    self.browser.set_cookie(name, value, '/', HOST)
             self.browser.navigate_to(url, wait_stop=not bool(ready))
 
             # Needed because tests like test01.js (qunit tests) are passing a ready
@@ -1934,8 +1937,11 @@ class Form(object):
             return O2MProxy(self, field)
         return v
 
-    def _get_modifier(self, field, modifier, default=False, modmap=None, vals=None):
-        d = (modmap or self._view['modifiers'])[field].get(modifier, default)
+    def _get_modifier(self, field, modifier, *, default=False, view=None, modmap=None, vals=None):
+        if view is None:
+            view = self._view
+
+        d = (modmap or view['modifiers'])[field].get(modifier, default)
         if isinstance(d, bool):
             return d
 
@@ -1976,7 +1982,7 @@ class Form(object):
                     # we're looking up the "current view" so bits might be
                     # missing when processing o2ms in the parent (see
                     # values_to_save:1450 or so)
-                    f_ = self._view['fields'].get(f, {'type': None})
+                    f_ = view['fields'].get(f, {'type': None})
                     if f_['type'] == 'many2many':
                         # field value should be [(6, _, ids)], we want just the ids
                         field_val = field_val[0][2] if field_val else []
@@ -2116,7 +2122,7 @@ class Form(object):
 
             get_modifier = functools.partial(
                 self._get_modifier,
-                f, modmap=view['modifiers'],
+                f, view=view,
                 vals=modifiers_values or record_values
             )
             descr = fields[f]
@@ -2346,11 +2352,11 @@ class O2MForm(Form):
             if hasattr(vals, '_changed'):
                 self._changed.update(vals._changed)
 
-    def _get_modifier(self, field, modifier, default=False, modmap=None, vals=None):
+    def _get_modifier(self, field, modifier, *, default=False, view=None, modmap=None, vals=None):
         if vals is None:
             vals = {**self._values, '•parent•': self._proxy._parent._values}
 
-        return super()._get_modifier(field, modifier, default=default, modmap=modmap, vals=vals)
+        return super()._get_modifier(field, modifier, default=default, view=view, modmap=modmap, vals=vals)
 
     def _onchange_values(self):
         values = super(O2MForm, self)._onchange_values()

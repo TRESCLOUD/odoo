@@ -454,7 +454,7 @@ msgstr "Frühester Beginn"
 #: model:ir.model.fields,field_description:product.field_product_product__barcode
 #: model:ir.model.fields,field_description:product.field_product_template__barcode
 msgid "Barcode"
-msgstr "Strichcode"
+msgstr "Barcode"
 
 #. module: product
 #: model:ir.model.fields,help:product.field_product_packaging__barcode
@@ -2691,6 +2691,12 @@ msgstr "Der Preis zum Erwerb eines Produkts"
 msgid "The product template is archived so no combination is possible."
 msgstr ""
 "Die Produktvorlage wird archiviert, daher ist keine Kombination möglich."
+
+#. module: product
+#: code:addons/product/models/product.py:0
+#, python-format
+msgid "The product variant must be a variant of the product template."
+msgstr ""
 
 #. module: product
 #: model:ir.model.fields,help:product.field_product_supplierinfo__min_qty

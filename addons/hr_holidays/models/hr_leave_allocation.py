@@ -255,13 +255,14 @@ class HolidaysAllocation(models.Model):
 
     @api.depends('holiday_type')
     def _compute_from_holiday_type(self):
+        default_employee_ids = self.env['hr.employee'].browse(self.env.context.get('default_employee_id')) or self.env.user.employee_id
         for allocation in self:
             if allocation.holiday_type == 'employee':
                 if not allocation.employee_ids:
                     allocation.employee_ids = self.env.user.employee_id
                 allocation.mode_company_id = False
                 allocation.category_id = False
-            if allocation.holiday_type == 'company':
+            elif allocation.holiday_type == 'company':
                 allocation.employee_ids = False
                 if not allocation.mode_company_id:
                     allocation.mode_company_id = self.env.company
@@ -274,7 +275,7 @@ class HolidaysAllocation(models.Model):
                 allocation.employee_ids = False
                 allocation.mode_company_id = False
             else:
-                allocation.employee_ids = self.env.context.get('default_employee_id') or self.env.user.employee_id
+                allocation.employee_ids = default_employee_ids
 
     @api.depends('holiday_type', 'employee_id')
     def _compute_department_id(self):
@@ -424,8 +425,8 @@ class HolidaysAllocation(models.Model):
                 period_end = current_level._get_next_date(allocation.lastcall)
                 # If accruals are lost at the beginning of year, skip accrual until beginning of this year
                 if current_level.action_with_unused_accruals == 'lost':
-                    this_year_first_day = (today + relativedelta(day=1, month=1)).date()
-                    if period_end < this_year_first_day or period_start < period_end:
+                    this_year_first_day = today + relativedelta(day=1, month=1)
+                    if period_end < this_year_first_day:
                         allocation.lastcall = allocation.nextcall
                         allocation.nextcall = nextcall
                         continue
@@ -442,11 +443,9 @@ class HolidaysAllocation(models.Model):
                 allocation.lastcall = allocation.nextcall
                 allocation.nextcall = nextcall
             if days_added_per_level:
-                number_of_days_to_add = 0
-                for value in days_added_per_level.values():
-                    number_of_days_to_add += value
+                number_of_days_to_add = allocation.number_of_days + sum(days_added_per_level.values())
                 # Let's assume the limit of the last level is the correct one
-                allocation.write({'number_of_days': min(allocation.number_of_days + number_of_days_to_add, current_level.maximum_leave)})
+                allocation.number_of_days = min(number_of_days_to_add, current_level.maximum_leave + allocation.leaves_taken) if current_level.maximum_leave > 0 else number_of_days_to_add
 
     @api.model
     def _update_accrual(self):
@@ -456,7 +455,7 @@ class HolidaysAllocation(models.Model):
         """
         # Get the current date to determine the start and end of the accrual period
         today = datetime.combine(fields.Date.today(), time(0, 0, 0))
-        this_year_first_day = (today + relativedelta(day=1, month=1)).date()
+        this_year_first_day = today + relativedelta(day=1, month=1)
         end_of_year_allocations = self.search(
         [('allocation_type', '=', 'accrual'), ('state', '=', 'validate'), ('accrual_plan_id', '!=', False), ('employee_id', '!=', False),
             '|', ('date_to', '=', False), ('date_to', '>', fields.Datetime.now()), ('lastcall', '<', this_year_first_day)])
@@ -542,6 +541,11 @@ class HolidaysAllocation(models.Model):
         state_description_values = {elem[0]: elem[1] for elem in self._fields['state']._description_selection(self.env)}
         for holiday in self.filtered(lambda holiday: holiday.state not in ['draft', 'cancel', 'confirm']):
             raise UserError(_('You cannot delete an allocation request which is in %s state.') % (state_description_values.get(holiday.state),))
+
+    @api.ondelete(at_uninstall=False)
+    def _unlink_if_no_leaves(self):
+        if any(allocation.holiday_status_id.requires_allocation == 'yes' and allocation.leaves_taken > 0 for allocation in self):
+            raise UserError(_('You cannot delete an allocation request which has some validated leaves.'))
 
     def _get_mail_redirect_suggested_company(self):
         return self.holiday_status_id.company_id

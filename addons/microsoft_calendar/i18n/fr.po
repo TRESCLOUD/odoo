@@ -5,6 +5,7 @@
 # Translators:
 # Martin Trigaux, 2021
 # Jonathan Quique <jqu@odoo.com>, 2021
+# Khadija Mbazaa <khadija.mbazaa@gmail.com>, 2022
 # Cécile Collart <cco@odoo.com>, 2022
 # 
 msgid ""
@@ -95,7 +96,7 @@ msgstr ""
 #: code:addons/microsoft_calendar/static/src/js/microsoft_calendar.js:0
 #, python-format
 msgid "Are you sure you want to delete this record ?"
-msgstr "Voulez-vous réellement supprimer cet enregistrement?"
+msgstr "Voulez-vous réellement supprimer cet enregistrement ?"
 
 #. module: microsoft_calendar
 #: model:ir.model,name:microsoft_calendar.model_calendar_attendee
@@ -310,7 +311,7 @@ msgstr "Notification"
 #: code:addons/microsoft_calendar/static/src/xml/base_calendar.xml:0
 #, python-format
 msgid "Outlook"
-msgstr ""
+msgstr "Outlook"
 
 #. module: microsoft_calendar
 #: model_terms:ir.ui.view,arch_db:microsoft_calendar.view_users_form

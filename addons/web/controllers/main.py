@@ -1045,10 +1045,9 @@ class Proxy(http.Controller):
             if not data:
                 raise werkzeug.exceptions.BadRequest()
             from werkzeug.test import Client
-            from werkzeug.wrappers import BaseResponse
             base_url = request.httprequest.base_url
             query_string = request.httprequest.query_string
-            client = Client(http.root, BaseResponse)
+            client = Client(http.root, werkzeug.wrappers.Response)
             headers = {'X-Openerp-Session-Id': request.session.sid}
             return client.post('/' + path, base_url=base_url, query_string=query_string,
                                headers=headers, data=data)
@@ -1499,6 +1498,8 @@ class Binary(http.Controller):
                     'res_id': int(id)
                 })
                 attachment._post_add_create()
+            except AccessError:
+                args.append({'error': _("You are not allowed to upload an attachment here.")})
             except Exception:
                 args.append({'error': _("Something horrible happened")})
                 _logger.exception("Fail to upload attachment %s" % ufile.filename)

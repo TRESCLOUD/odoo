@@ -116,7 +116,9 @@ var EditPageMenu = websiteNavbarData.WebsiteNavbarActionWidget.extend({
             self.destroy();
         };
         if (!this.wysiwyg.isDirty()) {
-            return destroy();
+            destroy();
+            window.location.reload();
+            return;
         }
         return this.wysiwyg.saveContent(false).then((result) => {
             var $wrapwrap = $('#wrapwrap');
@@ -296,9 +298,8 @@ var EditPageMenu = websiteNavbarData.WebsiteNavbarActionWidget.extend({
                     continue;
                 }
                 $savable.not('.o_dirty').each(function () {
-                    const $el = $(this);
-                    if (!$el.closest('[data-oe-readonly]').length) {
-                        $el.addClass('o_dirty');
+                    if (!this.hasAttribute('data-oe-readonly')) {
+                        this.classList.add('o_dirty');
                     }
                 });
             }
@@ -416,6 +417,8 @@ var EditPageMenu = websiteNavbarData.WebsiteNavbarActionWidget.extend({
             controlHistoryFromDocument: true,
             getContentEditableAreas: this._getContentEditableAreas.bind(this),
             powerboxCommands: this._getSnippetsCommands(),
+            bindLinkTool: true,
+            showEmptyElementHint: false,
         }, collaborationConfig);
         return wysiwygLoader.createWysiwyg(this,
             Object.assign(params, this.wysiwygOptions),

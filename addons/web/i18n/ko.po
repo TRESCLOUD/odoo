@@ -419,6 +419,13 @@ msgstr "모든 유료버전용 앱 사용 가능"
 #. openerp-web
 #: code:addons/web/static/src/legacy/xml/base.xml:0
 #, python-format
+msgid "Action"
+msgstr "추가 작업"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/legacy/xml/base.xml:0
+#, python-format
 msgid "Action ID:"
 msgstr "동작 ID :"
 
@@ -561,6 +568,13 @@ msgstr "태그 추가"
 #, python-format
 msgid "Add to Favorites"
 msgstr "즐겨찾기에 추가"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/legacy/xml/base.xml:0
+#, python-format
+msgid "Additional actions"
+msgstr ""
 
 #. module: web
 #. openerp-web
@@ -3384,6 +3398,13 @@ msgstr "인쇄"
 
 #. module: web
 #. openerp-web
+#: code:addons/web/static/src/legacy/xml/report.xml:0
+#, python-format
+msgid "Printing options"
+msgstr ""
+
+#. module: web
+#. openerp-web
 #: code:addons/web/static/src/legacy/js/fields/basic_fields.js:0
 #, python-format
 msgid "Priority"
@@ -4823,6 +4844,12 @@ msgstr "예"
 #, python-format
 msgid "Yesterday"
 msgstr "어제"
+
+#. module: web
+#: code:addons/web/controllers/main.py:0
+#, python-format
+msgid "You are not allowed to upload an attachment here."
+msgstr "여기에 첨부 파일을 업로드할 수 없습니다."
 
 #. module: web
 #. openerp-web

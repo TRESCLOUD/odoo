@@ -6,6 +6,7 @@
 # Pernille Kristensen <pernillekristensen1994@gmail.com>, 2021
 # Sanne Kristensen <sanne@vkdata.dk>, 2021
 # Mads Søndergaard, 2021
+# Mads Søndergaard, 2022
 # Martin Trigaux, 2022
 # 
 msgid ""
@@ -429,6 +430,13 @@ msgstr "Adgang til alle Enterprise Apps"
 #. openerp-web
 #: code:addons/web/static/src/legacy/xml/base.xml:0
 #, python-format
+msgid "Action"
+msgstr "Handling"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/legacy/xml/base.xml:0
+#, python-format
 msgid "Action ID:"
 msgstr "Aktion ID:"
 
@@ -571,6 +579,13 @@ msgstr "Tilføj tag"
 #, python-format
 msgid "Add to Favorites"
 msgstr "Føj til favoritter"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/legacy/xml/base.xml:0
+#, python-format
+msgid "Additional actions"
+msgstr ""
 
 #. module: web
 #. openerp-web
@@ -3420,6 +3435,13 @@ msgstr "Udskriv"
 
 #. module: web
 #. openerp-web
+#: code:addons/web/static/src/legacy/xml/report.xml:0
+#, python-format
+msgid "Printing options"
+msgstr ""
+
+#. module: web
+#. openerp-web
 #: code:addons/web/static/src/legacy/js/fields/basic_fields.js:0
 #, python-format
 msgid "Priority"
@@ -4869,6 +4891,12 @@ msgstr "Ja"
 #, python-format
 msgid "Yesterday"
 msgstr "I går"
+
+#. module: web
+#: code:addons/web/controllers/main.py:0
+#, python-format
+msgid "You are not allowed to upload an attachment here."
+msgstr "Du kan ikke uploade en vedhæftning her."
 
 #. module: web
 #. openerp-web

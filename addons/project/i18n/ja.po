@@ -10,14 +10,14 @@
 # 城谷 龍弥 <tatsuya.shirotani@pro-spire.co.jp>, 2022
 # SHIMIZU Taku <shimizu.taku@gmail.com>, 2022
 # Shigekazu N. <shigekazu.noka@gmail.com>, 2022
-# Tim Siu Lai <tl@roomsfor.hk>, 2022
 # Masayuki Takesue <m_takesue@nifty.com>, 2022
 # Norimichi Sugimoto <norimichi.sugimoto@tls-ltd.co.jp>, 2022
 # Shunho Kin <s-kin@shonan-innovation.co.jp>, 2022
-# Manami Hashi <manami@roomsfor.hk>, 2022
 # Martin Trigaux, 2022
-# Noma Yuki, 2022
 # 高木正勝 <masakatsu.takagi@pro-spire.co.jp>, 2022
+# Noma Yuki, 2022
+# Manami Hashi <manami@roomsfor.hk>, 2022
+# Tim Siu Lai <tl@roomsfor.hk>, 2022
 # Yoshi Tashiro (Quartile) <tashiro@roomsfor.hk>, 2022
 # 
 msgid ""
@@ -749,7 +749,7 @@ msgstr "全て"
 #. module: project
 #: model:ir.model.fields.selection,name:project.selection__project_project__privacy_visibility__employees
 msgid "All employees"
-msgstr ""
+msgstr "全従業員"
 
 #. module: project
 #: model:ir.model.fields.selection,name:project.selection__project_task__recurrence_update__all
@@ -927,7 +927,7 @@ msgstr "割当日"
 #: model:ir.model.fields,field_description:project.field_project_task_burndown_chart_report__date_assign
 #: model:ir.model.fields,field_description:project.field_report_project_task_user__date_assign
 msgid "Assignment Date"
-msgstr ""
+msgstr "割り当て日"
 
 #. module: project
 #: model:ir.model.fields.selection,name:project.selection__project_project__last_update_status__at_risk
@@ -1422,7 +1422,7 @@ msgstr ""
 #: code:addons/project/models/project.py:0
 #, python-format
 msgid "Customer Satisfaction"
-msgstr ""
+msgstr "顧客満足度"
 
 #. module: project
 #. openerp-web
@@ -2279,7 +2279,7 @@ msgstr ""
 #. module: project
 #: model:ir.model.fields.selection,name:project.selection__project_project__privacy_visibility__followers
 msgid "Invited employees"
-msgstr ""
+msgstr "招待された従業員"
 
 #. module: project
 #: model:ir.model.fields.selection,name:project.selection__project_project__privacy_visibility__portal
@@ -4918,12 +4918,12 @@ msgstr "プロジェクト評価を使用"
 #. module: project
 #: model:res.groups,name:project.group_project_recurring_tasks
 msgid "Use Recurring Tasks"
-msgstr ""
+msgstr "繰返しタスクを使用"
 
 #. module: project
 #: model:res.groups,name:project.group_project_stages
 msgid "Use Stages on Project"
-msgstr ""
+msgstr "プロジェクトでステージを使用"
 
 #. module: project
 #: model:res.groups,name:project.group_subtask_project
@@ -4933,7 +4933,7 @@ msgstr "サブタスクを使用"
 #. module: project
 #: model:res.groups,name:project.group_project_task_dependencies
 msgid "Use Task Dependencies"
-msgstr ""
+msgstr "依存タスクを使用"
 
 #. module: project
 #: model:ir.model.fields,field_description:project.field_project_project__label_tasks

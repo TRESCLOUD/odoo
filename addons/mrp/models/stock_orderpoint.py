@@ -13,10 +13,11 @@ class StockWarehouseOrderpoint(models.Model):
         'mrp.bom', string='Bill of Materials', check_company=True,
         domain="[('type', '=', 'normal'), '&', '|', ('company_id', '=', company_id), ('company_id', '=', False), '|', ('product_id', '=', product_id), '&', ('product_id', '=', False), ('product_tmpl_id', '=', product_tmpl_id)]")
 
-    def _get_replenishment_order_notification(self):
+    def _get_replenishment_order_notification(self, written_after):
         self.ensure_one()
         production = self.env['mrp.production'].search([
-            ('orderpoint_id', 'in', self.ids)
+            ('orderpoint_id', 'in', self.ids),
+            ('write_date', '>', written_after)
         ], order='create_date desc', limit=1)
         if production:
             action = self.env.ref('mrp.action_mrp_production_form')
@@ -33,7 +34,7 @@ class StockWarehouseOrderpoint(models.Model):
                     'sticky': False,
                 }
             }
-        return super()._get_replenishment_order_notification()
+        return super()._get_replenishment_order_notification(written_after)
 
     @api.depends('route_id')
     def _compute_show_bom(self):
@@ -50,7 +51,8 @@ class StockWarehouseOrderpoint(models.Model):
             for orderpoint in self
             if orderpoint.product_id in bom_kits
         }
-        res = super(StockWarehouseOrderpoint, self.filtered(lambda p: p not in bom_kit_orderpoints))._quantity_in_progress()
+        orderpoints_without_kit = self - self.env['stock.warehouse.orderpoint'].concat(*bom_kit_orderpoints.keys())
+        res = super(StockWarehouseOrderpoint, orderpoints_without_kit)._quantity_in_progress()
         for orderpoint in bom_kit_orderpoints:
             dummy, bom_sub_lines = bom_kit_orderpoints[orderpoint].explode(orderpoint.product_id, 1)
             ratios_qty_available = []
@@ -73,6 +75,18 @@ class StockWarehouseOrderpoint(models.Model):
             #  (the quantity if we have received all in-progress components) - (the quantity using only available components)
             product_qty = min(ratios_total or [0]) - min(ratios_qty_available or [0])
             res[orderpoint.id] = orderpoint.product_id.uom_id._compute_quantity(product_qty, orderpoint.product_uom, round=False)
+
+        bom_manufacture = self.env['mrp.bom']._bom_find(orderpoints_without_kit.product_id, bom_type='normal')
+        bom_manufacture = self.env['mrp.bom'].concat(*bom_manufacture.values())
+        productions_group = self.env['mrp.production'].read_group(
+            [('bom_id', 'in', bom_manufacture.ids), ('state', '=', 'draft'), ('orderpoint_id', 'in', orderpoints_without_kit.ids)],
+            ['orderpoint_id', 'product_qty', 'product_uom_id'],
+            ['orderpoint_id', 'product_uom_id'], lazy=False)
+        for p in productions_group:
+            uom = self.env['uom.uom'].browse(p['product_uom_id'][0])
+            orderpoint = self.env['stock.warehouse.orderpoint'].browse(p['orderpoint_id'][0])
+            res[orderpoint.id] += uom._compute_quantity(
+                p['product_qty'], orderpoint.product_uom, round=False)
         return res
 
     def _get_qty_multiple_to_order(self):

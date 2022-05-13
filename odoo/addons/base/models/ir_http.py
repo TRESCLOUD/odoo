@@ -397,12 +397,10 @@ class IrHttp(models.AbstractModel):
             content = record[field] or ''
 
         # filename
-        default_filename = False
         if not filename:
             if filename_field in record:
                 filename = record[filename_field]
             if not filename:
-                default_filename = True
                 filename = "%s-%s-%s" % (record._name, record.id, field)
 
         if not mimetype:
@@ -413,8 +411,8 @@ class IrHttp(models.AbstractModel):
             mimetype = guess_mimetype(decoded_content, default=default_mimetype)
 
         # extension
-        _, existing_extension = os.path.splitext(filename)
-        if not existing_extension or default_filename:
+        has_extension = bool(mimetypes.guess_type(filename)[0])
+        if not has_extension:
             extension = mimetypes.guess_extension(mimetype)
             if extension:
                 filename = "%s%s" % (filename, extension)
@@ -473,7 +471,8 @@ class IrHttp(models.AbstractModel):
         content, headers, status = None, [], None
 
         if record._name == 'ir.attachment':
-            status, content, filename, mimetype, filehash = self._binary_ir_attachment_redirect_content(record, default_mimetype=default_mimetype)
+            status, content, default_filename, mimetype, filehash = self._binary_ir_attachment_redirect_content(record, default_mimetype=default_mimetype)
+            filename = filename or default_filename
         if not content:
             status, content, filename, mimetype, filehash = self._binary_record_content(
                 record, field=field, filename=filename, filename_field=filename_field,

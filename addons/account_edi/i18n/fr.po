@@ -6,6 +6,7 @@
 # Chaplet34 <charleskolie2@gmail.com>, 2021
 # Gwladys Jouble <g.jouble@vieconnect.io>, 2021
 # Martin Trigaux, 2022
+# Thomas Charpentier, 2022
 # Cécile Collart <cco@odoo.com>, 2022
 # 
 msgid ""
@@ -26,19 +27,19 @@ msgstr ""
 #: code:addons/account_edi/models/account_move.py:0
 #, python-format
 msgid " Electronic invoicing error(s)"
-msgstr ""
+msgstr "Erreur(s) de facturation électronique"
 
 #. module: account_edi
 #: code:addons/account_edi/models/account_move.py:0
 #, python-format
 msgid " Electronic invoicing info(s)"
-msgstr ""
+msgstr "Info(s) sur la facturation électronique"
 
 #. module: account_edi
 #: code:addons/account_edi/models/account_move.py:0
 #, python-format
 msgid " Electronic invoicing warning(s)"
-msgstr ""
+msgstr "Avertissement(s) de facturation électronique"
 
 #. module: account_edi
 #: code:addons/account_edi/models/account_move.py:0
@@ -256,7 +257,7 @@ msgstr "Format du Nom"
 #: model:ir.model.fields,help:account_edi.field_account_move__edi_error_count
 #: model:ir.model.fields,help:account_edi.field_account_payment__edi_error_count
 msgid "How many EDIs are in error for this move ?"
-msgstr "Combien d'EDIs sont en statut d'erreur dans ce déplacement?"
+msgstr "Combien d'EDIs sont en statut d'erreur dans ce déplacement ?"
 
 #. module: account_edi
 #: model:ir.model.fields,field_description:account_edi.field_account_edi_document__id

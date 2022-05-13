@@ -1000,7 +1000,9 @@ var FieldDate = InputField.extend({
             let value = this.$input.val();
             try {
                 value = this._parseValue(value);
-                value.add(-this.getSession().getTZOffset(value), "minutes");
+                if (this.field.type === "datetime") {
+                    value.add(-this.getSession().getTZOffset(value), "minutes");
+                }
             } catch (err) {}
             await this._setValue(value);
             this._render();
@@ -4067,7 +4069,7 @@ var FieldColorPicker = FieldInteger.extend({
         _t('Green'),
         _t('Purple'),
     ],
-
+    widthInList: '1',
     /**
      * Prepares the rendering, since we are based on an input but not using it
      * setting tagName after parent init force the widget to not render an input

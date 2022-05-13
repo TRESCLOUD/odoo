@@ -454,7 +454,7 @@ class MrpProduction(models.Model):
         produce and all work orders has been finished.
         """
         for production in self:
-            if not production.state:
+            if not production.state or not production.product_uom_id:
                 production.state = 'draft'
             elif production.state == 'cancel' or (production.move_finished_ids and all(move.state == 'cancel' for move in production.move_finished_ids)):
                 production.state = 'cancel'
@@ -462,7 +462,7 @@ class MrpProduction(models.Model):
                 production.state = 'done'
             elif production.workorder_ids and all(wo_state in ('done', 'cancel') for wo_state in production.workorder_ids.mapped('state')):
                 production.state = 'to_close'
-            elif not production.workorder_ids and production.qty_producing >= production.product_qty:
+            elif not production.workorder_ids and float_compare(production.qty_producing, production.product_qty, precision_rounding=production.product_uom_id.rounding) >= 0:
                 production.state = 'to_close'
             elif any(wo_state in ('progress', 'done') for wo_state in production.workorder_ids.mapped('state')):
                 production.state = 'progress'
@@ -1017,18 +1017,23 @@ class MrpProduction(models.Model):
         self.ensure_one()
         update_info = []
         move_to_unlink = self.env['stock.move']
+        moves_to_assign = self.env['stock.move']
         for move in self.move_raw_ids.filtered(lambda m: m.state not in ('done', 'cancel')):
             old_qty = move.product_uom_qty
             new_qty = old_qty * factor
             if new_qty > 0:
                 move.write({'product_uom_qty': new_qty})
-                move._action_assign()
+                if move._should_bypass_reservation() \
+                        or move.picking_type_id.reservation_method == 'at_confirm' \
+                        or (move.reservation_date and move.reservation_date <= fields.Date.today()):
+                    moves_to_assign |= move
                 update_info.append((move, old_qty, new_qty))
             else:
                 if move.quantity_done > 0:
                     raise UserError(_('Lines need to be deleted, but can not as you still have some quantities to consume in them. '))
                 move._action_cancel()
                 move_to_unlink |= move
+        moves_to_assign._action_assign()
         move_to_unlink.unlink()
         return update_info
 
@@ -1441,8 +1446,8 @@ class MrpProduction(models.Model):
         for order in self:
             finish_moves = order.move_finished_ids.filtered(lambda m: m.product_id == order.product_id and m.state not in ('done', 'cancel'))
             # the finish move can already be completed by the workorder.
-            if not finish_moves.quantity_done:
-                finish_moves.quantity_done = float_round(order.qty_producing - order.qty_produced, precision_rounding=order.product_uom_id.rounding, rounding_method='HALF-UP')
+            if finish_moves and not finish_moves.quantity_done:
+                finish_moves._set_quantity_done(float_round(order.qty_producing - order.qty_produced, precision_rounding=order.product_uom_id.rounding, rounding_method='HALF-UP'))
                 finish_moves.move_line_ids.lot_id = order.lot_producing_id
             order._cal_price(moves_to_do_by_order[order.id])
         moves_to_finish = self.move_finished_ids.filtered(lambda x: x.state not in ('done', 'cancel'))
@@ -1600,7 +1605,7 @@ class MrpProduction(models.Model):
                     state='confirmed'
                 ))
 
-        backorders = self.env['mrp.production'].create(backorder_vals_list)
+        backorders = self.env['mrp.production'].with_context(skip_confirm=True).create(backorder_vals_list)
 
         index = 0
         production_to_backorders = {}

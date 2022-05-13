@@ -556,7 +556,7 @@ msgid ""
 msgstr ""
 "<span class=\"badge badge-pill badge-warning\"><i class=\"fa fa-fw fa-"
 "remove\" aria-label=\"Cancelled\" title=\"Annullata\" role=\"img\"/><span "
-"class=\"d-none d-md-inline\"> Annullata</span></span>"
+"class=\"d-none d-md-inline\"> Annullato</span></span>"
 
 #. module: account
 #: model_terms:ir.ui.view,arch_db:account.res_config_settings_view_form
@@ -1654,7 +1654,7 @@ msgstr ""
 "Account usato per il trasferimento dell'ammontare delle tasse in contanti. "
 "Conterrà l'ammontae delle tasse come da fattura originale fintanto che la "
 "fattura originale non è riconciliata; una volta riconciliata, questo importo"
-" è cancellato dall'account è posto nell'account relativo alle tasse."
+" è annullato dall'account è posto nell'account relativo alle tasse."
 
 #. module: account
 #: model_terms:ir.ui.view,arch_db:account.view_account_search
@@ -3775,7 +3775,7 @@ msgid ""
 "Choose how you want to credit this invoice. You cannot \"modify\" nor "
 "\"cancel\" if the invoice is already reconciled."
 msgstr ""
-"Scegliere come accreditare questa fattura. Non è possibile \"modificare\" o "
+"Scegli come accreditare questa fattura. Non è possibile \"modificare\" o "
 "\"annullare\" una fattura già riconciliata."
 
 #. module: account
@@ -8930,7 +8930,7 @@ msgstr "Nessun messaggio"
 #. module: account
 #: model:ir.model.fields.selection,name:account.selection__account_fiscal_position__foreign_vat_header_mode__no_template
 msgid "No Template"
-msgstr ""
+msgstr "Nessun modello"
 
 #. module: account
 #: code:addons/account/models/account_journal.py:0
@@ -11515,7 +11515,7 @@ msgstr "Ricerca riga estratti conto bancari"
 #. module: account
 #: model_terms:ir.ui.view,arch_db:account.view_account_chart_template_seacrh
 msgid "Search Chart of Account Templates"
-msgstr "Ricerca modelli piano dei conti"
+msgstr "Cerca modelli piano dei conti"
 
 #. module: account
 #: model_terms:ir.ui.view,arch_db:account.view_account_position_filter
@@ -13187,9 +13187,9 @@ msgid ""
 "This is needed when cancelling the source: it will post the inverse journal "
 "entry to cancel that part too."
 msgstr ""
-"Campo tecnico usato per tenere traccia della riconciliazione fiscale per "
-"cassa. È necessario quando viene cancellata la fonte, per annullare anche "
-"quella parte verrà generato lo storno della registrazione."
+"Campo tecnico usato per tenere traccia della riconciliazione imposte per "
+"cassa. È necessario quando viene annullata l'origine: per annullare anche "
+"quella parte viene confermato lo storno della registrazione."
 
 #. module: account
 #: model:ir.model.fields,help:account.field_account_move_line__recompute_tax_line
@@ -13301,7 +13301,7 @@ msgstr "Modello per la posizione fiscale"
 #. module: account
 #: model:ir.model.fields.selection,name:account.selection__account_fiscal_position__foreign_vat_header_mode__templates_found
 msgid "Templates Found"
-msgstr "Template trovati"
+msgstr "Modelli trovati"
 
 #. module: account
 #: model:ir.model,name:account.model_account_account_template
@@ -13696,6 +13696,18 @@ msgstr ""
 "registrazioni contabili in bozza.- In elaborazione: non più modificabile, "
 "con registrazioni confermate e pronto per la riconciliazione.- Validato: "
 "tutte le righe sono riconciliate, nulla da elaborare."
+
+#. module: account
+#: code:addons/account/wizard/account_automatic_entry_wizard.py:0
+#, python-format
+msgid "The date of some related entries is protected by a lock date"
+msgstr ""
+
+#. module: account
+#: code:addons/account/wizard/account_automatic_entry_wizard.py:0
+#, python-format
+msgid "The date selected is protected by a lock date"
+msgstr ""
 
 #. module: account
 #: code:addons/account/models/account_payment_term.py:0

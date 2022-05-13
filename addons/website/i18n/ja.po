@@ -16,8 +16,8 @@
 # Martin Trigaux, 2022
 # Tim Siu Lai <tl@roomsfor.hk>, 2022
 # Yoshi Tashiro (Quartile) <tashiro@roomsfor.hk>, 2022
-# Noma Yuki, 2022
 # Nankyung Yoon <n.yoon@glavisarchitects.com>, 2022
+# Noma Yuki, 2022
 # Ryoko Tsuda <ryoko@quartile.co>, 2022
 # 
 msgid ""
@@ -196,7 +196,7 @@ msgstr "'%s' は正しいフォーマット（datetime）ではありません"
 #: model_terms:ir.ui.view,arch_db:website.list_website_public_pages
 #, python-format
 msgid "'. Showing results for '"
-msgstr ""
+msgstr "'. 右記の結果を表示しています'"
 
 #. module: website
 #. openerp-web
@@ -5994,7 +5994,7 @@ msgstr "レイアウト"
 #. module: website
 #: model_terms:ir.ui.view,arch_db:website.s_countdown_options
 msgid "Layout Background"
-msgstr ""
+msgstr "レイアウト背景"
 
 #. module: website
 #: model_terms:ir.ui.view,arch_db:website.s_countdown_options
@@ -8243,7 +8243,7 @@ msgstr "メニューを選択"
 #. module: website
 #: model_terms:ir.ui.view,arch_db:website.res_config_settings_view_form
 msgid "Select a website to load its settings."
-msgstr ""
+msgstr "設定をロードするには、ウェブサイトを選択してください。"
 
 #. module: website
 #. openerp-web

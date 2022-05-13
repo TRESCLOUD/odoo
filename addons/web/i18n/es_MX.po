@@ -5,7 +5,7 @@
 # Translators:
 # Patricia Gutiérrez Capetillo <pagc@odoo.com>, 2021
 # Lucia Pacheco <lpo@odoo.com>, 2021
-# Braulio D. López Vázquez <bdl@odoo.com>, 2021
+# Braulio D. López Vázquez <bdl@odoo.com>, 2022
 # Martin Trigaux, 2022
 # 
 msgid ""
@@ -432,6 +432,13 @@ msgstr "Acceder a todas las aplicaciones empresariales"
 #. openerp-web
 #: code:addons/web/static/src/legacy/xml/base.xml:0
 #, python-format
+msgid "Action"
+msgstr "Acción"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/legacy/xml/base.xml:0
+#, python-format
 msgid "Action ID:"
 msgstr "ID de acción:"
 
@@ -574,6 +581,13 @@ msgstr "Agregar etiqueta"
 #, python-format
 msgid "Add to Favorites"
 msgstr "Agregar a favoritos"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/legacy/xml/base.xml:0
+#, python-format
+msgid "Additional actions"
+msgstr ""
 
 #. module: web
 #. openerp-web
@@ -3439,6 +3453,13 @@ msgstr "Imprimir"
 
 #. module: web
 #. openerp-web
+#: code:addons/web/static/src/legacy/xml/report.xml:0
+#, python-format
+msgid "Printing options"
+msgstr ""
+
+#. module: web
+#. openerp-web
 #: code:addons/web/static/src/legacy/js/fields/basic_fields.js:0
 #, python-format
 msgid "Priority"
@@ -4900,6 +4921,12 @@ msgstr "Sí"
 #, python-format
 msgid "Yesterday"
 msgstr "Ayer"
+
+#. module: web
+#: code:addons/web/controllers/main.py:0
+#, python-format
+msgid "You are not allowed to upload an attachment here."
+msgstr "No tiene permitido subir archivos adjuntos aquí."
 
 #. module: web
 #. openerp-web

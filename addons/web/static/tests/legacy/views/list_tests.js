@@ -7757,6 +7757,54 @@ QUnit.module('Views', {
         list.destroy();
     });
 
+    QUnit.test('multi edit in view grouped by field not in view', async function (assert) {
+        assert.expect(3);
+
+        this.data.foo.records = [
+            // group 1
+            {id: 1, foo: '1', m2o: 1},
+            {id: 3, foo: '2', m2o: 1},
+            //group 2
+            {id: 2, foo: '1', m2o: 2},
+            {id: 4, foo: '2', m2o: 2},
+            // group 3
+            {id: 5, foo: '2', m2o: 3},
+        ];
+
+        const list = await createView({
+            View: ListView,
+            model: 'foo',
+            data: this.data,
+            arch: `<tree expand="1" multi_edit="1">
+                   <field name="foo"/>
+               </tree>`,
+            groupBy: ['m2o'],
+        });
+
+        // Select items from the first group
+        await testUtils.dom.click(list.$('.o_data_row .o_list_record_selector input:eq(0)'));
+        await testUtils.dom.click(list.$('.o_data_row .o_list_record_selector input:eq(1)'));
+
+        await testUtils.dom.click(list.$('.o_list_char:eq(0)'));
+
+        await testUtils.fields.editInput(list.$('.o_field_widget[name=foo]'), 'test');
+
+        assert.containsOnce(document.body, '.modal');
+        await testUtils.dom.click($('.modal .modal-footer .btn-primary'));
+        assert.containsNone(document.body, '.modal');
+
+        const allNames = [...document.querySelectorAll('.o_data_cell')].map(n => n.textContent);
+        assert.deepEqual(allNames, [
+            'test',
+            'test',
+            '1',
+            '2',
+            '2',
+        ]);
+
+        list.destroy();
+    });
+
     QUnit.test('multi edit reference field batched in grouped list', async function (assert) {
         assert.expect(18);
 
@@ -12756,6 +12804,29 @@ QUnit.module('Views', {
         await testUtils.dom.click(list.$('.o_data_cell:eq(1)'))
         assert.ok($('table.o_list_table > tbody > tr:eq(1)')[0].classList.contains('o_selected_row'), "The second row should be selected")
 
+        list.destroy();
+    });
+
+    QUnit.test('FieldColorPicker: dont overflow color picker in list', async function (assert) {
+        const list = await createView({
+            View: ListView,
+            model: 'foo',
+            data: this.data,
+            arch: `
+                <tree editable="top" string="Partners">
+                    <field name="date"/>
+                    <field name="int_field" widget="color_picker"/>
+                </tree>`,
+            domain: [['id', '<', 0]],
+       });
+        await testUtils.dom.click(list.el.querySelector('.o_list_button_add'))
+        const date_column_width = list.el.querySelector('.o_list_table thead th[data-name="date"]').style.width.replace('px', '');
+        const int_field_column_width = list.el.querySelector('.o_list_table thead th[data-name="int_field"]').style.width.replace('px', '');
+        // Default values for date and int fields are: date: '92px', integer: '74px'
+        // With the screen growing, the proportion is kept and thus int_field would remain smaller than date if
+        // the color_picker wouldn't have widthInList set to '1'. With that property set, int_field size will be bigger
+        // than date's one.
+        assert.ok(parseFloat(date_column_width) < parseFloat(int_field_column_width), "colorpicker should display properly (Horizontly)");
         list.destroy();
     });
 

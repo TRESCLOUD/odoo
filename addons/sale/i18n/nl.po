@@ -466,7 +466,7 @@ msgid ""
 msgstr ""
 "<div style=\"margin: 0px; padding: 0px;\">\n"
 "    <p style=\"margin: 0px; padding: 0px; font-size: 13px;\">\n"
-"        <t t-set=\"doc_name\" t-value=\"'quotation' if object.state in ('draft', 'sent') else 'order'\"/>\n"
+"        <t t-set=\"doc_name\" t-value=\"'offerte' if object.state in ('draft', 'sent') else 'orderbevestiging'\"/>\n"
 "        Hallo,\n"
 "        <br/><br/>\n"
 "        Je\n"
@@ -792,7 +792,7 @@ msgstr "<strong>Deze offerte is geannuleerd.</strong>"
 #. module: sale
 #: model_terms:ir.ui.view,arch_db:sale.report_saleorder_document
 msgid "<strong>Your Reference:</strong>"
-msgstr "<strong>Jouw referentie:</strong>"
+msgstr "<strong>Klantreferentie:</strong>"
 
 #. module: sale
 #: model:ir.model.constraint,message:sale.constraint_sale_order_date_order_conditional_required
@@ -4475,7 +4475,7 @@ msgstr "USPS connector"
 #. module: sale
 #: model:ir.model,name:sale.model_utm_campaign
 msgid "UTM Campaign"
-msgstr "UTM-campagne"
+msgstr "UTM Campagne"
 
 #. module: sale
 #: model:ir.model.fields,field_description:sale.field_sale_order_line__price_unit

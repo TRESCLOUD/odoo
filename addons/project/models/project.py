@@ -440,22 +440,34 @@ class Project(models.Model):
 
     def map_tasks(self, new_project_id):
         """ copy and map tasks from old to new project """
+        self.ensure_one()
         project = self.browse(new_project_id)
         tasks = self.env['project.task']
         # We want to copy archived task, but do not propagate an active_test context key
         task_ids = self.env['project.task'].with_context(active_test=False).search([('project_id', '=', self.id)], order='parent_id').ids
         old_to_new_tasks = {}
-        for task in self.env['project.task'].browse(task_ids):
+        all_tasks = self.env['project.task'].browse(task_ids)
+        for task in all_tasks:
             # preserve task name and stage, normally altered during copy
             defaults = self._map_tasks_default_valeus(task, project)
             if task.parent_id:
                 # set the parent to the duplicated task
                 defaults['parent_id'] = old_to_new_tasks.get(task.parent_id.id, False)
+            elif task.display_project_id == self:
+                defaults['project_id'] = project.id
+                defaults['display_project_id'] = project.id
             new_task = task.copy(defaults)
             # If child are created before parent (ex sub_sub_tasks)
             new_child_ids = [old_to_new_tasks[child.id] for child in task.child_ids if child.id in old_to_new_tasks]
             tasks.browse(new_child_ids).write({'parent_id': new_task.id})
             old_to_new_tasks[task.id] = new_task.id
+            if task.allow_task_dependencies:
+                depend_on_ids = [t.id if t not in all_tasks else old_to_new_tasks.get(t.id, None) for t in
+                                 task.depend_on_ids]
+                new_task.write({'depend_on_ids': [Command.link(tid) for tid in depend_on_ids if tid]})
+                dependent_ids = [t.id if t not in all_tasks else old_to_new_tasks.get(t.id, None) for t in
+                                 task.dependent_ids]
+                new_task.write({'dependent_ids': [Command.link(tid) for tid in dependent_ids if tid]})
             tasks += new_task
 
         return project.write({'tasks': [(6, 0, tasks.ids)]})
@@ -1003,10 +1015,10 @@ class Task(models.Model):
     allow_task_dependencies = fields.Boolean(related='project_id.allow_task_dependencies')
     # Tracking of this field is done in the write function
     depend_on_ids = fields.Many2many('project.task', relation="task_dependencies_rel", column1="task_id",
-                                     column2="depends_on_id", string="Blocked By", tracking=True,
+                                     column2="depends_on_id", string="Blocked By", tracking=True, copy=False,
                                      domain="[('allow_task_dependencies', '=', True), ('id', '!=', id)]")
     dependent_ids = fields.Many2many('project.task', relation="task_dependencies_rel", column1="depends_on_id",
-                                     column2="task_id", string="Block",
+                                     column2="task_id", string="Block", copy=False,
                                      domain="[('allow_task_dependencies', '=', True), ('id', '!=', id)]")
     dependent_tasks_count = fields.Integer(string="Dependent Tasks", compute='_compute_dependent_tasks_count')
 
