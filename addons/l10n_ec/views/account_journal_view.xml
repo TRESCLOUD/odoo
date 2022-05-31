@@ -12,11 +12,13 @@
                     <field name="l10n_ec_emission"
                            attrs="{'invisible':['|', '|', ('country_code', '!=', 'EC'), ('l10n_latam_use_documents', '=', False), ('type', 'not in', ('sale', 'purchase'))], 'required':[('country_code', '=', 'EC'), ('l10n_latam_use_documents', '=', True), ('type', 'not in', ('sale', 'purchase'))]}"
                     />
+                    <!-- #TODO, review with Odoo, the required attribute is not working, and is causing problems to withhold sales journal, I suggest to remove the required restriction, to discuss
                     <field name="l10n_ec_emission_address_id"
                            attrs="{'invisible':['|', '|', ('country_code', '!=', 'EC'), ('l10n_latam_use_documents', '=', False), ('type', 'not in', ('sale', 'purchase'))], 'required':[('country_code', '=', 'EC'), ('l10n_latam_use_documents', '=', True), ('type', 'not in', ('sale', 'purchase'))]}"
                     />
-                    <field name="l10n_ec_emission_type"
-                           attrs="{'invisible':['|', '|', ('country_code', '!=', 'EC'), ('l10n_latam_use_documents', '=', False), ('type', 'not in', ('sale', 'purchase'))], 'required':[('country_code', '=', 'EC'), ('l10n_latam_use_documents', '=', True), ('type', 'not in', ('sale', 'purchase'))]}"
+                    -->
+                    <field name="l10n_ec_emission_address_id"
+                           attrs="{'invisible':['|', '|', ('country_code', '!=', 'EC'), ('l10n_latam_use_documents', '=', False), ('type', 'not in', ('sale', 'purchase'))]}"
                     />
                 </field>
             </field>

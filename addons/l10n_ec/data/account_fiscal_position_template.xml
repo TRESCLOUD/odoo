@@ -50,6 +50,6 @@
     </record>
     <record id="fp_others" model="account.fiscal.position.template">
         <field name="chart_template_id" ref="l10n_ec_ifrs"/>
-        <field name="name">Otras - sin cálculo automático de retención de iva</field>
+        <field name="name">Otras - sin cálculo automático de retención de IVA</field>
     </record>
 </odoo>

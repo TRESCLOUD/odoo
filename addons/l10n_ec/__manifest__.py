@@ -2,7 +2,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 {
     "name": "Ecuadorian Accounting",
-    "version": "3.3",
+    "version": "3.4",
     "description": """
 Functional
 ----------
@@ -78,4 +78,5 @@ Master Data:
     "installable": True,
     "auto_install": False,
     "application": False,
+    'post_init_hook': '_post_install_hook_configure_ecuadorian',
 }
