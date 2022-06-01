@@ -9,7 +9,6 @@ class SriPayment(models.Model):
     _name = "l10n_ec.sri.payment"
     _description = "SRI Payment Method"
     _order = 'active DESC, sequence, id'
-    _inherit = ['mail.thread']
 
     sequence = fields.Integer(default=10)
     code = fields.Char("Code")
