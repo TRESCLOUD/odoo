@@ -31,7 +31,7 @@ class AccountChartTemplate(models.Model):
                         'name': new_journal['name'],
                         'code': new_journal['code'],
                         'l10n_latam_use_documents': True,
-                        'type': 'sale',
+                        'type': 'purchase',
                         'company_id': company.id,
                         'show_on_dashboard': True,
                     })
