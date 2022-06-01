@@ -19,12 +19,9 @@ class AccountChartTemplate(models.Model):
         ecuadorian_companies = companies.filtered(lambda r: r.country_code == 'EC')
         for company in ecuadorian_companies:
             self = self.with_company(company)
-            #Create withhold journals
             new_journals = [
-                {'code':'NCRED', 'name':'001-001 Nota de crédito'},
-                {'code':'NDEBI', 'name':'001-001 Nota de débito'},
                 {'code':'LIQCO', 'name':'001-001 Liquidación de compra'}
-                ]
+                ] #withhold journals will created in specific module
             for new_journal in new_journals:
                 journal = self.env['account.journal'].search([
                     ('code', '=', new_journal['code']),
@@ -37,6 +34,5 @@ class AccountChartTemplate(models.Model):
                         'type': 'sale',
                         'company_id': company.id,
                         'show_on_dashboard': True,
-                        'default_account_id': self.property_account_income_categ_id.id
                     })
     
