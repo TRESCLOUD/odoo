@@ -32,10 +32,10 @@ Master Data:
 * Ecuador banks
 * Partners: Consumidor Final, SRI, IESS, and also basic VAT validation
     """,
-    "author": "OPA CONSULTING & TRESCLOUD",
+    "author": "TRESCLOUD & OPA CONSULTING",
     "category": "Accounting/Localizations/Account Charts",
-    "maintainer": "OPA CONSULTING",
-    "website": "https://opa-consulting.com",
+    "maintainer": "TRESCLOUD",
+    "website": "https://www.trescloud.com",
     "license": "LGPL-3",
     "depends": [
         "base",
