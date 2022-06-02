@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from odoo import api, SUPERUSER_ID
-  
+
 def update_withhold_type(env):
     # reclasifies withhold taxes into independent tax groups for sales and purchases
     env.cr.execute('''
@@ -24,7 +24,7 @@ def update_withhold_type(env):
         set tax_group_id=t.id from (select id from account_tax_group where l10n_ec_type='withhold_income_purchase') as t
         where account_tax.id in (select id from account_tax where tax_group_id in (select id from account_tax_group where l10n_ec_type='withhold_income_tax') and type_tax_use='purchase')
     ''')
-    
+
 def update_type_tax_use(env):
     # sets type_tax_use = none for withholding taxes
     env.cr.execute('''
@@ -32,13 +32,13 @@ def update_type_tax_use(env):
         set type_tax_use = 'none'
         where tax_group_id in (select id from account_tax_group where l10n_ec_type in ('withhold_income_purchase','withhold_vat_purchase','withhold_income_sale','withhold_vat_sale'))
     ''')
-    
+
 def unlink_old_withhold_group(env):
     deprecated_withhold_vat_group = env.ref('l10n_ec.tax_group_withhold_vat')
     deprecated_withhold_profit_group = env.ref('l10n_ec.tax_group_withhold_income')
     deprecated_withhold_vat_group and deprecated_withhold_vat_group.unlink()
     deprecated_withhold_profit_group and deprecated_withhold_profit_group.unlink()
-    
+
 def update_vat_withhold_base_percent(env):
     # For vat withhold taxes, replace factor_percent=12% with factor_percent=100%
     all_companies = env['res.company'].search([])
@@ -77,7 +77,7 @@ def recompute_invoice_names(env):
         AND am.id = account_move.id
         AND am.company_id in %s
         ''', [tuple(ecuadorian_companies.ids)])
-    
+
 def migrate(cr, version):
     env = api.Environment(cr, SUPERUSER_ID, {})
     update_withhold_type(env)
@@ -85,7 +85,3 @@ def migrate(cr, version):
     unlink_old_withhold_group(env)
     update_vat_withhold_base_percent(env)
     recompute_invoice_names(env)
-    
-
-
-    

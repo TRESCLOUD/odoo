@@ -7,7 +7,7 @@ import re
 
 class L10nLatamDocumentType(models.Model):
     _inherit = "l10n_latam.document.type"
-    
+
     internal_type = fields.Selection(
         selection_add=[
             ("purchase_liquidation", "Purchase Liquidation"),
@@ -36,5 +36,4 @@ class L10nLatamDocumentType(models.Model):
                     _(u"Ecuadorian Document %s must be like 001-001-123456789")
                     % (self.display_name)
                 )
-
         return document_number
