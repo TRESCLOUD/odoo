@@ -654,9 +654,7 @@ class AccountInvoice(models.Model):
         #MODIFICADO POR TRESCLOUD #Fixes CLIENTES-2442
         #aunque podría afectar un poco el performance pues se computa muchas veces
         #en los onchange de las facturas
-        round_curr = self.currency_id.round
-        base = round_curr(tax['base']) 
-        
+        base = self.apply_round_tax_line(tax)
         vals = {
             'invoice_id': self.id,
             'name': tax['name'],
@@ -677,6 +675,12 @@ class AccountInvoice(models.Model):
             vals['account_analytic_id'] = line.account_analytic_id.id
 
         return vals
+
+    def apply_round_tax_line(self, tax):
+        #Hook sera modificado en un metodo superior.
+        round_curr = self.currency_id.round
+        base = round_curr(tax['base'])
+        return base
 
     @api.multi
     def get_taxes_values(self):
