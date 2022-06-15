@@ -54,7 +54,7 @@ class AccountEdiFormat(models.Model):
 
         return '%(country_code)s%(codice)s_%(progressive_number)s.xml' % {
             'country_code': invoice.company_id.country_id.code,
-            'codice': invoice.company_id.l10n_it_codice_fiscale.replace(' ', ''),
+            'codice': self.env['res.partner']._l10n_it_normalize_codice_fiscale(invoice.company_id.l10n_it_codice_fiscale),
             'progressive_number': progressive_number.zfill(5),
         }
 
@@ -452,10 +452,13 @@ class AccountEdiFormat(models.Model):
                         if invoice_form.partner_id and invoice_form.partner_id.commercial_partner_id:
                             bank = self.env['res.partner.bank'].search([
                                 ('acc_number', '=', elements[0].text),
-                                ('partner_id.id', '=', invoice_form.partner_id.commercial_partner_id.id)
-                                ])
+                                ('partner_id', '=', invoice_form.partner_id.commercial_partner_id.id),
+                                ('company_id', 'in', [invoice_form.company_id.id, False])
+                            ], order='company_id', limit=1)
                         else:
-                            bank = self.env['res.partner.bank'].search([('acc_number', '=', elements[0].text)])
+                            bank = self.env['res.partner.bank'].search([
+                                ('acc_number', '=', elements[0].text), ('company_id', 'in', [invoice_form.company_id.id, False])
+                            ], order='company_id', limit=1)
                         if bank:
                             invoice_form.partner_bank_id = bank
                         else:

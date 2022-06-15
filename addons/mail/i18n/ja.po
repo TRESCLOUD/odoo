@@ -11,13 +11,13 @@
 # Konno Takatsugu <konno@token-express.com>, 2022
 # Tim Siu Lai <tl@roomsfor.hk>, 2022
 # Hau Dao <hau@quartile.co>, 2022
-# 江口和志 <k_eguchi@enzantrades.co.jp>, 2022
 # Shunho Kin <s-kin@shonan-innovation.co.jp>, 2022
 # Kawakami Taro <ratorin@gmail.com>, 2022
 # Norimichi Sugimoto <norimichi.sugimoto@tls-ltd.co.jp>, 2022
 # Noma Yuki, 2022
 # Yoshi Tashiro (Quartile) <tashiro@roomsfor.hk>, 2022
 # Martin Trigaux, 2022
+# 江口和志 <k_eguchi@enzantrades.co.jp>, 2022
 # Ryoko Tsuda <ryoko@quartile.co>, 2022
 # 
 msgid ""
@@ -1403,7 +1403,7 @@ msgstr "CC"
 #: model:ir.model.fields,field_description:mail.field_mail_activity__chaining_type
 #: model:ir.model.fields,field_description:mail.field_mail_activity_type__chaining_type
 msgid "Chaining Type"
-msgstr ""
+msgstr "チェーンタイプ"
 
 #. module: mail
 #. openerp-web
@@ -6224,7 +6224,7 @@ msgstr "左にシフト"
 #: code:addons/mail/static/src/components/chat_window_header/chat_window_header.js:0
 #, python-format
 msgid "Shift right"
-msgstr "右シフト"
+msgstr "右にシフト"
 
 #. module: mail
 #: model:ir.model.fields,field_description:mail.field_mail_mail__description
