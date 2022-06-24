@@ -1,5 +1,5 @@
 from odoo import api, fields, models, _
-from odoo.exceptions import UserError, ValidationError
+from odoo.exceptions import ValidationError
 
 
 
@@ -14,7 +14,7 @@ class AccountJournal(models.Model):
         string="Emission address",
         domain="['|', ('id', '=', company_partner_id), '&', ('id', 'child_of', company_partner_id), ('type', '!=', 'contact')]",
     )
-    
+
     #TODO: On next release deprecate field as is it has no use
     l10n_ec_emission_type = fields.Selection(
         string="Emission type",
