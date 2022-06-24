@@ -34,8 +34,8 @@ def update_type_tax_use(env):
     ''')
 
 def unlink_old_withhold_group(env):
-    deprecated_withhold_vat_group = env.ref('l10n_ec.tax_group_withhold_vat')
-    deprecated_withhold_profit_group = env.ref('l10n_ec.tax_group_withhold_income')
+    deprecated_withhold_vat_group = env.ref('l10n_ec.tax_group_withhold_vat', False)
+    deprecated_withhold_profit_group = env.ref('l10n_ec.tax_group_withhold_income', False)
     deprecated_withhold_vat_group and deprecated_withhold_vat_group.unlink()
     deprecated_withhold_profit_group and deprecated_withhold_profit_group.unlink()
 
