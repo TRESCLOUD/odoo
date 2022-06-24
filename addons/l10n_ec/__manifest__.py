@@ -66,6 +66,8 @@ Master Data:
         "data/account_chart_template_configure_data.xml",
         "data/l10n_latam.document.type.csv",
         "data/l10n_ec.sri.payment.csv",
+        # Views
+        "views/root_sri_menu.xml",
         "views/account_tax_view.xml",
         "views/l10n_latam_document_type_view.xml",
         "views/l10n_ec_sri_payment.xml",
@@ -78,5 +80,4 @@ Master Data:
     "installable": True,
     "auto_install": False,
     "application": False,
-    'post_init_hook': '_post_install_hook_configure_ecuadorian',
 }
