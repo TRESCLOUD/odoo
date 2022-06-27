@@ -144,7 +144,8 @@ class IrMailServer(models.Model):
     smtp_host = fields.Char(string='SMTP Server', required=True, help="Hostname or IP of SMTP server")
     smtp_port = fields.Integer(string='SMTP Port', size=5, required=True, default=25, help="SMTP Port. Usually 465 for SSL, and 25 or 587 for other cases.")
     smtp_user = fields.Char(string='Username', size=64, help="Optional username for SMTP authentication")
-    smtp_pass = fields.Char(string='Password', size=64, help="Optional password for SMTP authentication")
+    # MODIFICADO TRESCLOUD:  sendgrid usa API KEYS de 70 caracteres minimo
+    smtp_pass = fields.Char(string='Password', size=128, help="Optional password for SMTP authentication")
     smtp_encryption = fields.Selection([('none', 'None'),
                                         ('starttls', 'TLS (STARTTLS)'),
                                         ('ssl', 'SSL/TLS')],
