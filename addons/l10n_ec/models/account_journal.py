@@ -26,7 +26,7 @@ class AccountJournal(models.Model):
         default="electronic",
     )
 
-    @api.constrains('l10n_ec_entity', 'l10n_ec_emmision')
+    @api.constrains('l10n_ec_entity', 'l10n_ec_emission')
     def l10n_ec_check_moves_entity_emmision(self):
         for journal in self:
             if self.env['account.move'].search([('journal_id', '=', journal.id), ('posted_before', '=', True)], limit=1):
