@@ -526,6 +526,7 @@ class PurchaseOrderLine(models.Model):
             'product_uom_qty': product_uom_qty,
             'product_uom': product_uom.id,
             'product_packaging_id': self.product_packaging_id.id,
+            'sequence': self.sequence,
         }
 
     @api.model
@@ -610,4 +611,4 @@ class PurchaseOrderLine(models.Model):
     @api.model
     def _update_qty_received_method(self):
         """Update qty_received_method for old PO before install this module."""
-        self.search([])._compute_qty_received_method()
+        self.search(['!', ('state', 'in', ['purchase', 'done'])])._compute_qty_received_method()

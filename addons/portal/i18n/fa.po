@@ -7,12 +7,12 @@
 # سید محمد آذربرا <mohammadazarbara98@gmail.com>, 2022
 # Arash Sardari <arashss77@gmail.com>, 2022
 # Hamid Darabi, 2022
-# Sepehr Khoshnood <sepehr.kho@gmail.com>, 2022
 # Far Har <fhari1234@gmail.com>, 2022
 # Faraz Sadri Alamdari <ifarazir@gmail.com>, 2022
 # Hamed Mohammadi <hamed@dehongi.com>, 2022
 # M.Hossein S.Farvashani <Farvashani@gmail.com>, 2022
 # Martin Trigaux, 2022
+# Mohammad Tahmasebi <hit.tah75@gmail.com>, 2022
 # 
 msgid ""
 msgstr ""
@@ -20,7 +20,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-05 10:55+0000\n"
 "PO-Revision-Date: 2021-09-14 12:24+0000\n"
-"Last-Translator: Martin Trigaux, 2022\n"
+"Last-Translator: Mohammad Tahmasebi <hit.tah75@gmail.com>, 2022\n"
 "Language-Team: Persian (https://www.transifex.com/odoo/teams/41243/fa/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -409,7 +409,7 @@ msgstr ""
 #. module: portal
 #: model:ir.model.fields,field_description:portal.field_res_config_settings__portal_allow_api_keys
 msgid "Customer API Keys"
-msgstr ""
+msgstr "کلید‌های API مشتریان"
 
 #. module: portal
 #: model:ir.model.fields,help:portal.field_portal_mixin__access_url
@@ -649,7 +649,7 @@ msgstr "کامنت بگذارید"
 #. module: portal
 #: model_terms:ir.ui.view,arch_db:portal.res_config_settings_view_form
 msgid "Let your customers create developer API keys"
-msgstr ""
+msgstr "به مشتریان خود اجازه دهید کلیدهای توسعه نرم‌افزار (API) بسازند"
 
 #. module: portal
 #: model:ir.model.fields,field_description:portal.field_portal_share__share_link
@@ -798,7 +798,7 @@ msgstr ""
 #. module: portal
 #: model_terms:ir.ui.view,arch_db:portal.portal_record_sidebar
 msgid "Powered by"
-msgstr "راه اندازی شده به وسیله"
+msgstr "قدرت گرفته از"
 
 #. module: portal
 #: model_terms:ir.ui.view,arch_db:portal.pager

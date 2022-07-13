@@ -28,6 +28,8 @@
 # Silvija Butko <silvija.butko@gmail.com>, 2022
 # digitouch UAB <digitouchagencyeur@gmail.com>, 2022
 # Martin Trigaux, 2022
+# Ramunė ViaLaurea <ramune.vialaurea@gmail.com>, 2022
+# Ramunas Kembre, 2022
 # Jonas Zinkevicius <jozi@odoo.com>, 2022
 # 
 msgid ""
@@ -6654,7 +6656,7 @@ msgstr ""
 #. module: base
 #: model_terms:ir.ui.view,arch_db:base.res_lang_form
 msgid "%A - Full day of the week."
-msgstr ""
+msgstr "%A - Pilnas savaitės dienos pavadinimas"
 
 #. module: base
 #: model_terms:ir.ui.view,arch_db:base.res_lang_form
@@ -6689,7 +6691,7 @@ msgstr "%Y - metai su amžiumi.\""
 #. module: base
 #: model_terms:ir.ui.view,arch_db:base.res_lang_form
 msgid "%a - Abbreviated day of the week."
-msgstr ""
+msgstr "%a - Sutrumpintas savaitės dienos pavadinimas"
 
 #. module: base
 #: model_terms:ir.ui.view,arch_db:base.res_lang_form
@@ -6735,7 +6737,7 @@ msgstr ""
 #. module: base
 #: model_terms:ir.ui.view,arch_db:base.res_lang_form
 msgid "%w - Day of the week number [0(Sunday),6].\""
-msgstr ""
+msgstr "%w - Savaitės dienos numeris [0(Sekmadienis),6].\""
 
 #. module: base
 #: model_terms:ir.ui.view,arch_db:base.res_lang_form
@@ -8063,7 +8065,7 @@ msgstr "Aktyvuoti"
 #. module: base
 #: model_terms:ir.ui.view,arch_db:base.res_lang_form
 msgid "Activate and Translate"
-msgstr ""
+msgstr "Aktyvuoti ir versti"
 
 #. module: base
 #: model:ir.model.fields,field_description:base.field_ir_cron__active
@@ -8114,7 +8116,7 @@ msgstr "Pridėti"
 #. module: base
 #: model:ir.actions.act_window,name:base.action_view_base_language_install
 msgid "Add Language"
-msgstr ""
+msgstr "Pridėti kalbą"
 
 #. module: base
 #: model:ir.module.module,description:base.module_data_merge_helpdesk
@@ -10924,7 +10926,7 @@ msgstr ""
 #. module: base
 #: model:ir.model.fields,field_description:base.field_res_company__favicon
 msgid "Company Favicon"
-msgstr ""
+msgstr "Įmonės piktograma"
 
 #. module: base
 #: model:ir.model.fields,field_description:base.field_res_company__logo
@@ -11541,7 +11543,7 @@ msgstr ""
 #. module: base
 #: model_terms:ir.actions.act_window,help:base.action_partner_form
 msgid "Create a Contact in your address book"
-msgstr ""
+msgstr "Sukurkite naują kontaktą adresų knygelėje"
 
 #. module: base
 #: model_terms:ir.actions.act_window,help:base.action_country_group
@@ -12126,12 +12128,12 @@ msgstr "Skydeliai"
 #: model:ir.module.category,name:base.module_category_productivity_data_cleaning
 #: model:ir.module.module,shortdesc:base.module_data_cleaning
 msgid "Data Cleaning"
-msgstr ""
+msgstr "Duomenų tvarkymas"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_data_merge
 msgid "Data Cleaning (merge)"
-msgstr ""
+msgstr "Duomenų tvarkymas (Sujungimas)"
 
 #. module: base
 #: model:ir.module.module,description:base.module_test_convert
@@ -12249,7 +12251,7 @@ msgstr "Dienos"
 #: model:ir.module.module,shortdesc:base.module_account_debit_note
 #: model:ir.module.module,summary:base.module_account_debit_note
 msgid "Debit Notes"
-msgstr ""
+msgstr "Debetinės sąskaitos"
 
 #. module: base
 #: model:ir.model.fields,field_description:base.field_ir_mail_server__smtp_debug
@@ -13304,7 +13306,7 @@ msgstr ""
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_hr_referral
 msgid "Employee Referral"
-msgstr ""
+msgstr "Darbuotojų rekomendacijos"
 
 #. module: base
 #: model:ir.module.category,name:base.module_category_human_resources_employees
@@ -13559,7 +13561,7 @@ msgstr ""
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_website_event_meet
 msgid "Event Meeting / Rooms"
-msgstr ""
+msgstr "Renginio susitikimas / kambarys"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_event_social
@@ -14085,7 +14087,7 @@ msgstr "Lauko pavadinimas"
 #: model:ir.module.category,name:base.module_category_services_field_service
 #: model:ir.module.module,shortdesc:base.module_industry_fsm
 msgid "Field Service"
-msgstr ""
+msgstr "Lauko Darbai"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_industry_fsm_forecast
@@ -14230,7 +14232,7 @@ msgstr ""
 #. module: base
 #: model:ir.model.fields,field_description:base.field_ir_attachment__datas
 msgid "File Content (base64)"
-msgstr ""
+msgstr "Filo turinys (base64)"
 
 #. module: base
 #: model:ir.model.fields,field_description:base.field_ir_attachment__raw
@@ -14348,7 +14350,7 @@ msgstr ""
 #. module: base
 #: model:ir.model.fields,field_description:base.field_res_lang__week_start
 msgid "First Day of Week"
-msgstr ""
+msgstr "Pirmoji savaitės diena"
 
 #. module: base
 #: model:ir.module.module,description:base.module_l10n_mx_reports_closing
@@ -14947,7 +14949,7 @@ msgstr "Gibraltaras"
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_gift_card
 msgid "Gift Card"
-msgstr ""
+msgstr "Dovanų kortelė"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_pos_gift_card
@@ -16011,7 +16013,7 @@ msgstr "Paveikslėlis"
 #: model:ir.model.fields,field_description:base.field_res_partner__image_1024
 #: model:ir.model.fields,field_description:base.field_res_users__image_1024
 msgid "Image 1024"
-msgstr ""
+msgstr "Paveikslėlis "
 
 #. module: base
 #: model:ir.model.fields,field_description:base.field_avatar_mixin__image_128
@@ -16019,7 +16021,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:base.field_res_partner__image_128
 #: model:ir.model.fields,field_description:base.field_res_users__image_128
 msgid "Image 128"
-msgstr ""
+msgstr "Paveikslėlis 128"
 
 #. module: base
 #: model:ir.model.fields,field_description:base.field_avatar_mixin__image_256
@@ -16027,7 +16029,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:base.field_res_partner__image_256
 #: model:ir.model.fields,field_description:base.field_res_users__image_256
 msgid "Image 256"
-msgstr ""
+msgstr "Paveikslėlis 256"
 
 #. module: base
 #: model:ir.model.fields,field_description:base.field_avatar_mixin__image_512
@@ -16035,7 +16037,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:base.field_res_partner__image_512
 #: model:ir.model.fields,field_description:base.field_res_users__image_512
 msgid "Image 512"
-msgstr ""
+msgstr "Paveikslėlis 512"
 
 #. module: base
 #: model:ir.model,name:base.model_image_mixin
@@ -16289,7 +16291,7 @@ msgstr "Individualus"
 #. module: base
 #: model_terms:ir.ui.view,arch_db:base.view_res_partner_filter
 msgid "Individuals"
-msgstr ""
+msgstr "Fiziniai asmenys"
 
 #. module: base
 #: model:res.country,name:base.id
@@ -16309,7 +16311,7 @@ msgstr ""
 #. module: base
 #: model:ir.actions.act_window,name:base.res_partner_industry_action
 msgid "Industries"
-msgstr ""
+msgstr "Pramonės šakos"
 
 #. module: base
 #: model:ir.model,name:base.model_res_partner_industry
@@ -16406,7 +16408,7 @@ msgstr "Diegti kalbą"
 #. module: base
 #: model:ir.actions.server,name:base.action_server_module_immediate_install
 msgid "Install Modules"
-msgstr ""
+msgstr "Įdiegti programėles"
 
 #. module: base
 #: model:ir.model.fields.selection,name:base.selection__ir_module_module__state__installed
@@ -16798,7 +16800,7 @@ msgstr ""
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_account
 msgid "Invoicing"
-msgstr "Apskaita"
+msgstr "Sąskaitų faktūrų teikimas"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_hw_posbox_homepage
@@ -17470,7 +17472,7 @@ msgstr "Vėliausia versija"
 #. module: base
 #: model:ir.model.fields,field_description:base.field_res_users__login_date
 msgid "Latest authentication"
-msgstr ""
+msgstr "Paskutinis prisijungimas"
 
 #. module: base
 #: model:ir.model.fields.selection,name:base.selection__res_company__font__lato
@@ -17507,7 +17509,7 @@ msgstr ""
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_crm_iap_enrich
 msgid "Lead Enrichment"
-msgstr ""
+msgstr "Iniciatyvų praturtinimas"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_crm_iap_mine
@@ -17562,7 +17564,7 @@ msgstr "Paaiškinimas "
 #. module: base
 #: model_terms:ir.ui.view,arch_db:base.res_lang_form
 msgid "Legends for supported Date and Time Formats"
-msgstr ""
+msgstr "Palaikomų datos ir laiko formatų legenda"
 
 #. module: base
 #: model:res.country,name:base.ls
@@ -18259,7 +18261,7 @@ msgstr "Valdykite savo internetinį įdarbinimo procesą"
 #: model:ir.module.module,description:base.module_social
 #: model:ir.module.module,summary:base.module_social
 msgid "Manage your social media and website visitors"
-msgstr ""
+msgstr "Valdyti socialinių tinklų ir svetainės lankytojus"
 
 #. module: base
 #: model:ir.module.module,summary:base.module_stock
@@ -20725,7 +20727,7 @@ msgstr "\"Odoo\" padeda jums lengvai sekti visus su tiekėju susijusius veiksmus
 #. module: base
 #: model_terms:ir.actions.act_window,help:base.action_partner_form
 msgid "Odoo helps you track all activities related to your contacts."
-msgstr ""
+msgstr "Odoo padės jums sekti visas veiklas susijusias su jūsų kontaktais."
 
 #. module: base
 #: code:addons/base/models/ir_module.py:0
@@ -20851,7 +20853,7 @@ msgstr ""
 #. module: base
 #: model:ir.module.category,name:base.module_category_marketing_online_appointment
 msgid "Online Appointment"
-msgstr ""
+msgstr "Susitikimas publikuojamas svetainėje"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_account_online_synchronization
@@ -23234,7 +23236,7 @@ msgstr ""
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_sale_renting
 msgid "Rental"
-msgstr ""
+msgstr "Nuoma"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_sale_stock_renting
@@ -23269,7 +23271,7 @@ msgstr "Kartoti kas x."
 #. module: base
 #: model:ir.model.fields.selection,name:base.selection__ir_asset__directive__replace
 msgid "Replace"
-msgstr ""
+msgstr "Pakeisti"
 
 #. module: base
 #: model:ir.model.fields.selection,name:base.selection__ir_actions_act_url__binding_type__report
@@ -23575,7 +23577,7 @@ msgstr ""
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_mass_mailing_sms
 msgid "SMS Marketing"
-msgstr ""
+msgstr "SMS Rinkodara"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_marketing_automation_sms
@@ -23968,7 +23970,7 @@ msgstr ""
 #. module: base
 #: model:ir.module.module,summary:base.module_calendar
 msgid "Schedule employees' meetings"
-msgstr ""
+msgstr "Suplanuoti darbuotojų susitikimus"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_website_event_social
@@ -24533,7 +24535,7 @@ msgstr "Rodyti viską"
 #. module: base
 #: model:ir.actions.act_window,name:base.act_view_currency_rates
 msgid "Show Currency Rates"
-msgstr ""
+msgstr "Rodyti valiutų kursus"
 
 #. module: base
 #: model_terms:ir.ui.view,arch_db:base.view_currency_search
@@ -24707,7 +24709,7 @@ msgstr ""
 #: model:ir.module.category,name:base.module_category_marketing_social_marketing
 #: model:ir.module.module,shortdesc:base.module_social
 msgid "Social Marketing"
-msgstr ""
+msgstr "Soc. Tinklų Rinkodara"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_social_media
@@ -25544,7 +25546,7 @@ msgstr "Testuoti ryšį"
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_test_data_cleaning
 msgid "Test Data Cleaning"
-msgstr ""
+msgstr "Išbandyti Duomenų tvarkymą"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_test_discuss_full
@@ -25589,7 +25591,7 @@ msgstr ""
 #. module: base
 #: model:ir.module.module,summary:base.module_test_data_cleaning
 msgid "Test Suite for Data Cleaning"
-msgstr ""
+msgstr "Testinė aplinka Duomenų tvarkymui"
 
 #. module: base
 #: model:ir.module.module,description:base.module_test_data_module_install
@@ -26538,7 +26540,7 @@ msgstr "Laiko formatas"
 #: model:ir.module.category,name:base.module_category_human_resources_time_off
 #: model:ir.module.module,shortdesc:base.module_hr_holidays
 msgid "Time Off"
-msgstr ""
+msgstr "Atostogos"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_hr_payroll_holidays
@@ -27090,7 +27092,7 @@ msgstr "URL"
 #. module: base
 #: model:ir.model.fields,field_description:base.field_res_lang__url_code
 msgid "URL Code"
-msgstr ""
+msgstr "URL kodas"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_us_reports
@@ -28170,7 +28172,7 @@ msgstr "Svetainė"
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_website_appointment
 msgid "Website Appointments"
-msgstr ""
+msgstr "Susitikimai publikuojami puslapyje"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_website_enterprise
@@ -28579,7 +28581,7 @@ msgstr ""
 #. module: base
 #: model_terms:ir.ui.view,arch_db:base.view_users_form
 msgid "You can archive the contact"
-msgstr ""
+msgstr "Jūs galite archyvuoti šį kontaktą"
 
 #. module: base
 #: model:ir.model.fields,help:base.field_ir_attachment__type
@@ -28904,6 +28906,12 @@ msgstr " "
 #: model:ir.model.fields.selection,name:base.selection__ir_model_fields__ttype__binary
 msgid "binary"
 msgstr "dvejetainis"
+
+#. module: base
+#: code:addons/base/models/ir_attachment.py:0
+#, python-format
+msgid "binary_field_real_user should be a res.users record."
+msgstr ""
 
 #. module: base
 #: model:ir.model.fields.selection,name:base.selection__ir_model_fields__ttype__boolean

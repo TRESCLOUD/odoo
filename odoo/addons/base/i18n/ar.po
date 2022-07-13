@@ -8719,7 +8719,7 @@ msgstr "- هذا الموديول لا يمنع عمل أية موديولات �
 #. module: base
 #: model:ir.model.fields.selection,name:base.selection__base_enable_profiling_wizard__duration__days_1
 msgid "1 Day"
-msgstr ""
+msgstr "يوم 1 "
 
 #. module: base
 #: model:ir.model.fields.selection,name:base.selection__base_enable_profiling_wizard__duration__hours_1
@@ -10424,7 +10424,7 @@ msgstr "انتهيت!"
 msgid ""
 "All our contractual relations will be governed exclusively by United States "
 "law."
-msgstr ""
+msgstr "ستخضع كافة علاقاتنا التعاقدية لقانون الولايات المتحدة بشكل حصري. "
 
 #. module: base
 #: model:ir.model.fields,help:base.field_res_partner__lang
@@ -11098,7 +11098,7 @@ msgstr ""
 #. module: base
 #: model:ir.module.module,summary:base.module_partner_autocomplete
 msgid "Auto-complete partner companies' data"
-msgstr ""
+msgstr "الإكمال التلقائي لبيانات شركة الشريك "
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_base_automation
@@ -12770,7 +12770,7 @@ msgstr "بيانات المؤسسة"
 #. module: base
 #: model:ir.model.fields,field_description:base.field_res_company__company_details
 msgid "Company Details"
-msgstr ""
+msgstr "تفاصيل الشركة "
 
 #. module: base
 #: model:ir.model.fields,field_description:base.field_res_company__favicon
@@ -13368,7 +13368,7 @@ msgstr "إنشاء معالج قائمة"
 #: model:ir.module.module,summary:base.module_industry_fsm_report
 #: model:ir.module.module,summary:base.module_industry_fsm_sale_report
 msgid "Create Reports for Field service workers"
-msgstr ""
+msgstr "إنشاء تقارير لموظفي الخدمة الميدانية "
 
 #. module: base
 #: model_terms:ir.ui.view,arch_db:base.view_model_menu_create
@@ -15193,7 +15193,7 @@ msgstr ""
 #. module: base
 #: model_terms:ir.ui.view,arch_db:base.enable_profiling_wizard
 msgid "Enable profiling"
-msgstr ""
+msgstr "تمكين التحليل "
 
 #. module: base
 #: model:ir.model.fields,field_description:base.field_base_enable_profiling_wizard__duration
@@ -15948,7 +15948,7 @@ msgstr ""
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_industry_fsm_sale
 msgid "Field Service - Sale"
-msgstr "خدمة ميدانية - مبيعات"
+msgstr "الخدمة الميدانية - المبيعات "
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_industry_fsm_report
@@ -17124,7 +17124,7 @@ msgstr "التباعد الرأسى"
 #. module: base
 #: model:ir.model.fields,help:base.field_res_company__company_details
 msgid "Header text displayed at the top of all reports."
-msgstr ""
+msgstr "ترويسة النص تُعرض في الجزء العلوي لكافة التقارير. "
 
 #. module: base
 #: model:res.partner.industry,name:base.res_partner_industry_Q
@@ -24757,7 +24757,7 @@ msgstr "حقل Qweb واحد لواحد"
 #. module: base
 #: model:ir.model,name:base.model_ir_qweb_field_monetary
 msgid "Qweb Field Monetary"
-msgstr ""
+msgstr "حقل Qweb نقدي"
 
 #. module: base
 #: model:ir.model,name:base.model_ir_qweb_field_relative
@@ -25858,7 +25858,7 @@ msgstr "علمي"
 #. module: base
 #: model:ir.model.fields,field_description:base.field_res_users_apikeys__scope
 msgid "Scope"
-msgstr "المجال"
+msgstr "النطاق "
 
 #. module: base
 #: model:ir.model.fields.selection,name:base.selection__ir_ui_view__type__search
@@ -26524,7 +26524,7 @@ msgstr ""
 #: model:ir.module.category,name:base.module_category_marketing_social
 #: model:ir.module.category,name:base.module_category_social
 msgid "Social"
-msgstr ""
+msgstr "التواصل الاجتماعي "
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_social_demo
@@ -27666,7 +27666,7 @@ msgstr "كائن قاعدة البيانات التي سيُرفق به هذا �
 #. module: base
 #: model:ir.model.fields,help:base.field_res_users__company_id
 msgid "The default company for this user."
-msgstr ""
+msgstr "الشركة الافتراضية لهذا المستخدم. "
 
 #. module: base
 #: model_terms:ir.ui.view,arch_db:base.demo_failures_dialog
@@ -31367,7 +31367,7 @@ msgstr "أسبوع"
 #: code:addons/base/models/ir_qweb_fields.py:0
 #, python-format
 msgid "year"
-msgstr ""
+msgstr "سنة "
 
 #. module: base
 #: model:res.country,name:base.ax

@@ -15,6 +15,7 @@
 # Martin Trigaux, 2022
 # Norimichi Sugimoto <norimichi.sugimoto@tls-ltd.co.jp>, 2022
 # Yoshi Tashiro (Quartile) <tashiro@roomsfor.hk>, 2022
+# 江口和志 <sandwhale1010@gmail.com>, 2022
 # Ryoko Tsuda <ryoko@quartile.co>, 2022
 # 
 msgid ""
@@ -408,7 +409,7 @@ msgstr "チップ追加"
 #. module: point_of_sale
 #: model_terms:ir.ui.view,arch_db:point_of_sale.pos_config_view_form
 msgid "Add a custom message to header and footer"
-msgstr "ヘッダーとフッターにカスタムメッセージを追加する"
+msgstr "ヘッダとフッタにカスタムメッセージを追加する"
 
 #. module: point_of_sale
 #. openerp-web
@@ -426,7 +427,7 @@ msgstr "新しい支払い方法を追加する"
 #. module: point_of_sale
 #: model_terms:ir.ui.view,arch_db:point_of_sale.pos_config_view_form
 msgid "Add notes on order lines to be printed on receipt and invoice"
-msgstr ""
+msgstr "領収書や請求書に印刷される注文行のメモの追加"
 
 #. module: point_of_sale
 #. openerp-web
@@ -2376,7 +2377,7 @@ msgstr "現金管理あり"
 #. module: point_of_sale
 #: model:ir.model.fields,field_description:point_of_sale.field_pos_session__has_message
 msgid "Has Message"
-msgstr ""
+msgstr "メッセージあり"
 
 #. module: point_of_sale
 #: model:ir.model.fields,field_description:point_of_sale.field_pos_order__has_refundable_lines
@@ -2391,7 +2392,7 @@ msgstr "ヘッダ"
 #. module: point_of_sale
 #: model:ir.model.fields,field_description:point_of_sale.field_pos_config__is_header_or_footer
 msgid "Header & Footer"
-msgstr "ヘッダーとフッター"
+msgstr "ヘッダとフッタ"
 
 #. module: point_of_sale
 #: model:ir.model.fields,field_description:point_of_sale.field_pos_payment_method__hide_use_payment_terminal

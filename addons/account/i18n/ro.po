@@ -10788,6 +10788,12 @@ msgid "Reconciliation Parts"
 msgstr "Părți Reconciliere"
 
 #. module: account
+#: code:addons/account/models/partner.py:0
+#, python-format
+msgid "Record cannot be deleted. Partner used in Accounting"
+msgstr ""
+
+#. module: account
 #: code:addons/account/models/account_tax.py:0
 #, python-format
 msgid "Recursion found for tax '%s'."
@@ -13573,10 +13579,10 @@ msgid ""
 "entries, ready for the reconciliation.- Validated: All lines are reconciled."
 " There is nothing left to process."
 msgstr ""
-"Starea curentă a extrasului dvs. bancar: - Nou: complet modificabil cu "
-"proiectul de intrări în jurnal.- Prelucrare: Nu mai poate fi modificat cu "
-"intrări în jurnal postate, gata pentru reconciliere.- Validat: Toate liniile"
-" sunt reconciliate. Nu mai este nimic de procesat."
+"Starea curentă a extrasului dvs. bancar: - Nou: complet modificabil cu  "
+"intrări în jurnal ciornă. - Prelucrare: Nu mai poate fi modificat cu intrări"
+" în jurnal postate, gata pentru reconciliere.- Validat: Toate liniile sunt "
+"reconciliate. Nu mai este nimic de procesat."
 
 #. module: account
 #: code:addons/account/wizard/account_automatic_entry_wizard.py:0
@@ -13948,6 +13954,8 @@ msgid ""
 "The recipient bank account link to this invoice is archived.\n"
 "So you cannot confirm the invoice."
 msgstr ""
+"Contului bancar al destinatarului din această factură este arhivat.\n"
+"Deci nu puteți confirma factura."
 
 #. module: account
 #: model:ir.model.fields,help:account.field_account_reconcile_model__match_partner_category_ids
@@ -15547,7 +15555,7 @@ msgstr ""
 #: code:addons/account/models/account_bank_statement.py:0
 #, python-format
 msgid "You can only create statement line in open bank statements."
-msgstr ""
+msgstr "Puteți crea o linie de extras doar în extrasele deschise."
 
 #. module: account
 #: code:addons/account/models/account_move.py:0
@@ -16231,6 +16239,8 @@ msgstr ""
 msgid ""
 "for this customer. You can allocate them to mark this credit note as paid."
 msgstr ""
+"pentru acest client. Puteți să le alocați  această notă de credit (factura "
+"storno) ca plată"
 
 #. module: account
 #: model_terms:ir.ui.view,arch_db:account.view_move_form
