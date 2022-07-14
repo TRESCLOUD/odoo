@@ -42,6 +42,7 @@ class IrActionsReport(models.Model):
                     'stream': stream,
                     'attachment': attachment,
                 }
+                attachment.register_as_main_attachment(force=False)
         return collected_streams
 
     def _render_qweb_pdf(self, report_ref, res_ids=None, data=None):
@@ -52,3 +53,12 @@ class IrActionsReport(models.Model):
                 raise UserError(_("Only invoices could be printed."))
 
         return super()._render_qweb_pdf(report_ref, res_ids=res_ids, data=data)
+
+    def _retrieve_stream_from_attachment(self, attachment):
+        # Overridden in order to add a banner in the upper right corner of the exported Vendor Bill PDF.
+        stream = super()._retrieve_stream_from_attachment(attachment)
+        vendor_bill_export = self.env.ref('account.action_account_original_vendor_bill')
+        if self == vendor_bill_export and attachment.mimetype == 'application/pdf':
+            record = self.env[attachment.res_model].browse(attachment.res_id)
+            return pdf.add_banner(stream, record.name, logo=True)
+        return stream
