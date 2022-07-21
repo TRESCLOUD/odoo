@@ -86,7 +86,8 @@ class ProductPricelist(models.Model):
 
     def _check_website_pricelist(self):
         for website in self.env['website'].search([]):
-            if not website.pricelist_ids:
+            # sudo() to be able to read pricelists/website from another company
+            if not website.sudo().pricelist_ids:
                 raise UserError(_("With this action, '%s' website would not have any pricelist available.") % (website.name))
 
     def _is_available_on_website(self, website_id):
@@ -477,3 +478,7 @@ class Product(models.Model):
         # [1:] to remove the main image from the template, we only display
         # the template extra images here
         return variant_images + self.product_tmpl_id._get_images()[1:]
+
+    def _is_add_to_cart_allowed(self):
+        self.ensure_one()
+        return self.user_has_groups('base.group_system') or (self.sale_ok and self.website_published)

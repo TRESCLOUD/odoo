@@ -720,6 +720,10 @@ class WebsiteSale(http.Controller):
                 values = kw
             else:
                 partner_id = self._checkout_form_save(mode, post, kw)
+                # We need to validate _checkout_form_save return, because when partner_id not in shippings
+                # it returns Forbidden() instead the partner_id
+                if isinstance(partner_id, Forbidden):
+                    return partner_id
                 if mode[1] == 'billing':
                     order.partner_id = partner_id
                     order.with_context(not_self_saleperson=True).onchange_partner_id()
@@ -1266,7 +1270,7 @@ class WebsiteSale(http.Controller):
                 ['product_id', 'visit_datetime:max'], ['product_id'], limit=max_number_of_product_for_carousel, orderby='visit_datetime DESC')
             products_ids = [product['product_id'][0] for product in products]
             if products_ids:
-                viewed_products = request.env['product.product'].with_context(display_default_code=False).browse(products_ids)
+                viewed_products = request.env['product.product'].with_context(display_default_code=False).search([('id', 'in', products_ids)])
 
                 FieldMonetary = request.env['ir.qweb.field.monetary']
                 monetary_options = {

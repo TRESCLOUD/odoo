@@ -23,6 +23,9 @@
 # AncesLatino2004, 2022
 # ericrolo, 2022
 # Jonatan Gk, 2022
+# marcescu, 2022
+# Óscar Fonseca <tecnico@extreme-micro.com>, 2022
+# eriiikgt, 2022
 # jabelchi, 2022
 # 
 msgid ""
@@ -6646,6 +6649,8 @@ msgid ""
 "Invoice and credit note repartition should have at least one tax repartition"
 " line."
 msgstr ""
+"La factura i el crèdit no haurien de tenir com a mínim una línia de "
+"repartiment d'impostos."
 
 #. module: account
 #: code:addons/account/models/account_tax.py:0
@@ -9812,6 +9817,13 @@ msgid "Reconciliation Parts"
 msgstr "Parts reconciliades"
 
 #. module: account
+#: code:addons/account/models/partner.py:0
+#, python-format
+msgid "Record cannot be deleted. Partner used in Accounting"
+msgstr ""
+"No pot eliminar-se el registre. El partner s'utilitza a la comptabilitat"
+
+#. module: account
 #: model_terms:ir.ui.view,arch_db:account.res_config_settings_view_form
 msgid "Record transactions in foreign currencies"
 msgstr "Registrar transaccions en moneda estrangera "
@@ -10303,7 +10315,7 @@ msgstr "Vendes"
 #. module: account
 #: model_terms:ir.ui.view,arch_db:account.view_invoice_tree
 msgid "Sales Person"
-msgstr ""
+msgstr "Persona de venda"
 
 #. module: account
 #: model:ir.model.fields.selection,name:account.selection__account_move__move_type__out_receipt
@@ -12688,9 +12700,9 @@ msgid ""
 " Please change the journal entry date or the tax lock date set in the "
 "settings (%s) to proceed."
 msgstr ""
-"L'operació s'ha rebutjat ja com podria afectar una declaració d'impostos. Si"
-" us plau, canvieu la data d'entrada del diari o la data de bloqueig "
-"d'impostos establerta als arranjaments (%s) per a continuar."
+"Es denega l'operació, ja que afectaria una declaració d'impostos ja emesa. "
+"Si us plau, canvieu la data d'entrada del diari o la data de bloqueig "
+"d'impostos establerta a la configuració (%s) per a continuar."
 
 #. module: account
 #: model:ir.model.fields,help:account.field_account_tax_report_line__report_action_id
@@ -14894,9 +14906,9 @@ msgid ""
 "settings, to manage automatically the booking of accounting entries related "
 "to differences between exchange rates."
 msgstr ""
-"Hauríeu de configurar el 'Gain Exchange Compte' en els arranjaments de la "
-"vostra empresa, per a gestionar automàticament el llibre d' entrades "
-"comptables relacionades amb les diferències entre les taxes de canvi."
+"Ha de configurar 'Ingressos per diferència de canvi' en la configuració de "
+"comptabilitat per gestionar automàticament els assentaments del llibre "
+"comptable associats a les diferències relacionades amb el canvi de moneda."
 
 #. module: account
 #: code:addons/account/models/account_move.py:0
@@ -15109,3 +15121,13 @@ msgstr "amb un pdf d'una factora com adjunt."
 #: model_terms:ir.ui.view,arch_db:account.view_bank_statement_form
 msgid "→ Count"
 msgstr "→ Compta"
+
+#. module: account
+#: code:addons/account/models/account_analytic_default.py:31
+#, python-format
+msgid ""
+"An analytic default requires an analytic account or an analytic tag used for"
+" analytic distribution."
+msgstr ""
+"Una anàlisi predeterminada requereix un compte analític o una etiqueta "
+"analítica utilitzada per a la distribució analítica."

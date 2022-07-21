@@ -4,7 +4,7 @@
 # 
 # Translators:
 # Leandro Noijovich <eliel.sorcerer@gmail.com>, 2020
-# hed shefetr <hed@laylinetech.com>, 2020
+# hed shefer <hed@laylinetech.com>, 2020
 # Adi Sharashov <Adi@laylinetech.com>, 2020
 # yoav sc <yoav19991@gmail.com>, 2020
 # yacov mosbacher <ymosba@gmail.com>, 2020
@@ -16,9 +16,10 @@
 # דודי מלכה <Dudimalka6@gmail.com>, 2020
 # Amit Spilman <amit@laylinetech.com>, 2020
 # ZVI BLONDER <ZVIBLONDER@gmail.com>, 2020
-# Lilach Gilliam <lilach.gilliam@gmail.com>, 2021
 # david danilov, 2021
 # shaked <shaked@laylinetech.com>, 2021
+# Netta Waizer, 2022
+# Lilach Gilliam <lilach.gilliam@gmail.com>, 2022
 # 
 msgid ""
 msgstr ""
@@ -26,7 +27,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-11-16 13:33+0000\n"
 "PO-Revision-Date: 2020-09-07 08:22+0000\n"
-"Last-Translator: shaked <shaked@laylinetech.com>, 2021\n"
+"Last-Translator: Lilach Gilliam <lilach.gilliam@gmail.com>, 2022\n"
 "Language-Team: Hebrew (https://www.transifex.com/odoo/teams/41243/he/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -358,6 +359,8 @@ msgid ""
 "<span class=\"o_form_label\">Assignment</span>\n"
 "                            <span class=\"fa fa-lg fa-globe\" title=\"Values set here are website-specific.\" groups=\"website.group_multi_website\"/>"
 msgstr ""
+"<span class=\"o_form_label\">הקצאה</span>\n"
+"<span class=\"fa fa-lg fa-globe\" title=\"Values set here are website-specific.\" groups=\"website.group_multi_website\"/>"
 
 #. module: website_sale
 #: model_terms:ir.ui.view,arch_db:website_sale.res_config_settings_view_form
@@ -1668,6 +1671,7 @@ msgstr "העגלה שלי"
 #: model:ir.model.fields,field_description:website_sale.field_product_image__name
 #: model:ir.model.fields,field_description:website_sale.field_product_public_category__name
 #: model_terms:ir.ui.view,arch_db:website_sale.address
+#: model_terms:ir.ui.view,arch_db:website_sale.product_ribbon_view_tree
 #, python-format
 msgid "Name"
 msgstr "שם"
@@ -2195,13 +2199,16 @@ msgid "Product views"
 msgstr "צפיות במוצר"
 
 #. module: website_sale
+#: code:addons/website_sale/models/website.py:0
 #: model:ir.actions.act_window,name:website_sale.product_template_action_website
 #: model:ir.ui.menu,name:website_sale.menu_catalog
 #: model:ir.ui.menu,name:website_sale.menu_catalog_products
 #: model:ir.ui.menu,name:website_sale.menu_product_settings
+#: model:website.snippet.filter,name:website_sale.dynamic_filter_demo_products
 #: model_terms:ir.ui.view,arch_db:website_sale.product
 #: model_terms:ir.ui.view,arch_db:website_sale.res_config_settings_view_form
 #: model_terms:ir.ui.view,arch_db:website_sale.website_sale_visitor_page_view_search
+#, python-format
 msgid "Products"
 msgstr "מוצרים"
 
@@ -2549,7 +2556,7 @@ msgstr "שלח דוא\"ל לשחזור כאשר העגלה ננטשת"
 #: model:ir.model.fields,field_description:website_sale.field_product_public_category__seo_name
 #: model:ir.model.fields,field_description:website_sale.field_product_template__seo_name
 msgid "Seo name"
-msgstr ""
+msgstr "שם Seo "
 
 #. module: website_sale
 #: model:ir.model.fields,field_description:website_sale.field_product_image__sequence
@@ -2569,6 +2576,8 @@ msgid ""
 "Ship to the same address\n"
 "                                                    <span class=\"ship_to_other text-muted\" style=\"display: none\">&amp;nbsp;(<i>Your shipping address will be requested later) </i></span>"
 msgstr ""
+"שלח לאותה כתובת\n"
+"<span class=\"ship_to_other text-muted\" style=\"display: none\">&amp;nbsp;(<i>כתובת המשלוח שלך תתבקש מאוחר יותר)</i></span>"
 
 #. module: website_sale
 #: model_terms:ir.ui.view,arch_db:website_sale.res_config_settings_view_form
@@ -2753,7 +2762,7 @@ msgstr "אביזרים מוצעים:"
 #. module: website_sale
 #: model_terms:ir.ui.view,arch_db:website_sale.searchbar_input_snippet_options
 msgid "Suggestions"
-msgstr ""
+msgstr "הצעות"
 
 #. module: website_sale
 #: model_terms:ir.ui.view,arch_db:website_sale.address_b2b
@@ -3108,7 +3117,7 @@ msgstr "חנות אתר האינטרנט"
 #. module: website_sale
 #: model:ir.model,name:website_sale.model_website_snippet_filter
 msgid "Website Snippet Filter"
-msgstr ""
+msgstr "מסנן קטעי אתר"
 
 #. module: website_sale
 #: model:ir.model.fields,field_description:website_sale.field_product_product__website_url
@@ -3365,7 +3374,7 @@ msgstr "כדי לעקוב אחר ההזמנה שלך."
 #. module: website_sale
 #: model_terms:ir.ui.view,arch_db:website_sale.snippet_options
 msgid "⌙ Background"
-msgstr ""
+msgstr "⌙ רקע"
 
 #. module: website_sale
 #: model_terms:ir.ui.view,arch_db:website_sale.snippet_options
@@ -3375,7 +3384,7 @@ msgstr ""
 #. module: website_sale
 #: model_terms:ir.ui.view,arch_db:website_sale.snippet_options
 msgid "⌙ Position"
-msgstr ""
+msgstr "⌙ מיקום"
 
 #. module: website_sale
 #: model_terms:ir.ui.view,arch_db:website_sale.snippet_options

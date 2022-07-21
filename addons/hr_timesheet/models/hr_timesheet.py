@@ -179,7 +179,7 @@ class AccountAnalyticLine(models.Model):
             if partner_id:
                 vals['partner_id'] = partner_id
         # set timesheet UoM from the AA company (AA implies uom)
-        if 'product_uom_id' not in vals and all(v in vals for v in ['account_id', 'project_id']):  # project_id required to check this is timesheet flow
+        if not vals.get('product_uom_id') and all(v in vals for v in ['account_id', 'project_id']):  # project_id required to check this is timesheet flow
             analytic_account = self.env['account.analytic.account'].sudo().browse(vals['account_id'])
             vals['product_uom_id'] = analytic_account.company_id.project_time_mode_id.id
         return vals
@@ -208,7 +208,7 @@ class AccountAnalyticLine(models.Model):
                 cost = timesheet.employee_id.timesheet_cost or 0.0
                 amount = -timesheet.unit_amount * cost
                 amount_converted = timesheet.employee_id.currency_id._convert(
-                    amount, timesheet.account_id.currency_id, self.env.company, timesheet.date)
+                    amount, timesheet.account_id.currency_id or timesheet.currency_id, self.env.company, timesheet.date)
                 result[timesheet.id].update({
                     'amount': amount_converted,
                 })

@@ -6,8 +6,6 @@ import ast
 import cgi
 import collections
 import contextlib
-import copy
-import datetime
 import functools
 import hashlib
 import hmac
@@ -27,7 +25,7 @@ from os.path import join as opj
 from zlib import adler32
 
 import babel.core
-from datetime import datetime, date
+from datetime import datetime
 import passlib.utils
 import psycopg2
 import json
@@ -191,7 +189,7 @@ class WebRequest(object):
 
     .. attribute:: params
 
-        :class:`~collections.Mapping` of request parameters, not generally
+        :class:`~collections.abc.Mapping` of request parameters, not generally
         useful as they're provided directly to the handler method as keyword
         arguments
     """
@@ -243,7 +241,7 @@ class WebRequest(object):
 
     @property
     def context(self):
-        """ :class:`~collections.Mapping` of context values for the current request """
+        """ :class:`~collections.abc.Mapping` of context values for the current request """
         if self._context is None:
             self._context = frozendict(self.session.context)
         return self._context
@@ -822,7 +820,7 @@ more details.
         :param basestring data: response body
         :param headers: HTTP headers to set on the response
         :type headers: ``[(name, value)]``
-        :param collections.Mapping cookies: cookies to set on the client
+        :param collections.abc.Mapping cookies: cookies to set on the client
         """
         response = Response(data, headers=headers)
         if cookies:
@@ -902,7 +900,7 @@ class EndPoint(object):
     def __init__(self, method, routing):
         self.method = method
         self.original = getattr(method, 'original_func', method)
-        self.routing = routing
+        self.routing = frozendict(routing)
         self.arguments = {}
 
     @property
@@ -912,6 +910,29 @@ class EndPoint(object):
 
     def __call__(self, *args, **kw):
         return self.method(*args, **kw)
+
+    # werkzeug will use these EndPoint objects as keys of a dictionary
+    # (the RoutingMap._rules_by_endpoint mapping).
+    # When Odoo clears the routing map, new EndPoint objects are created,
+    # most of them with the same values.
+    # The __eq__ and __hash__ magic methods allow older EndPoint objects
+    # to be still valid keys of the RoutingMap.
+    # For example, website._get_canonical_url_localized may use
+    # such an old endpoint if the routing map was cleared.
+    def __eq__(self, other):
+        try:
+            return self._as_tuple() == other._as_tuple()
+        except AttributeError:
+            return False
+
+    def __hash__(self):
+        return hash(self._as_tuple())
+
+    def _as_tuple(self):
+        return (self.original, self.routing)
+
+    def __repr__(self):
+        return '<EndPoint method=%r routing=%r>' % (self.method, self.routing)
 
 
 def _generate_routing_rules(modules, nodb_only, converters=None):
@@ -1624,7 +1645,7 @@ def send_file(filepath_or_fp, mimetype=None, as_attachment=False, filename=None,
     if isinstance(mtime, str):
         try:
             server_format = odoo.tools.misc.DEFAULT_SERVER_DATETIME_FORMAT
-            mtime = datetime.datetime.strptime(mtime.split('.')[0], server_format)
+            mtime = datetime.strptime(mtime.split('.')[0], server_format)
         except Exception:
             mtime = None
     if mtime is not None:

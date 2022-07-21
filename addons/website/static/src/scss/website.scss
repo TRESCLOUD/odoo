@@ -746,7 +746,16 @@ $-transition-duration: 200ms;
     display: block;
     @include o-position-absolute(0, 0, auto, 0);
     position: fixed;
-    background: $light;
+
+    // TODO remove me in master, the $light color makes no sense as is visible
+    // if the header uses rounded corners but is impossible to edit / remove.
+    // As a stable fix, it was decided to not remove it if the header uses a
+    // transparent color, in which case mixing it with $light actually alters
+    // the whole menu color.
+    $-menu-color: o-color('menu');
+    @if $-menu-color and alpha($-menu-color) < 0.95 {
+        background: $light;
+    }
 
     &:not(.o_header_no_transition) {
         transition: transform $-transition-duration;
@@ -1301,6 +1310,10 @@ span.list-inline-item.o_add_language:last-child {
 
 // Footer scrolltop button
 @if o-website-value('footer-scrolltop') {
+    #o_footer_scrolltop_wrapper {
+        position: relative;
+        z-index: 1;
+    }
     #o_footer_scrolltop {
         $-footer-color: o-color('footer');
         $-copyright-color: o-color('copyright');
@@ -1432,6 +1445,13 @@ $ribbon-padding: 100px;
 #website_cookies_bar {
     :not(.o_cookies_popup) {
         bottom: 0;
+    }
+    .o_cookies_discrete {
+        .js_close_popup.o_cookies_bar_text_button, .o_cookies_bar_text_policy {
+            @include media-breakpoint-down(md) {
+                margin-bottom: 1rem;
+            }
+        }
     }
 }
 

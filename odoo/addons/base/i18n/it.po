@@ -24,10 +24,10 @@
 # Léonie Bouchat <lbo@odoo.com>, 2020
 # Martin Trigaux, 2020
 # BigBlu <paolo.moroni@air-srl.com>, 2021
-# Francesco Foresti <francesco.foresti@ooops404.com>, 2022
+# francesco.foresti <francesco.foresti@ooops404.com>, 2022
 # Stefano Consolaro <stefano.consolaro@mymage.it>, 2022
-# Friederike Fasterling-Nesselbosch, 2022
 # Sergio Zanchetta <primes2h@gmail.com>, 2022
+# Friederike Fasterling-Nesselbosch, 2022
 # 
 msgid ""
 msgstr ""
@@ -35,13 +35,13 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-11-27 13:50+0000\n"
 "PO-Revision-Date: 2020-09-07 08:09+0000\n"
-"Last-Translator: Sergio Zanchetta <primes2h@gmail.com>, 2022\n"
+"Last-Translator: Friederike Fasterling-Nesselbosch, 2022\n"
 "Language-Team: Italian (https://www.transifex.com/odoo/teams/41243/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Language: it\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
 
 #. module: base
 #: model:ir.module.module,description:base.module_l10n_at_reports
@@ -990,7 +990,7 @@ msgid ""
 "    "
 msgstr ""
 "\n"
-"        Questo modulo ponte consente di gestire l'esternalizzazione con il modulo delle consegne dirette.\n"
+"        Questo modulo ponte consente di gestire l'esternalizzazione con il modulo di spedizione diretta.\n"
 "    "
 
 #. module: base
@@ -2202,6 +2202,8 @@ msgid ""
 "Allows to make call from next activities or with click-to-dial.\n"
 "    "
 msgstr ""
+"\n"
+"Ermöglicht das Tätigen von Anrufen aus den nächsten Aktivitäten oder mit Click-to-Dial."
 
 #. module: base
 #: model:ir.module.module,description:base.module_sale_timesheet
@@ -4193,10 +4195,10 @@ msgid ""
 "    "
 msgstr ""
 "\n"
-"Permette di creare all'utente una dashboard personalizzata.\n"
-"========================================\n"
+"Permette all'utente di creare una bacheca personalizzata.\n"
+"======================================================\n"
 "\n"
-"Permette agli utenti di creare dashboard personalizzate.\n"
+"Consente agli utenti di creare bacheche personalizzate.\n"
 "    "
 
 #. module: base
@@ -4365,14 +4367,13 @@ msgid ""
 "\n"
 msgstr ""
 "\n"
-"Gestisci gli ordini di drop shipping\n"
+"Gestisci gli ordini di Spedzione diretta\n"
 "===========================\n"
 "\n"
-"Questo modulo aggiunge un tipo di drop shipping preconfigurato\n"
-"nonché un percorso di approvvigionamento che consente di configurare il Drop\n"
-"Shipping dei prodotti e degli ordini.\n"
+"Questo modulo aggiunge un tipo di spedizione diretta preconfigurato\n"
+"nonché un percorso di approvvigionamento che consente di configurare la spedizione diretta dei prodotti e degli ordini.\n"
 "\n"
-"Con un drop shipping, i beni sono trasferiti direttamente \n"
+"Con la spedizione diretta, i beni sono trasferiti direttamente \n"
 "dal fornitore al cliente senza\n"
 "passare nel magazzino del dettagliante. In questo caso, non\n"
 "è necessario alcun documento di trasferimento interno.\n"
@@ -6763,7 +6764,7 @@ msgid ""
 msgstr ""
 "\n"
 "Questo modulo permette ai Dipendenti (e non utenti) di accedere al modulo Punto Vendita usando il codice a barre, un PIN o entrambi.\n"
-"Il registratore di cassa in sè per sè richiede comunque un utente, ma permette ad un numero illimitato di dipendenti di accedere e processare le vendite.\n"
+"Il registratore di cassa in sè richiede comunque un utente, ma permette ad un numero illimitato di dipendenti di accedere e processare le vendite.\n"
 "    "
 
 #. module: base
@@ -9375,7 +9376,7 @@ msgstr "Numero lingue attive"
 #: model:ir.model.fields,field_description:base.field_ir_sequence__number_next_actual
 #: model:ir.model.fields,field_description:base.field_ir_sequence_date_range__number_next_actual
 msgid "Actual Next Number"
-msgstr "Prossimo numero attuale"
+msgstr "Prossimo numero effettivo"
 
 #. module: base
 #: model_terms:ir.ui.view,arch_db:base.view_base_language_install
@@ -9681,8 +9682,8 @@ msgstr "Amministrativo"
 msgid ""
 "Administrative divisions of a country. E.g. Fed. State, Departement, Canton"
 msgstr ""
-"Divisioni amministrative di una nazione. Es.: stato federale, dipartimento, "
-"cantone"
+"Divisioni amministrative di una nazione. Es.: provincia, stato federale, "
+"dipartimento, cantone"
 
 #. module: base
 #: code:addons/base/models/ir_model.py:0 code:addons/base/models/ir_model.py:0
@@ -9777,12 +9778,12 @@ msgstr "Afghanistan"
 #. module: base
 #: model:ir.model.fields.selection,name:base.selection__res_country__name_position__after
 msgid "After Address"
-msgstr "Dopo l'Indirizzo"
+msgstr "Dopo l'indirizzo"
 
 #. module: base
 #: model:ir.model.fields.selection,name:base.selection__res_currency__position__after
 msgid "After Amount"
-msgstr "Dopo l'Importo"
+msgstr "Dopo l'importo"
 
 #. module: base
 #: model:ir.module.category,description:base.module_category_services_helpdesk
@@ -10126,12 +10127,12 @@ msgstr "Applica"
 #: model_terms:ir.ui.view,arch_db:base.view_base_module_upgrade_install
 #, python-format
 msgid "Apply Schedule Upgrade"
-msgstr "Esecuzione aggiornamento programmato"
+msgstr "Applica aggiornamento programmato"
 
 #. module: base
 #: model:ir.ui.menu,name:base.menu_view_base_module_upgrade
 msgid "Apply Scheduled Upgrades"
-msgstr "Esecuzione aggiornamento programmato"
+msgstr "Applica aggiornamenti programmati"
 
 #. module: base
 #: model:ir.model.fields,field_description:base.field_ir_rule__perm_create
@@ -10862,6 +10863,8 @@ msgid ""
 "Be aware that editing the architecture of a standard view is not advised, since the changes will be overwritten during future module updates.<br/>\n"
 "                        We recommend applying modifications to standard views through inherited views or customization with Odoo Studio."
 msgstr ""
+"Bitte beachten Sie, dass es nicht ratsam ist, die Architektur einer Standardansicht zu bearbeiten, da die Änderungen bei zukünftigen Modul-Updates überschrieben werden.<br/>\n"
+"Wir empfehlen, Änderungen an Standardansichten über geerbte Ansichten oder Anpassungen mit Odoo Studio vorzunehmen."
 
 #. module: base
 #: model:ir.model.fields.selection,name:base.selection__res_country__name_position__before
@@ -10871,7 +10874,7 @@ msgstr "Prima dell'Indirizzo"
 #. module: base
 #: model:ir.model.fields.selection,name:base.selection__res_currency__position__before
 msgid "Before Amount"
-msgstr "Prima dell'Importo"
+msgstr "Prima dell'importo"
 
 #. module: base
 #: code:addons/base/models/res_users.py:0
@@ -11238,7 +11241,7 @@ msgstr "Da"
 #: code:addons/base/models/ir_qweb_fields.py:0
 #, python-format
 msgid "By default the widget uses the field information"
-msgstr "Per impostazione predefinita il widget usa le informazioni del campo"
+msgstr "Il widget utilizza le informazioni del campo in modo predefinito"
 
 #. module: base
 #: model:res.partner.industry,full_name:base.res_partner_industry_C
@@ -13327,7 +13330,7 @@ msgstr "Definisce le imposte come codice Python"
 #. module: base
 #: model_terms:ir.ui.view,arch_db:base.module_form
 msgid "Defined Reports"
-msgstr "Rendiconti specifici"
+msgstr "Report specifici"
 
 #. module: base
 #: model:ir.module.module,summary:base.module_web_map
@@ -13363,7 +13366,7 @@ msgstr "Indirizzo di consegna"
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_delivery_barcode
 msgid "Delivery Barcode Scanning"
-msgstr "Lettura codice a barre per consegne"
+msgstr "Scansione del codice a barre di consegna"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_delivery
@@ -13744,9 +13747,8 @@ msgid ""
 "Display and manage the list of all countries group. You can create or delete"
 " country group to make sure the ones you are working on will be maintained."
 msgstr ""
-"Mostra e gestisce l'elenco di tutti i raggruppamenti nazioni. È possibile "
-"creare o eliminare un gruppo per garantire il mantenimento di quelli ai "
-"quali si sta lavorando."
+"Visualizza e gestisci l'elenco di tutti i gruppi nazione. Per garantire che "
+"quelli in uso siano mantenibili è possibile crearli o eliminarli."
 
 #. module: base
 #: model_terms:ir.actions.act_window,help:base.action_country
@@ -13755,9 +13757,9 @@ msgid ""
 "partner records. You can create or delete countries to make sure the ones "
 "you are working on will be maintained."
 msgstr ""
-"Mostra e gestisce la lista di tutti i paesi che possono essere assegnati ai "
-"partner. È possibile creare o cancellare paesi per assicurarvi che quelli si"
-" cui state lavorando verranno mantenuti."
+"Visualizza e gestisci l'elenco di tutte le nazioni che possono essere "
+"assegnate ai record del partner. Per garantire che quelle in uso siano "
+"mantenibili è possibile crearle o eliminarle."
 
 #. module: base
 #: code:addons/base/models/ir_qweb_fields.py:0
@@ -14014,7 +14016,7 @@ msgstr "Dott."
 #: model:ir.module.module,shortdesc:base.module_stock_dropshipping
 #: model:ir.module.module,summary:base.module_stock_dropshipping
 msgid "Drop Shipping"
-msgstr "Consegna diretta"
+msgstr "Spedizione diretta"
 
 #. module: base
 #: model_terms:ir.ui.view,arch_db:base.module_view_kanban
@@ -14024,7 +14026,7 @@ msgstr "Menù a discesa"
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_mrp_subcontracting_dropshipping
 msgid "Dropship and Subcontracting Management"
-msgstr "Gestione esternalizzazione e consegna diretta"
+msgstr "Gestione Spedizione diretta e Subappalti"
 
 #. module: base
 #: code:addons/base/models/ir_rule.py:0
@@ -14230,7 +14232,7 @@ msgstr "Fatturazione elettronica per la Colombia con Carvajal"
 #: code:addons/template_inheritance.py:0 code:addons/template_inheritance.py:0
 #, python-format
 msgid "Element '%s' cannot be located in parent view"
-msgstr "L'elemento '%s' non può esser localizzato nella vista genitore"
+msgstr "Impossibile localizzare l'elemento \"%s\" nella vista primaria"
 
 #. module: base
 #: code:addons/base/models/ir_qweb_fields.py:0
@@ -14348,7 +14350,7 @@ msgstr ""
 #. module: base
 #: model_terms:ir.ui.view,arch_db:base.form_res_users_key_description
 msgid "Enter a description of and purpose for the key."
-msgstr ""
+msgstr "Inserisci una descrizione e lo scopo della chiave."
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_website_event_track_gantt
@@ -14862,12 +14864,12 @@ msgstr "Fax"
 #: model:ir.model.fields,field_description:base.field_res_bank__state
 #: model:ir.model.fields,field_description:base.field_res_company__state_id
 msgid "Fed. State"
-msgstr "Provincia"
+msgstr "Provincia/Stato federale"
 
 #. module: base
 #: model:ir.actions.act_window,name:base.action_country_state
 msgid "Fed. States"
-msgstr "Stati federali"
+msgstr "Province/Stati federali"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_delivery_fedex
@@ -15525,7 +15527,9 @@ msgstr ""
 #: code:addons/base/models/ir_fields.py:0
 #, python-format
 msgid "Found multiple matches for field '%%(field)s' (%d matches)"
-msgstr "Trovati record multipli in base al campo '%%(field)s' (%d trovati)"
+msgstr ""
+"Trovate corrispondenze multiple per il campo \"%%(field)s\" (%d "
+"corrispondono)"
 
 #. module: base
 #: model:res.country,name:base.fr
@@ -26461,9 +26465,9 @@ msgid ""
 "Odoo. They are launched during the installation of new modules, but you can "
 "choose to restart some wizards manually from this menu."
 msgstr ""
-"Le procedure guidate di configurazione vengono usate per aiutarti a "
-"configurare una nuova istanza Odoo. Sono avviate durante l'installazione di "
-"nuovi moduli, ma puoi riavviarle manualmente da questo menu."
+"Le procedure guidate di configurazione sono utilizzate come aiuto per "
+"configurare una nuova istanza Odoo. Vengono avviate durante l'installazione "
+"di nuovi moduli, ma è possibile riavviarle manualmente da questo menù."
 
 #. module: base
 #: model:ir.model.fields,help:base.field_ir_model_fields__related
@@ -29279,6 +29283,8 @@ msgid ""
 "You can manage the different federal states you are working on from here. "
 "Each state is attached to one country."
 msgstr ""
+"Da qui è possibile gestire le diverse province/stati federali in uso. Ogni "
+"provincia/stato è legata a una nazione."
 
 #. module: base
 #: code:addons/base/models/res_partner.py:0

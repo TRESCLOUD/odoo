@@ -367,6 +367,63 @@ QUnit.module('basic_fields', {
         form.destroy();
     });
 
+    QUnit.test('boolean toggle widget is not disabled in readonly mode', async function (assert) {
+        assert.expect(3);
+
+        const form = await createView({
+            View: FormView,
+            model: 'partner',
+            data: this.data,
+            arch: '<form><field name="bar" widget="boolean_toggle"/></form>',
+            res_id: 5,
+        });
+
+        assert.containsOnce(form, ".custom-checkbox.o_boolean_toggle", "Boolean toggle widget applied to boolean field");
+        assert.notOk(form.$('.o_boolean_toggle input')[0].checked);
+        await testUtils.dom.click(form.$('.o_boolean_toggle'));
+        assert.ok(form.$('.o_boolean_toggle input')[0].checked);
+        form.destroy();
+    });
+
+    QUnit.test('boolean toggle widget is disabled with a readonly attribute', async function (assert) {
+        assert.expect(3);
+
+        const form = await createView({
+            View: FormView,
+            model: 'partner',
+            data: this.data,
+            arch: '<form><field name="bar" widget="boolean_toggle" readonly="1"/></form>',
+            res_id: 5,
+        });
+
+        assert.containsOnce(form, ".custom-checkbox.o_boolean_toggle", "Boolean toggle widget applied to boolean field");
+        await testUtils.dom.click(form.$buttons.find('.o_form_button_edit'));
+        assert.notOk(form.$('.o_boolean_toggle input')[0].checked);
+        await testUtils.dom.click(form.$('.o_boolean_toggle'));
+        assert.notOk(form.$('.o_boolean_toggle input')[0].checked);
+        form.destroy();
+    });
+
+    QUnit.test('boolean toggle widget is enabled in edit mode', async function (assert) {
+        assert.expect(3);
+
+        const form = await createView({
+            View: FormView,
+            model: 'partner',
+            data: this.data,
+            arch: '<form><field name="bar" widget="boolean_toggle"/></form>',
+            res_id: 5,
+        });
+
+        assert.containsOnce(form, ".custom-checkbox.o_boolean_toggle", "Boolean toggle widget applied to boolean field");
+        await testUtils.dom.click(form.$buttons.find('.o_form_button_edit'));
+
+        assert.notOk(form.$('.o_boolean_toggle input')[0].checked);
+        await testUtils.dom.click(form.$('.o_boolean_toggle'));
+        assert.ok(form.$('.o_boolean_toggle input')[0].checked);
+        form.destroy();
+    });
+
     QUnit.module('FieldToggleButton');
 
     QUnit.test('use toggle_button in list view', async function (assert) {
@@ -4243,6 +4300,11 @@ QUnit.module('basic_fields', {
             viewOptions: {
                 mode: 'edit',
             },
+            session: {
+                getTZOffset: function () {
+                    return 120;
+                },
+            },
         });
 
         const year = (new Date()).getFullYear();
@@ -4256,6 +4318,30 @@ QUnit.module('basic_fields', {
         assert.strictEqual(form.el.querySelector('input[name="date"]').value, '08/01/' + year);
 
         form.destroy();
+    });
+
+    QUnit.test('focused date field should cause no error on destroy', async function (assert) {
+        assert.expect(2);
+
+        var originalParameters = _.clone(core._t.database.parameters);
+        _.extend(core._t.database.parameters, {date_format: '%d.%m:%Y'});
+
+        var list = await createView({
+            View: ListView,
+            model: 'partner',
+            data: this.data,
+            arch: '<tree editable="top"><field name="date"/></tree>',
+            domain: [(1, '=', 0)],
+            context: {'default_date': '2020-01-20 00:00:00'},
+        });
+
+        await testUtils.dom.click(list.$('.o_list_button_add'));
+        assert.containsOnce(list, '.o_data_row');
+        await testUtils.fields.triggerKeydown($(document.activeElement), 'escape');
+        assert.containsNone(list, '.o_data_row');
+
+        list.destroy();
+        core._t.database.parameters = originalParameters;
     });
 
     QUnit.module('FieldDatetime');
@@ -4750,6 +4836,41 @@ QUnit.module('basic_fields', {
 
         const { textContent } = form.el.querySelector('span[name="datetime"]')
         assert.strictEqual(textContent, datetimeValue);
+
+        form.destroy();
+    });
+
+    QUnit.test('datetime field with date widget: hit enter should update value', async function (assert) {
+        assert.expect(2);
+
+        const form = await createView({
+            View: FormView,
+            model: 'partner',
+            data: this.data,
+            arch:'<form string="Partners"><field name="datetime" widget="date"/></form>',
+            res_id: 1,
+            translateParameters: {  // Avoid issues due to localization formats
+                date_format: '%m/%d/%Y',
+            },
+            viewOptions: {
+                mode: 'edit',
+            },
+            session: {
+                getTZOffset: function () {
+                    return 120;
+                },
+            },
+        });
+
+        const datetime = form.el.querySelector('input[name="datetime"]');
+
+        await testUtils.fields.editInput(datetime, '01/08/22');
+        await testUtils.fields.triggerKeydown(datetime, 'enter');
+        assert.strictEqual(datetime.value, '01/08/2022');
+
+        // Click outside the field to check that the field is not changed
+        await testUtils.dom.click(form.$el);
+        assert.strictEqual(datetime.value, '01/08/2022');
 
         form.destroy();
     });

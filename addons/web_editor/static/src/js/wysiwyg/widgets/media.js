@@ -961,7 +961,7 @@ var ImageWidget = FileWidget.extend({
      */
     _clear: function (type) {
         // Not calling _super: we don't want to call the document widget's _clear method on images
-        var allImgClasses = /(^|\s+)(img|img-\S*|o_we_custom_image|rounded-circle|rounded|thumbnail|shadow)(?=\s|$)/g;
+        var allImgClasses = /(^|\s+)(img|img-\S*|o_we_custom_image|rounded-circle|rounded|thumbnail|shadow|w-25|w-50|w-75|w-100|o_modified_image_to_save)(?=\s|$)/g;
         this.media.className = this.media.className && this.media.className.replace(allImgClasses, ' ');
     },
 });
@@ -1109,7 +1109,7 @@ var IconWidget = SearchableMediaWidget.extend({
      * @override
      */
     _clear: function () {
-        var allFaClasses = /(^|\s)(fa|(text-|bg-|fa-)\S*|rounded-circle|rounded|thumbnail|shadow)(?=\s|$)/g;
+        var allFaClasses = /(^|\s)(fa|(text-|bg-|fa-)\S*|rounded-circle|rounded|thumbnail|img-thumbnail|shadow)(?=\s|$)/g;
         this.media.className = this.media.className && this.media.className.replace(allFaClasses, ' ');
     },
     /**
@@ -1423,7 +1423,13 @@ var VideoWidget = MediaWidget.extend({
             const fullscreen = options.hide_fullscreen ? '&fs=0' : '';
             const ytLoop = loop ? loop + `&playlist=${matches.youtube[2]}` : '';
             const logo = options.hide_yt_logo ? '&modestbranding=1' : '';
-            embedURL = `//www.youtube${matches.youtube[1] || ''}.com/embed/${matches.youtube[2]}${autoplay}&rel=0${ytLoop}${controls}${fullscreen}${logo}`;
+            // The youtube js api is needed for autoplay on mobile. Note: this
+            // was added as a fix, old customers may have autoplay videos
+            // without this, which will make their video autoplay on desktop
+            // but not in mobile (so no behavior change was done in stable,
+            // this should not be migrated).
+            const enablejsapi = options.autoplay ? '&enablejsapi=1' : '';
+            embedURL = `//www.youtube${matches.youtube[1] || ''}.com/embed/${matches.youtube[2]}${autoplay}${enablejsapi}&rel=0${ytLoop}${controls}${fullscreen}${logo}`;
             type = 'youtube';
         } else if (matches.instagram && matches.instagram[2].length) {
             embedURL = `//www.instagram.com/p/${matches.instagram[2]}/embed/`;

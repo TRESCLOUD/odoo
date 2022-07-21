@@ -4,7 +4,7 @@
 from odoo import api, fields, models, _
 from odoo.tools.float_utils import float_round, float_is_zero
 from odoo.exceptions import UserError
-
+from odoo.osv.expression import AND
 
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
@@ -239,9 +239,10 @@ class Orderpoint(models.Model):
 
     def _get_replenishment_order_notification(self):
         self.ensure_one()
-        order = self.env['purchase.order.line'].search([
-            ('orderpoint_id', 'in', self.ids)
-        ], limit=1).order_id
+        domain = [('orderpoint_id', 'in', self.ids)]
+        if self.env.context.get('written_date'):
+            domain = AND([domain, [('write_date', '>', self.env.context.get('written_after'))]])
+        order = self.env['purchase.order.line'].search(domain, limit=1).order_id
         if order:
             action = self.env.ref('purchase.action_rfq_form')
             return {

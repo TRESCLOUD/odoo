@@ -119,10 +119,13 @@ class SaleOrder(models.Model):
 
         res = super(SaleOrder, self).write(values)
         if values.get('order_line') and self.state == 'sale':
+            rounding = self.env['decimal.precision'].precision_get('Product Unit of Measure')
             for order in self:
                 to_log = {}
                 for order_line in order.order_line:
-                    if float_compare(order_line.product_uom_qty, pre_order_line_qty.get(order_line, 0.0), order_line.product_uom.rounding) < 0:
+                    if order_line.display_type:
+                        continue
+                    if float_compare(order_line.product_uom_qty, pre_order_line_qty.get(order_line, 0.0), precision_rounding=order_line.product_uom.rounding or rounding) < 0:
                         to_log[order_line] = (order_line.product_uom_qty, pre_order_line_qty.get(order_line, 0.0))
                 if to_log:
                     documents = self.env['stock.picking']._log_activity_get_documents(to_log, 'move_ids', 'UP')
@@ -518,8 +521,9 @@ class SaleOrderLine(models.Model):
             'route_ids': self.route_id,
             'warehouse_id': self.order_id.warehouse_id or False,
             'partner_id': self.order_id.partner_shipping_id.id,
-            'product_description_variants': self._get_sale_order_line_multiline_description_variants(),
+            'product_description_variants': self.with_context(lang=self.order_id.partner_id.lang)._get_sale_order_line_multiline_description_variants(),
             'company_id': self.order_id.company_id,
+            'sequence': self.sequence,
         })
         return values
 

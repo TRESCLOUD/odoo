@@ -3,6 +3,7 @@
 
 from odoo.tests import Form
 from datetime import datetime, timedelta
+from freezegun import freeze_time
 
 from odoo.fields import Datetime as Dt
 from odoo.exceptions import UserError
@@ -2193,3 +2194,165 @@ class TestMrpOrder(TestMrpCommon):
         production_form.product_qty = 5
         production = production_form.save()
         self.assertEqual(production.workorder_ids[0].duration_expected, 30.0, "Produce 5 with capacity 2, expected is 10mn for each run -> 30mn")
+
+    def test_planning_workorder(self):
+        """
+            Check that the fastest work center is used when planning the workorder.
+
+            - create two work centers with similar production capacity
+                but the work_center_2 with a longer start and stop time.
+
+            1:/ produce 2 units > work_center_1 faster because
+                it does not need much time to start and to finish the production.
+
+            2/ - update the production capacity of the work_center_2 to 4
+                - produce 4 units > work_center_2 faster because
+                it must do a single cycle while the work_center_1 have to do two cycles.
+        """
+        workcenter_1 = self.env['mrp.workcenter'].create({
+            'name': 'wc1',
+            'capacity': 2,
+            'time_start': 1,
+            'time_stop': 1,
+            'time_efficiency': 100,
+        })
+
+        workcenter_2 = self.env['mrp.workcenter'].create({
+            'name': 'wc2',
+            'capacity': 2,
+            'time_start': 10,
+            'time_stop': 5,
+            'time_efficiency': 100,
+            'alternative_workcenter_ids': [workcenter_1.id]
+        })
+
+        product_to_build = self.env['product.product'].create({
+            'name': 'final product',
+            'type': 'product',
+        })
+
+        product_to_use = self.env['product.product'].create({
+            'name': 'component',
+            'type': 'product',
+        })
+
+        bom = self.env['mrp.bom'].create({
+            'product_id': product_to_build.id,
+            'product_tmpl_id': product_to_build.product_tmpl_id.id,
+            'product_uom_id': self.uom_unit.id,
+            'product_qty': 1.0,
+            'type': 'normal',
+            'consumption': 'flexible',
+            'operation_ids': [
+                (0, 0, {'name': 'Test', 'workcenter_id': workcenter_2.id, 'time_cycle': 60, 'sequence': 1}),
+            ],
+            'bom_line_ids': [
+                (0, 0, {'product_id': product_to_use.id, 'product_qty': 1}),
+            ]})
+
+        #MO_1
+        mo_form = Form(self.env['mrp.production'])
+        mo_form.product_id = product_to_build
+        mo_form.bom_id = bom
+        mo_form.product_qty = 2
+        mo = mo_form.save()
+        mo.action_confirm()
+        mo.button_plan()
+        self.assertEqual(mo.workorder_ids[0].workcenter_id.id, workcenter_1.id, 'workcenter_1 is faster than workcenter_2 to manufacture 2 units')
+        # Unplan the mo to prevent the first workcenter from being busy
+        mo.button_unplan()
+
+        # Update the production capcity
+        workcenter_2.capacity = 4
+
+        #MO_2
+        mo_form = Form(self.env['mrp.production'])
+        mo_form.product_id = product_to_build
+        mo_form.bom_id = bom
+        mo_form.product_qty = 4
+        mo_2 = mo_form.save()
+        mo_2.action_confirm()
+        mo_2.button_plan()
+        self.assertEqual(mo_2.workorder_ids[0].workcenter_id.id, workcenter_2.id, 'workcenter_2 is faster than workcenter_1 to manufacture 4 units')
+
+    def test_starting_wo_twice(self):
+        """
+            Check that the work order is started only once when clicking the start button several times.
+        """
+        production_form = Form(self.env['mrp.production'])
+        production_form.bom_id = self.bom_2
+        production_form.product_qty = 1
+        production = production_form.save()
+        production_form = Form(production)
+        with production_form.workorder_ids.new() as wo:
+            wo.name = 'OP1'
+            wo.workcenter_id = self.workcenter_1
+            wo.duration_expected = 40
+        production = production_form.save()
+        production.action_confirm()
+        production.button_plan()
+        production.workorder_ids[0].button_start()
+        production.workorder_ids[0].button_start()
+        self.assertEqual(len(production.workorder_ids[0].time_ids.filtered(lambda t: t.date_start and not t.date_end)), 1)
+
+    @freeze_time('2022-06-28 08:00')
+    def test_replan_workorders01(self):
+        """
+        Create two MO, each one with one WO. Set the same scheduled start date
+        to each WO during the creation of the MO. A warning will be displayed.
+        -> The user replans one of the WO: the warnings should disappear and the
+        WO should be postponed.
+        """
+        mos = self.env['mrp.production']
+        for _ in range(2):
+            mo_form = Form(self.env['mrp.production'])
+            mo_form.bom_id = self.bom_4
+            with mo_form.workorder_ids.edit(0) as wo_line:
+                wo_line.date_planned_start = Dt.now()
+            mos += mo_form.save()
+        mos.action_confirm()
+
+        mo_01, mo_02 = mos
+        wo_01 = mo_01.workorder_ids
+        wo_02 = mo_02.workorder_ids
+
+        self.assertTrue(wo_01.show_json_popover)
+        self.assertTrue(wo_02.show_json_popover)
+
+        wo_02.action_replan()
+
+        self.assertFalse(wo_01.show_json_popover)
+        self.assertFalse(wo_02.show_json_popover)
+        self.assertEqual(wo_01.date_planned_finished, wo_02.date_planned_start)
+
+    @freeze_time('2022-06-28 08:00')
+    def test_replan_workorders02(self):
+        """
+        Create two MO, each one with one WO. Set the same scheduled start date
+        to each WO after the creation of the MO. A warning will be displayed.
+        -> The user replans one of the WO: the warnings should disappear and the
+        WO should be postponed.
+        """
+        mos = self.env['mrp.production']
+        for _ in range(2):
+            mo_form = Form(self.env['mrp.production'])
+            mo_form.bom_id = self.bom_4
+            mos += mo_form.save()
+        mos.action_confirm()
+        mo_01, mo_02 = mos
+
+        for mo in mos:
+            with Form(mo) as mo_form:
+                with mo_form.workorder_ids.edit(0) as wo_line:
+                    wo_line.date_planned_start = Dt.now()
+
+        wo_01 = mo_01.workorder_ids
+        wo_02 = mo_02.workorder_ids
+        self.assertTrue(wo_01.show_json_popover)
+        self.assertTrue(wo_02.show_json_popover)
+
+        wo_02.action_replan()
+
+        self.assertFalse(wo_01.show_json_popover)
+        self.assertFalse(wo_02.show_json_popover)
+        self.assertEqual(wo_01.date_planned_finished, wo_02.date_planned_start)

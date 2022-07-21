@@ -59,7 +59,7 @@
 # Moka Tourisme <hello@mokatourisme.fr>, 2020
 # Fabien Pinckaers <fp@openerp.com>, 2021
 # Nicolas JEUDY <njeudy@panda-chi.io>, 2021
-# Anthony Chaussin <chaussin.anthony@gmail.com>, 2021
+# anthony chaussin <chaussin.anthony@gmail.com>, 2021
 # rclodoo <rcl@odoo.com>, 2021
 # Florian <fll@odoo.com>, 2021
 # Pierre Delacroix <pde@odoo.com>, 2021
@@ -68,11 +68,11 @@
 # Martin Trigaux, 2021
 # Alexandra Jubert <aju@odoo.com>, 2021
 # Vallen Delobel <edv@odoo.com>, 2021
-# Grégory Schreiner, 2021
+# Grégory Schreiner <gregory@mokatourisme.fr>, 2021
 # Eric Vernichon <eric@vernichon.fr>, 2022
-# Cécile Collart <cco@odoo.com>, 2022
 # Jonathan Castillo <jcs@odoo.com>, 2022
 # Sébastien BÜHL <buhlsebastien@gmail.com>, 2022
+# Cécile Collart <cco@odoo.com>, 2022
 # 
 msgid ""
 msgstr ""
@@ -80,13 +80,13 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-01-07 14:40+0000\n"
 "PO-Revision-Date: 2020-09-07 08:20+0000\n"
-"Last-Translator: Sébastien BÜHL <buhlsebastien@gmail.com>, 2022\n"
+"Last-Translator: Cécile Collart <cco@odoo.com>, 2022\n"
 "Language-Team: French (https://www.transifex.com/odoo/teams/41243/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Language: fr\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
 
 #. module: website
 #. openerp-web
@@ -2033,6 +2033,8 @@ msgstr "Plan"
 #: model_terms:ir.ui.view,arch_db:website.s_popup
 msgid "Check out now and get $20 off your first order."
 msgstr ""
+"Passez à la caisse maintenant et obtenez 20 $ de réduction sur votre "
+"première commande."
 
 #. module: website
 #. openerp-web
@@ -2455,6 +2457,7 @@ msgstr "Le compte à rebours est terminé - Feu d'artifice"
 #. module: website
 #: code:addons/website/models/website.py:0
 #: model:ir.filters,name:website.dynamic_snippet_country_filter
+#: model:website.snippet.filter,name:website.dynamic_snippet_data_source_country
 #, python-format
 msgid "Countries"
 msgstr "Pays"
@@ -3677,6 +3680,9 @@ msgid ""
 "                                to keep his hands full by participating in the development of the software,\n"
 "                                marketing, and customer experience strategies."
 msgstr ""
+"Fondateur et visionnaire en chef, Tony est le moteur de l'entreprise. Il aime\n"
+" rester occupé en participant au développement des stratégies logicielles,\n"
+" marketing et d'expérience client."
 
 #. module: website
 #: model_terms:ir.ui.view,arch_db:website.snippet_options
@@ -3908,6 +3914,12 @@ msgid ""
 " story will sound fake and lack emotion. No one will be interested. Write "
 "for one person. If it’s genuine for the one, it’s genuine for the rest."
 msgstr ""
+"Les grandes histoires sont pour <b>tout le monde</b>, même lorsqu'elles ne "
+"sont écrites que <b>pour une seule personne</b>. Si vous essayez d'écrire en"
+" pensant à un public large et général, votre histoire sonnera fausse et "
+"manquera d'émotion. Personne ne sera intéressé. Ecrire pour une personne en "
+"particulier signifie que si c'est authentique pour l'un, c'est authentique "
+"pour le reste."
 
 #. module: website
 #: model_terms:ir.ui.view,arch_db:website.s_text_block
@@ -3918,6 +3930,12 @@ msgid ""
 "small quirks like word choices or phrases. Write from your point of view, "
 "not from someone else's experience."
 msgstr ""
+"Les grandes histoires ont une <b>personnalité</b>. Envisagez de raconter une"
+" belle histoire qui donne de la personnalité. Écrire une histoire avec de la"
+" personnalité pour des clients potentiels aidera à établir un lien "
+"relationnel. Cela se traduit par de petites spécificités comme le choix des "
+"mots ou des phrases. Écrivez de votre point de vue, pas de l'expérience de "
+"quelqu'un d'autre."
 
 #. module: website
 #: model_terms:ir.ui.view,arch_db:website.s_image_gallery_options
@@ -6607,6 +6625,7 @@ msgstr "Sélectionner une image pour le partage social"
 #: model_terms:ir.ui.view,arch_db:website.s_process_steps
 msgid "Select and delete blocks <br/>to remove some steps."
 msgstr ""
+"Sélectionnez et supprimez <br/>des blocs pour supprimer certaines étapes."
 
 #. module: website
 #: model_terms:ir.ui.view,arch_db:website.s_features_grid
@@ -6939,7 +6958,7 @@ msgstr "Carré"
 #. module: website
 #: model_terms:ir.ui.view,arch_db:website.s_image_gallery_options
 msgid "Squared Miniatures"
-msgstr ""
+msgstr "Miniatures carrées"
 
 #. module: website
 #: model_terms:ir.ui.view,arch_db:website.s_chart_options
@@ -7189,7 +7208,7 @@ msgstr "Position du texte"
 #: model_terms:ir.ui.view,arch_db:website.color_combinations_debug_view
 #: model_terms:website.page,arch_db:website.color_combinations_debug_page
 msgid "Text muted. Lorem <b>ipsum dolor sit amet</b>, consectetur."
-msgstr ""
+msgstr "Texte masqué. Lorem <b>ipsum dolor sit amet</b>, consectetur."
 
 #. module: website
 #: code:addons/website/controllers/backend.py:0
@@ -7478,6 +7497,12 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:website.s_popup_options
 msgid "This page"
 msgstr "Cette page"
+
+#. module: website
+#: code:addons/website/models/website_visitor.py:0
+#, python-format
+msgid "This operator is not supported"
+msgstr ""
 
 #. module: website
 #: model_terms:ir.ui.view,arch_db:website.page_404
@@ -8617,7 +8642,7 @@ msgstr "Réécriture du site Web"
 #. module: website
 #: model:ir.actions.server,name:website.ir_actions_server_website_google_analytics
 msgid "Website: Analytics"
-msgstr ""
+msgstr "Site web : Analytique"
 
 #. module: website
 #: model:ir.actions.server,name:website.ir_actions_server_website_dashboard
@@ -9077,7 +9102,7 @@ msgstr "frontend_lang (Odoo)"
 #. module: website
 #: model_terms:ir.ui.view,arch_db:website.snippets
 msgid "gallery, carousel"
-msgstr ""
+msgstr "galerie, carrousel"
 
 #. module: website
 #: model_terms:ir.ui.view,arch_db:website.res_config_settings_view_form
@@ -9087,7 +9112,7 @@ msgstr "google1234567890123456.html"
 #. module: website
 #: model_terms:ir.ui.view,arch_db:website.snippets
 msgid "heading, h1"
-msgstr ""
+msgstr "titre, h1"
 
 #. module: website
 #: model_terms:ir.ui.view,arch_db:website.template_footer_contact
@@ -9098,7 +9123,7 @@ msgstr "hello@mycompany.com"
 #. module: website
 #: model_terms:ir.ui.view,arch_db:website.snippets
 msgid "hero, jumbotron"
-msgstr ""
+msgstr "hero, jumbotron"
 
 #. module: website
 #. openerp-web
@@ -9128,7 +9153,7 @@ msgstr ""
 #. module: website
 #: model_terms:ir.ui.view,arch_db:website.snippets
 msgid "image, media, illustration"
-msgstr ""
+msgstr "image, media, illustration"
 
 #. module: website
 #. openerp-web
@@ -9403,7 +9428,7 @@ msgstr ""
 #. module: website
 #: model_terms:ir.ui.view,arch_db:website.snippet_options_shadow_widgets
 msgid "⌙ Offset (X, Y)"
-msgstr ""
+msgstr "⌙ Offset (X, Y)"
 
 #. module: website
 #: model_terms:ir.ui.view,arch_db:website.snippet_options_background_options
