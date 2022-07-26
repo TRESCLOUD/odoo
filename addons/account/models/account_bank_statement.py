@@ -284,8 +284,8 @@ class AccountBankStatement(models.Model):
         # NB : The field account_id can be used at the statement line creation/import to avoid the reconciliation process on it later on,
         # this is why we filter out statements lines where account_id is set
 
-        sql_query = """SELECT stl.id 
-                        FROM account_bank_statement_line stl  
+        sql_query = """SELECT stl.id
+                        FROM account_bank_statement_line stl
                         WHERE account_id IS NULL AND not exists (select 1 from account_move m where m.statement_line_id = stl.id)
                             AND company_id = %s
                 """
@@ -308,11 +308,11 @@ class AccountBankStatement(models.Model):
                             FROM account_move_line aml
                                 JOIN account_account acc ON acc.id = aml.account_id
                                 JOIN account_bank_statement_line stl ON aml.ref = stl.name
-                            WHERE (aml.company_id = %s 
-                                AND aml.partner_id IS NOT NULL) 
+                            WHERE (aml.company_id = %s
+                                AND aml.partner_id IS NOT NULL)
                                 AND (
-                                    (aml.statement_id IS NULL AND aml.account_id IN %s) 
-                                    OR 
+                                    (aml.statement_id IS NULL AND aml.account_id IN %s)
+                                    OR
                                     (acc.internal_type IN ('payable', 'receivable') AND aml.reconciled = false)
                                     )
                                 AND aml.ref IN %s
@@ -786,7 +786,7 @@ class AccountBankStatementLine(models.Model):
             # company in currency A, statement in currency B and transaction in currency A
             # counterpart line must have currency B and amount is computed using the rate between A and B
             amount_currency = amount/st_line_currency_rate
-        
+
         # last case is company in currency A, statement in currency A and transaction in currency A
         # and in this case counterpart line does not need any second currency nor amount_currency
 
@@ -832,6 +832,15 @@ class AccountBankStatementLine(models.Model):
 
     def _get_communication(self, payment_method_id):
         return self.name or ''
+
+    # CODIGO AGREGADO POR TRESCLOUD
+    def payment_aml_dict(self, aml):
+        """
+        Get account move line dict just before creation.
+        Useful to change this values in inherited modules
+        """
+        return aml
+    # FIN DEL CODIGO AGREGADO POR TRESCLOUD
 
     def process_reconciliation(self, counterpart_aml_dicts=None, payment_aml_rec=None, new_aml_dicts=None):
         """ Match statement lines with existing payments (eg. checks) and/or payables/receivables (eg. invoices and refunds) and/or new move lines (eg. write-offs).
@@ -920,7 +929,7 @@ class AccountBankStatementLine(models.Model):
                         partner_type = 'customer'
 
                 payment_methods = (total>0) and self.journal_id.inbound_payment_method_ids or self.journal_id.outbound_payment_method_ids
-                
+
                 #CORRECCION DE TRESCLOUD
                 #En nuestra localizacion la mayoria de veces no queremos que la caja de "efectivo" se use para pagos
                 #a proveedores, por lo que no configuramos un outbound_payment_method_ids que es un campo obligatorio
@@ -932,9 +941,9 @@ class AccountBankStatementLine(models.Model):
                     #si es un ingreso y no he configurado forma de pago
                     payment_methods = self.env.ref('account.account_payment_method_manual_in')
                 if not payment_methods:
-                    raise UserError(_('No appropriate payment method enabled on journal %s') % self.journal_id.name)                     
+                    raise UserError(_('No appropriate payment method enabled on journal %s') % self.journal_id.name)
                 #FIN DE LA CORRECCIÓN
-                
+
                 currency = self.journal_id.currency_id or self.company_id.currency_id
                 payment = self.env['account.payment'].create({
                     'payment_method_id': payment_methods and payment_methods[0].id or False,
@@ -957,6 +966,10 @@ class AccountBankStatementLine(models.Model):
                 aml_dict['move_id'] = move.id
                 aml_dict['partner_id'] = self.partner_id.id
                 aml_dict['statement_id'] = self.statement_id.id
+                # CODIGO AGREGADO POR TRESCLOUD
+                aml_dict = self.payment_aml_dict(aml_dict)
+                # FIN DEL CODIGO AGREGADO POR TRESCLOUD
+                # aml_dict['statement_id'] = self.statement_id.id
                 if st_line_currency.id != company_currency.id:
                     aml_dict['amount_currency'] = aml_dict['debit'] - aml_dict['credit']
                     aml_dict['currency_id'] = st_line_currency.id
@@ -1017,12 +1030,16 @@ class AccountBankStatementLine(models.Model):
             st_line_amount = -sum([x.balance for x in move.line_ids])
             aml_dict = self._prepare_reconciliation_move_line(move, st_line_amount)
             aml_dict['payment_id'] = payment and payment.id or False
+            # CODIGO AGREGADO POR TRESCLOUD
+            aml_dict = self.payment_aml_dict(aml_dict)
+            # FIN DEL CODIGO AGREGADO POR TRESCLOUD
+
             aml_obj.with_context(check_move_validity=False).create(aml_dict)
 
             move.post()
             #record the move name on the statement line to be able to retrieve it in case of unreconciliation
             self.write({'move_name': move.name})
-            # CODIGO MODIFICADO POR TRESCLOUD 
+            # CODIGO MODIFICADO POR TRESCLOUD
             # SE ELIMINA ESTE WRITE PORQUE HACE QUE LOS PAGOS VAYAN A ESTADO "sent"
             #payment.write({'payment_reference': move.name})
         elif self.move_name:
