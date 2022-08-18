@@ -249,12 +249,24 @@ class PosSession(models.Model):
             if not session.config_id.cash_control:
                 session.action_pos_session_close()
 
+    # CODIGO AGREGADO POR TRESCLOUD
+    def action_pos_session_close_context(self):
+        """
+        Returns context to call button_confirm_bank method
+        Useful to add info to context and capture later
+        """
+        self.ensure_one()
+        company_id = self.config_id.company_id.id
+        return dict(self.env.context, force_company=company_id, company_id=company_id)
+    # FIN DEL CODIGO AGREGADO POR TRESCLOUD
+
     @api.multi
     def action_pos_session_close(self):
         # Close CashBox
         for session in self:
-            company_id = session.config_id.company_id.id
-            ctx = dict(self.env.context, force_company=company_id, company_id=company_id)
+            # CODIGO AGREGADO POR TRESCLOUD
+            ctx = session.action_pos_session_close_context()
+            # FIN DEL CODIGO AGREGADO POR TRESCLOUD
             for st in session.statement_ids:
                 if abs(st.difference) > st.journal_id.amount_authorized_diff:
                     # The pos manager can close statements with maximums.
