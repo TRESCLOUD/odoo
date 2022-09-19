@@ -282,7 +282,7 @@
                     'account_id': ref('l10n_ec.ec_sale_vat_services_exports'),
                 })]"/>
         </record>
-        <record id="tax_vat_419" model="account.tax.template">
+        <record id="tax_vat_441" model="account.tax.template">
             <!-- TRANSFERENCIAS EN VENTAS NO OBJETO O EXENTAS DE IVA -->
             <field name="name">IVA 0% (No Objeto/Exentas)</field>
             <field name="type_tax_use">sale</field>
@@ -290,7 +290,7 @@
             <field name="sequence">40</field>
             <field name="amount">0.0</field>
             <field name="description">IVA EXENTO</field>
-            <field name="l10n_ec_code_base">419</field>
+            <field name="l10n_ec_code_base">441</field>
 
             <field name="chart_template_id" ref="l10n_ec.l10n_ec_ifrs"/>
             <field name="tax_group_id" ref="tax_group_vat_excempt"/>
@@ -298,7 +298,7 @@
                 (0,0, {
                     'factor_percent': 100,
                     'repartition_type': 'base',
-                    'plus_report_line_ids': [ref('tax_report_line_104_419')],
+                    'plus_report_line_ids': [ref('tax_report_line_104_441')],
                 }),
                 (0,0, {
                     'factor_percent': 100,
@@ -309,7 +309,7 @@
                 (0,0, {
                     'factor_percent': 100,
                     'repartition_type': 'base',
-                    'minus_report_line_ids': [ref('tax_report_line_104_419')],
+                    'minus_report_line_ids': [ref('tax_report_line_104_441')],
                 }),
                 (0,0, {
                     'factor_percent': 100,
