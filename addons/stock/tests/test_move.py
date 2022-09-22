@@ -3462,6 +3462,32 @@ class StockMove(TransactionCase):
         self.assertEqual(len(self.gather_relevant(self.product_lot, self.stock_location, lot_id=lot1, strict=True)), 0.0)
         self.assertEqual(len(self.gather_relevant(self.product_lot, self.stock_location, lot_id=lot2, strict=True)), 0.0)
 
+    def test_edit_reserved_move_line_9(self):
+        """
+        When writing on the reserved quantity on the SML, a process tries to
+        reserve the quants with that new quantity. If it fails (for instance
+        because the written quantity is more than actually available), this
+        quantity should be reset to 0.
+        """
+        self.env['stock.quant']._update_available_quantity(self.product, self.stock_location, 1.0)
+
+        out_move = self.env['stock.move'].create({
+            'name': self.product.name,
+            'location_id': self.stock_location.id,
+            'location_dest_id': self.customer_location.id,
+            'product_id': self.product.id,
+            'product_uom_qty': 1,
+            'product_uom': self.product.uom_id.id,
+        })
+        out_move._action_confirm()
+        out_move._action_assign()
+
+        # try to manually assign more than available
+        out_move.move_line_ids.product_uom_qty = 2
+
+        self.assertTrue(out_move.move_line_ids)
+        self.assertEqual(out_move.move_line_ids.product_uom_qty, 0, "The reserved quantity should be cancelled")
+
     def test_edit_done_move_line_1(self):
         """ Test that editing a done stock move line linked to an untracked product correctly and
         directly adapts the transfer. In this case, we edit the sublocation where we take the
@@ -5741,3 +5767,26 @@ class StockMove(TransactionCase):
         self.assertEqual(move.forecast_availability, -1)
         move._action_confirm()
         self.assertEqual(move.forecast_availability, -1)
+
+    def test_receive_more_and_in_child_location(self):
+        """
+        Ensure that, when receiving more than expected, and when the destination
+        location of the SML is different from the SM one, the SM validation will
+        not change the destination location of the SML
+        """
+        move = self.env['stock.move'].create({
+            'name': self.product.name,
+            'location_id': self.supplier_location.id,
+            'location_dest_id': self.stock_location.id,
+            'product_id': self.product.id,
+            'product_uom': self.uom_unit.id,
+            'product_uom_qty': 1.0,
+        })
+        move._action_confirm()
+        move.move_line_ids.write({
+            'location_dest_id': self.stock_location.child_ids[0].id,
+            'qty_done': 3,
+        })
+        move._action_done()
+        self.assertEqual(move.move_line_ids.qty_done, 3)
+        self.assertEqual(move.move_line_ids.location_dest_id, self.stock_location.child_ids[0])

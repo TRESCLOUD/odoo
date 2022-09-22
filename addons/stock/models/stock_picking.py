@@ -164,7 +164,12 @@ class PickingType(models.Model):
         args = args or []
         domain = []
         if name:
-            domain = ['|', ('name', operator, name), ('warehouse_id.name', operator, name)]
+            # Try to reverse the `name_get` structure
+            parts = name.split(': ')
+            if len(parts) == 2:
+                domain = [('warehouse_id.name', operator, parts[0]), ('name', operator, parts[1])]
+            else:
+                domain = ['|', ('name', operator, name), ('warehouse_id.name', operator, name)]
         return self._search(expression.AND([domain, args]), limit=limit, access_rights_uid=name_get_uid)
 
     @api.onchange('code')
@@ -1379,7 +1384,7 @@ class Picking(models.Model):
                     quantity_left_todo = float_round(
                         ml.product_uom_qty - ml.qty_done,
                         precision_rounding=ml.product_uom_id.rounding,
-                        rounding_method='UP')
+                        rounding_method='HALF-UP')
                     done_to_keep = ml.qty_done
                     new_move_line = ml.copy(
                         default={'product_uom_qty': 0, 'qty_done': ml.qty_done})

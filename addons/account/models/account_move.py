@@ -2,7 +2,7 @@
 
 from odoo import api, fields, models, Command, _
 from odoo.exceptions import RedirectWarning, UserError, ValidationError, AccessError
-from odoo.tools import float_compare, date_utils, email_split, email_re, html_escape, is_html_empty
+from odoo.tools import float_compare, float_is_zero, date_utils, email_split, email_re, html_escape, is_html_empty
 from odoo.tools.misc import formatLang, format_date, get_lang
 
 from datetime import date, timedelta
@@ -320,7 +320,7 @@ class AccountMove(models.Model):
         default=_get_default_invoice_incoterm,
         help='International Commercial Terms are a series of predefined commercial terms used in international transactions.')
     display_qr_code = fields.Boolean(string="Display QR-code", related='company_id.qr_code')
-    qr_code_method = fields.Selection(string="Payment QR-code",
+    qr_code_method = fields.Selection(string="Payment QR-code", copy=False,
         selection=lambda self: self.env['res.partner.bank'].get_available_qr_methods_in_sequence(),
         help="Type of QR-code to be generated for the payment of this invoice, when printing it. If left blank, the first available and usable method will be used.")
 
@@ -571,6 +571,7 @@ class AccountMove(models.Model):
             # Copy currency.
             if self.currency_id != self.invoice_vendor_bill_id.currency_id:
                 self.currency_id = self.invoice_vendor_bill_id.currency_id
+                self._onchange_currency()
 
             # Reset
             self.invoice_vendor_bill_id = False
@@ -1140,7 +1141,12 @@ class AccountMove(models.Model):
                     else:
                         tax_type = line.tax_ids[0].type_tax_use
                         is_refund = (tax_type == 'sale' and line.debit) or (tax_type == 'purchase' and line.credit)
-                    taxes = line.tax_ids.flatten_taxes_hierarchy()
+                    taxes = line.tax_ids._origin.flatten_taxes_hierarchy().filtered(
+                        lambda tax: (
+                                tax.amount_type == 'fixed' and not invoice.company_id.currency_id.is_zero(tax.amount)
+                                or not float_is_zero(tax.amount, precision_digits=4)
+                        )
+                    )
                     if is_refund:
                         tax_rep_lines = taxes.refund_repartition_line_ids._origin.filtered(lambda x: x.repartition_type == "tax")
                     else:
@@ -2741,6 +2747,9 @@ class AccountMove(models.Model):
             if line_vals.get('tax_repartition_line_id'):
                 # Tax line.
                 invoice_repartition_line = self.env['account.tax.repartition.line'].browse(line_vals['tax_repartition_line_id'])
+                # CABA taxes should not generate tax grids on reverse move.
+                if invoice_repartition_line.invoice_tax_id.tax_exigibility == 'on_payment':
+                    continue
                 if invoice_repartition_line not in tax_repartition_lines_mapping:
                     raise UserError(_("It seems that the taxes have been modified since the creation of the journal entry. You should create the credit note manually instead."))
                 refund_repartition_line = tax_repartition_lines_mapping[invoice_repartition_line]
@@ -2769,6 +2778,10 @@ class AccountMove(models.Model):
             elif line_vals.get('tax_ids') and line_vals['tax_ids'][0][2]:
                 # Base line.
                 taxes = self.env['account.tax'].browse(line_vals['tax_ids'][0][2]).flatten_taxes_hierarchy()
+                # CABA taxes should not generate tax grids on reverse move.
+                taxes = taxes.filtered(lambda t: t.tax_exigibility != 'on_payment')
+                if not taxes:
+                    continue
                 invoice_repartition_lines = taxes\
                     .mapped('invoice_repartition_line_ids')\
                     .filtered(lambda line: line.repartition_type == 'base')
@@ -3034,7 +3047,8 @@ class AccountMove(models.Model):
             lock_dates = move._get_violated_lock_dates(move.date, affects_tax_report)
             if lock_dates:
                 move.date = move._get_accounting_date(move.invoice_date or move.date, affects_tax_report)
-                move.with_context(check_move_validity=False)._onchange_currency()
+                if move.move_type and move.move_type != 'entry':
+                    move.with_context(check_move_validity=False)._onchange_currency()
 
         # Create the analytic lines in batch is faster as it leads to less cache invalidation.
         to_post.mapped('line_ids').create_analytic_lines()
@@ -3113,10 +3127,12 @@ class AccountMove(models.Model):
         return action
 
     def action_post(self):
-        if self.payment_id:
-            self.payment_id.action_post()
-        else:
-            self._post(soft=False)
+        moves_with_payments = self.filtered('payment_id')
+        other_moves = self - moves_with_payments
+        if moves_with_payments:
+            moves_with_payments.payment_id.action_post()
+        if other_moves:
+            other_moves._post(soft=False)
         return False
 
     def js_assign_outstanding_line(self, line_id):
@@ -3226,8 +3242,10 @@ class AccountMove(models.Model):
             custom_layout="mail.mail_notification_paynow",
             model_description=self.with_context(lang=lang).type_name,
             force_email=True,
+            active_ids=self.ids,
         )
-        return {
+
+        report_action = {
             'name': _('Send Invoice'),
             'type': 'ir.actions.act_window',
             'view_type': 'form',
@@ -3238,6 +3256,11 @@ class AccountMove(models.Model):
             'target': 'new',
             'context': ctx,
         }
+
+        if self.env.is_admin() and not self.env.company.external_report_layout_id and not self.env.context.get('discard_logo_check'):
+            return self.env['ir.actions.report']._action_configure_external_report_layout(report_action)
+
+        return report_action
 
     def _get_new_hash(self, secure_seq_number):
         """ Returns the hash to write on journal entries when they get posted"""
@@ -3531,7 +3554,9 @@ class AccountMove(models.Model):
     def _compute_narration(self):
         use_invoice_terms = self.env['ir.config_parameter'].sudo().get_param('account.use_invoice_terms')
         for move in self:
-            if not use_invoice_terms or not move.is_sale_document(include_receipts=True):
+            if not move.is_sale_document(include_receipts=True):
+                continue
+            if not use_invoice_terms:
                 move.narration = False
             else:
                 lang = move.partner_id.lang or self.env.user.lang
@@ -3557,6 +3582,13 @@ class AccountMove(models.Model):
                     group_data['has_button_access'] = True
 
         return groups
+
+    def _is_downpayment(self):
+        ''' Return true if the invoice is a downpayment.
+        Down-payments can be created from a sale order. This method is overridden in the sale order module.
+        '''
+        return False
+
 
 class AccountMoveLine(models.Model):
     _name = "account.move.line"
@@ -4337,7 +4369,7 @@ class AccountMoveLine(models.Model):
                 line.reconciled = (
                     line.company_currency_id.is_zero(line.amount_residual)
                     and (not line.currency_id or line.currency_id.is_zero(line.amount_residual_currency))
-                    and line.move_id.state not in ('draft', 'cancel')
+                    and (line.matched_debit_ids or line.matched_credit_ids)
                 )
             else:
                 # Must not have any reconciliation since the line is not eligible for that.
@@ -4815,6 +4847,17 @@ class AccountMoveLine(models.Model):
         return result
 
     @api.model
+    def _name_search(self, name, args=None, operator='ilike', limit=100, name_get_uid=None):
+        if operator == 'ilike':
+            args = ['|', '|',
+                    ('name', 'ilike', name),
+                    ('move_id', 'ilike', name),
+                    ('product_id', 'ilike', name)]
+            return self._search(args, limit=limit, access_rights_uid=name_get_uid)
+
+        return super()._name_search(name, args=args, operator=operator, limit=limit, name_get_uid=name_get_uid)
+
+    @api.model
     def invalidate_cache(self, fnames=None, ids=None):
         # Invalidate cache of related moves
         if fnames is None or 'move_id' in fnames:
@@ -4862,8 +4905,9 @@ class AccountMoveLine(models.Model):
             else:
                 return partial_amount
 
-        debit_lines = iter(self.filtered(lambda line: line.balance > 0.0 or line.amount_currency > 0.0))
-        credit_lines = iter(self.filtered(lambda line: line.balance < 0.0 or line.amount_currency < 0.0))
+        debit_lines = iter(self.filtered(lambda line: line.balance > 0.0 or line.amount_currency > 0.0 and not line.reconciled))
+        credit_lines = iter(self.filtered(lambda line: line.balance < 0.0 or line.amount_currency < 0.0 and not line.reconciled))
+        void_lines = iter(self.filtered(lambda line: not line.balance and not line.amount_currency and not line.reconciled))
         debit_line = None
         credit_line = None
 
@@ -4880,7 +4924,7 @@ class AccountMoveLine(models.Model):
 
             # Move to the next available debit line.
             if not debit_line:
-                debit_line = next(debit_lines, None)
+                debit_line = next(debit_lines, None) or next(void_lines, None)
                 if not debit_line:
                     break
                 debit_amount_residual = debit_line.amount_residual
@@ -4894,7 +4938,7 @@ class AccountMoveLine(models.Model):
 
             # Move to the next available credit line.
             if not credit_line:
-                credit_line = next(credit_lines, None)
+                credit_line = next(void_lines, None) or next(credit_lines, None)
                 if not credit_line:
                     break
                 credit_amount_residual = credit_line.amount_residual
@@ -4907,27 +4951,9 @@ class AccountMoveLine(models.Model):
                     credit_line_currency = credit_line.company_currency_id
 
             min_amount_residual = min(debit_amount_residual, -credit_amount_residual)
-            has_debit_residual_left = not debit_line.company_currency_id.is_zero(debit_amount_residual) and debit_amount_residual > 0.0
-            has_credit_residual_left = not credit_line.company_currency_id.is_zero(credit_amount_residual) and credit_amount_residual < 0.0
-            has_debit_residual_curr_left = not debit_line_currency.is_zero(debit_amount_residual_currency) and debit_amount_residual_currency > 0.0
-            has_credit_residual_curr_left = not credit_line_currency.is_zero(credit_amount_residual_currency) and credit_amount_residual_currency < 0.0
 
             if debit_line_currency == credit_line_currency:
                 # Reconcile on the same currency.
-
-                # The debit line is now fully reconciled because:
-                # - either amount_residual & amount_residual_currency are at 0.
-                # - either the credit_line is not an exchange difference one.
-                if not has_debit_residual_curr_left and (has_credit_residual_curr_left or not has_debit_residual_left):
-                    debit_line = None
-                    continue
-
-                # The credit line is now fully reconciled because:
-                # - either amount_residual & amount_residual_currency are at 0.
-                # - either the debit is not an exchange difference one.
-                if not has_credit_residual_curr_left and (has_debit_residual_curr_left or not has_credit_residual_left):
-                    credit_line = None
-                    continue
 
                 min_amount_residual_currency = min(debit_amount_residual_currency, -credit_amount_residual_currency)
                 min_debit_amount_residual_currency = min_amount_residual_currency
@@ -4935,16 +4961,6 @@ class AccountMoveLine(models.Model):
 
             else:
                 # Reconcile on the company's currency.
-
-                # The debit line is now fully reconciled since amount_residual is 0.
-                if not has_debit_residual_left:
-                    debit_line = None
-                    continue
-
-                # The credit line is now fully reconciled since amount_residual is 0.
-                if not has_credit_residual_left:
-                    credit_line = None
-                    continue
 
                 min_debit_amount_residual_currency = credit_line.company_currency_id._convert(
                     min_amount_residual,
@@ -4981,6 +4997,33 @@ class AccountMoveLine(models.Model):
                 'debit_move_id': debit_line.id,
                 'credit_move_id': credit_line.id,
             })
+
+            has_debit_residual_left = not debit_line.company_currency_id.is_zero(debit_amount_residual) and debit_amount_residual > 0.0
+            has_credit_residual_left = not credit_line.company_currency_id.is_zero(credit_amount_residual) and credit_amount_residual < 0.0
+            has_debit_residual_curr_left = not debit_line_currency.is_zero(debit_amount_residual_currency) and debit_amount_residual_currency > 0.0
+            has_credit_residual_curr_left = not credit_line_currency.is_zero(credit_amount_residual_currency) and credit_amount_residual_currency < 0.0
+
+            if debit_line_currency == credit_line_currency:
+                # The debit line is now fully reconciled because:
+                # - either amount_residual & amount_residual_currency are at 0.
+                # - either the credit_line is not an exchange difference one.
+                if not has_debit_residual_curr_left and (has_credit_residual_curr_left or not has_debit_residual_left):
+                    debit_line = None
+
+                # The credit line is now fully reconciled because:
+                # - either amount_residual & amount_residual_currency are at 0.
+                # - either the debit is not an exchange difference one.
+                if not has_credit_residual_curr_left and (has_debit_residual_curr_left or not has_credit_residual_left):
+                    credit_line = None
+
+            else:
+                # The debit line is now fully reconciled since amount_residual is 0.
+                if not has_debit_residual_left:
+                    debit_line = None
+
+                # The credit line is now fully reconciled since amount_residual is 0.
+                if not has_credit_residual_left:
+                    credit_line = None
 
         return partials_vals_list
 
@@ -5270,7 +5313,7 @@ class AccountMoveLine(models.Model):
             if not journal.company_id.income_currency_exchange_account_id.id:
                 raise UserError(_("You should configure the 'Gain Exchange Rate Account' in your company settings, to manage automatically the booking of accounting entries related to differences between exchange rates."))
 
-            exchange_diff_move_vals['date'] = max(exchange_diff_move_vals['date'], company._get_user_fiscal_lock_date())
+            exchange_diff_move_vals['date'] = max(exchange_diff_move_vals['date'], company._get_user_fiscal_lock_date() + timedelta(days=1))
 
             exchange_move = self.env['account.move'].create(exchange_diff_move_vals)
         else:
@@ -5345,7 +5388,7 @@ class AccountMoveLine(models.Model):
                 raise UserError(_("Entries are not from the same account: %s != %s")
                                 % (account.display_name, line.account_id.display_name))
 
-        sorted_lines = self.sorted(key=lambda line: (line.date_maturity or line.date, line.currency_id))
+        sorted_lines = self.sorted(key=lambda line: (line.date_maturity or line.date, line.currency_id, line.amount_currency))
 
         # ==== Collect all involved lines through the existing reconciliation ====
 
@@ -5369,7 +5412,7 @@ class AccountMoveLine(models.Model):
 
         # ==== Create entries for cash basis taxes ====
 
-        is_cash_basis_needed = account.user_type_id.type in ('receivable', 'payable')
+        is_cash_basis_needed = account.company_id.tax_exigibility and account.user_type_id.type in ('receivable', 'payable')
         if is_cash_basis_needed and not self._context.get('move_reverse_cancel'):
             tax_cash_basis_moves = partials._create_tax_cash_basis_moves()
             results['tax_cash_basis_moves'] = tax_cash_basis_moves
@@ -5528,7 +5571,7 @@ class AccountMoveLine(models.Model):
             'ref': self.ref,
             'move_id': self.id,
             'user_id': self.move_id.invoice_user_id.id or self._uid,
-            'company_id': distribution.account_id.company_id.id or self.env.company.id,
+            'company_id': distribution.account_id.company_id.id or self.company_id.id or self.env.company.id,
         }
 
     @api.model
@@ -5643,3 +5686,9 @@ class AccountMoveLine(models.Model):
         if self.payment_id:
             domains.append([('res_model', '=', 'account.payment'), ('res_id', '=', self.payment_id.id)])
         return domains
+
+    def _get_downpayment_lines(self):
+        ''' Return the downpayment move lines associated with the move line.
+        This method is overridden in the sale order module.
+        '''
+        return self.env['account.move.line']

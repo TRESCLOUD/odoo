@@ -619,9 +619,11 @@ var FileWidget = SearchableMediaWidget.extend({
                         'is_image': this.widgetType === 'image',
                         'width': 0,
                         'quality': 0,
+                        'generate_access_token': true,
                     }
                 }, index);
                 if (!attachment.error) {
+                    this.trigger_up('wysiwyg_attachment', attachment);
                     this._handleNewAttachment(attachment);
                 }
             });
@@ -1555,7 +1557,7 @@ var VideoWidget = MediaWidget.extend({
             type = 'vine';
         } else if (matches.vimeo && matches.vimeo[3].length) {
             const vimeoAutoplay = autoplay.replace('mute', 'muted');
-            embedURL = `//player.vimeo.com/video/${matches.vimeo[3]}${vimeoAutoplay}${loop}`;
+            embedURL = `//player.vimeo.com/video/${matches.vimeo[3]}${vimeoAutoplay}${loop}${controls}`;
             type = 'vimeo';
         } else if (matches.dailymotion && matches.dailymotion[2].length) {
             const videoId = matches.dailymotion[2].replace('video/', '');

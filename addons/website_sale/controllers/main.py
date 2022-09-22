@@ -373,6 +373,7 @@ class WebsiteSale(http.Controller):
         values = {
             'search': fuzzy_search_term or search,
             'original_search': fuzzy_search_term and search,
+            'order': post.get('order', ''),
             'category': category,
             'attrib_values': attrib_values,
             'attrib_set': attrib_set,
@@ -700,6 +701,13 @@ class WebsiteSale(http.Controller):
         # data: values after preprocess
         error = dict()
         error_message = []
+
+        # prevent name change if invoices exist
+        if data.get('partner_id'):
+            partner = request.env['res.partner'].browse(int(data['partner_id']))
+            if partner.exists() and not partner.sudo().can_edit_vat() and 'name' in data and (data['name'] or False) != (partner.name or False):
+                error['name'] = 'error'
+                error_message.append(_('Changing your name is not allowed once invoices have been issued for your account. Please contact us directly for this operation.'))
 
         # Required fields from form
         required_fields = [f for f in (all_form_values.get('field_required') or '').split(',') if f]
@@ -1243,11 +1251,14 @@ class PaymentPortal(payment_portal.PaymentPortal):
         """
         # Check the order id and the access token
         try:
-            self._document_check_access('sale.order', order_id, access_token)
+            order_sudo = self._document_check_access('sale.order', order_id, access_token)
         except MissingError as error:
             raise error
         except AccessError:
-            raise ValidationError("The access token is invalid.")
+            raise ValidationError(_("The access token is invalid."))
+
+        if order_sudo.state == "cancel":
+            raise ValidationError(_("The order has been canceled."))
 
         kwargs.update({
             'reference_prefix': None,  # Allow the reference to be computed based on the order

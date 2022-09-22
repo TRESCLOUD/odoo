@@ -30,8 +30,8 @@ msgid ""
 "                'Purchase Order - %s' % (object.name))"
 msgstr ""
 "\n"
-"                (object.state في ('مسودة'، 'تم الإرسال') و 'طلب عرض السعر - %s' % (object.name) أو\n"
-"                'أمر الشراء - %s' % (object.name))"
+"                (object.state in ('draft', 'sent') and 'طلب عرض سعر - %s' % (object.name) or\n"
+"                'أمر شراء - %s' % (object.name))"
 
 #. module: purchase
 #: model:ir.model.fields,field_description:purchase.field_res_partner__supplier_invoice_count
@@ -1997,7 +1997,7 @@ msgstr "قم بتوفير آلية التصديق المزدوج للمشتري�
 #: model:ir.ui.menu,name:purchase.purchase_report
 #: model_terms:ir.ui.view,arch_db:purchase.res_config_settings_view_form_purchase
 msgid "Purchase"
-msgstr "شراء"
+msgstr "المشتريات"
 
 #. module: purchase
 #: model:ir.model.fields,field_description:purchase.field_res_config_settings__module_purchase_requisition

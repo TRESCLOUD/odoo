@@ -75,11 +75,7 @@ publicWidget.registry.ProductWishlist = publicWidget.Widget.extend(VariantMixin,
         var self = this;
         var productID = $el.data('product-product-id');
         if ($el.hasClass('o_add_wishlist_dyn')) {
-            productID = $el.parent().find('.product_id').val();
-            if (!productID) { // case List View Variants
-                productID = $el.parent().find('input:checked').first().val();
-            }
-            productID = parseInt(productID, 10);
+            productID = parseInt($el.closest('.js_product').find('.product_id:checked').val());;
         }
         var $form = $el.closest('form');
         var templateId = $form.find('.product_template_id').val();
@@ -109,6 +105,16 @@ publicWidget.registry.ProductWishlist = publicWidget.Widget.extend(VariantMixin,
                     self.wishlistProductIDs.push(productId);
                     self._updateWishlistView();
                     wSaleUtils.animateClone($navButton, $el.closest('form'), 25, 40);
+                    // It might happen that `onChangeVariant` is called at the same time as this function.
+                    // In this case we need to set the button to disabled again.
+                    // Do this only if the productID is still the same.
+                    let currentProductId = $el.data('product-product-id');
+                    if ($el.hasClass('o_add_wishlist_dyn')) {
+                        currentProductId = parseInt($el.closest('.js_product').find('.product_id:checked').val());
+                    }
+                    if (productId === currentProductId) {
+                        $el.prop("disabled", true).addClass('disabled');
+                    }
                 }).guardedCatch(function () {
                     $el.prop("disabled", false).removeClass('disabled');
                 });

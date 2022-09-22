@@ -152,13 +152,7 @@ exports.PosModel = Backbone.Model.extend({
         await this.load_product_uom_unit();
         await this.load_orders();
         this.set_start_order();
-        if(this.config.use_proxy){
-            if (this.config.iface_customer_facing_display) {
-                this.on('change:selectedOrder', this.send_current_order_to_customer_facing_display, this);
-            }
 
-            return this.connect_to_proxy();
-        }
         if(this.config.limited_products_loading) {
             await this.loadLimitedProducts();
             if(this.config.product_load_background)
@@ -166,6 +160,15 @@ exports.PosModel = Backbone.Model.extend({
         }
         if(this.config.partner_load_background )
             this.loadPartnersBackground();
+
+        if(this.config.use_proxy){
+            if (this.config.iface_customer_facing_display) {
+                this.on('change:selectedOrder', this.send_current_order_to_customer_facing_display, this);
+            }
+
+            return this.connect_to_proxy();
+        }
+
         return Promise.resolve();
     },
     // releases ressources holds by the model at the end of life of the posmodel
@@ -857,6 +860,7 @@ exports.PosModel = Backbone.Model.extend({
     load_orders: async function(){
         var jsons = this.db.get_unpaid_orders();
         await this._loadMissingProducts(jsons);
+        await this._loadMissingPartners(jsons);
         var orders = [];
 
         for (var i = 0; i < jsons.length; i++) {
@@ -909,6 +913,23 @@ exports.PosModel = Backbone.Model.extend({
         });
         productModel.loaded(this, products);
     },
+
+    // load the partners based on the ids
+    async _loadPartners(partnerIds) {
+        if (partnerIds.length > 0) {
+            var fields = _.find(this.models, function(model){ return model.label === 'load_partners'; }).fields;
+            var domain = [['id','in', partnerIds]];
+            const fetchedPartners = await this.env.services.rpc({
+                model: 'res.partner',
+                method: 'search_read',
+                args: [domain, fields],
+            }, {
+                timeout: 3000,
+                shadow: true,
+            });
+            this.env.pos.db.add_partners(fetchedPartners);
+        }
+    },
     async _loadMissingPartners(orders) {
         const missingPartnerIds = new Set([]);
         for (const order of orders) {
@@ -918,17 +939,7 @@ exports.PosModel = Backbone.Model.extend({
                 missingPartnerIds.add(partnerId);
             }
         }
-        const partnerModel = _.find(this.models, function(model){return model.model === 'res.partner';});
-        const fields = partnerModel.fields;
-        if(missingPartnerIds) {
-            const partners = await this.rpc({
-                model: 'res.partner',
-                method: 'read',
-                args: [[...missingPartnerIds], fields],
-                context: Object.assign(this.session.user_context, { display_default_code: false }),
-            });
-            partnerModel.loaded(this, partners);
-        }
+        await this._loadPartners([...missingPartnerIds]);
     },
     // Load the products following specific rules into the `db`
     loadLimitedProducts: async function() {
@@ -980,6 +991,79 @@ exports.PosModel = Backbone.Model.extend({
             this.env.pos.db.add_partners(PartnerIds);
             i += 1;
         } while(PartnerIds.length);
+    },
+    async getProductInfo(product, quantity) {
+        const order = this.get_order();
+        try {
+            // check back-end method `get_product_info_pos` to see what it returns
+            // We do this so it's easier to override the value returned and use it in the component template later
+            const productInfo = await this.env.services.rpc({
+                model: 'product.product',
+                method: 'get_product_info_pos',
+                args: [[product.id],
+                    product.get_price(order.pricelist, quantity),
+                    quantity,
+                    this.config.id],
+                kwargs: {context: this.env.session.user_context},
+            });
+
+            const priceWithoutTax = productInfo['all_prices']['price_without_tax'];
+            const margin = priceWithoutTax - product.standard_price;
+            const orderPriceWithoutTax = order.get_total_without_tax();
+            const orderCost = order.get_total_cost();
+            const orderMargin = orderPriceWithoutTax - orderCost;
+
+            const costCurrency = this.format_currency(product.standard_price);
+            const marginCurrency = this.format_currency(margin);
+            const marginPercent = priceWithoutTax ? Math.round(margin/priceWithoutTax * 10000) / 100 : 0;
+            const orderPriceWithoutTaxCurrency = this.format_currency(orderPriceWithoutTax);
+            const orderCostCurrency = this.format_currency(orderCost);
+            const orderMarginCurrency = this.format_currency(orderMargin);
+            const orderMarginPercent = orderPriceWithoutTax ? Math.round(orderMargin/orderPriceWithoutTax * 10000) / 100 : 0;
+            return {
+            costCurrency, marginCurrency, marginPercent, orderPriceWithoutTaxCurrency,
+            orderCostCurrency, orderMarginCurrency, orderMarginPercent,productInfo
+            }
+        } catch (error) {
+            return { error }
+        }
+    },
+    async getClosePosInfo() {
+        try {
+            const closingData = await this.env.services.rpc({
+                model: 'pos.session',
+                method: 'get_closing_control_data',
+                args: [[this.pos_session.id]]
+            });
+            const ordersDetails = closingData.orders_details;
+            const paymentsAmount = closingData.payments_amount;
+            const payLaterAmount = closingData.pay_later_amount;
+            const openingNotes = closingData.opening_notes;
+            const defaultCashDetails = closingData.default_cash_details;
+            const otherPaymentMethods = closingData.other_payment_methods;
+            const isManager = closingData.is_manager;
+            const amountAuthorizedDiff = closingData.amount_authorized_diff;
+            const cashControl = this.config.cash_control;
+
+            // component state and refs definition
+            const state = {notes: '', acceptClosing: false, payments: {}};
+            if (cashControl) {
+                state.payments[defaultCashDetails.id] = {counted: 0, difference: -defaultCashDetails.amount, number: 0};
+            }
+            if (otherPaymentMethods.length > 0) {
+                otherPaymentMethods.forEach(pm => {
+                    if (pm.type === 'bank') {
+                        state.payments[pm.id] = {counted: this.round_decimals_currency(pm.amount), difference: 0, number: pm.number}
+                    }
+                })
+            }
+            return {
+            ordersDetails, paymentsAmount, payLaterAmount, openingNotes, defaultCashDetails, otherPaymentMethods,
+            isManager, amountAuthorizedDiff, state, cashControl
+            }
+        } catch (error) {
+            return { error }
+        }
     },
     set_start_order: function(){
         var orders = this.get('orders').models;
@@ -1666,7 +1750,7 @@ exports.PosModel = Backbone.Model.extend({
         return taxes;
     },
 
-    get_taxes_after_fp: function(taxes_ids){
+    get_taxes_after_fp: function(taxes_ids, order = false){
         var self = this;
         var taxes =  this.taxes;
         var product_taxes = [];
@@ -1674,7 +1758,7 @@ exports.PosModel = Backbone.Model.extend({
             var tax = _.detect(taxes, function(t){
                 return t.id === el;
             });
-            product_taxes.push.apply(product_taxes, self._map_tax_fiscal_position(tax));
+            product_taxes.push.apply(product_taxes, self._map_tax_fiscal_position(tax, order));
         });
         product_taxes = _.uniq(product_taxes, function(tax) { return tax.id; });
         return product_taxes;
@@ -2329,7 +2413,7 @@ exports.Orderline = Backbone.Model.extend({
     can_be_merged_with: function(orderline){
         var price = parseFloat(round_di(this.price || 0, this.pos.dp['Product Price']).toFixed(this.pos.dp['Product Price']));
         var order_line_price = orderline.get_product().get_price(orderline.order.pricelist, this.get_quantity());
-        order_line_price = orderline.compute_fixed_price(order_line_price);
+        order_line_price = round_di(orderline.compute_fixed_price(order_line_price), this.pos.currency.decimals);
         if( this.get_product().id !== orderline.get_product().id){    //only orderline of the same product can be merged
             return false;
         }else if(!this.get_unit() || !this.get_unit().is_pos_groupable){
@@ -2465,7 +2549,7 @@ exports.Orderline = Backbone.Model.extend({
         return round_pr(this.get_unit_price() * this.get_quantity() * (1 - this.get_discount()/100), rounding);
     },
     get_taxes_after_fp: function(taxes_ids){
-        return this.pos.get_taxes_after_fp(taxes_ids);
+        return this.pos.get_taxes_after_fp(taxes_ids, this.order);
     },
     get_display_price_one: function(){
         var rounding = this.pos.currency.rounding;
@@ -2487,6 +2571,16 @@ exports.Orderline = Backbone.Model.extend({
         } else {
             return this.get_base_price();
         }
+    },
+    get_taxed_lst_unit_price: function(){
+        var lst_price = this.get_lst_price();
+        if (this.pos.config.iface_tax_included === 'total') {
+            var product =  this.get_product();
+            var taxes_ids = product.taxes_id;
+            var product_taxes = this.get_taxes_after_fp(taxes_ids);
+            return this.compute_all(product_taxes, lst_price, 1, this.pos.currency.rounding).total_included;
+        }
+        return lst_price;
     },
     get_price_without_tax: function(){
         return this.get_all_prices().priceWithoutTax;
@@ -2916,6 +3010,7 @@ exports.Order = Backbone.Model.extend({
     },
     save_to_db: function(){
         if (!this.temporary && !this.locked) {
+            this.assert_editable();
             this.pos.db.save_unpaid_order(this);
         }
     },
@@ -2930,7 +3025,9 @@ exports.Order = Backbone.Model.extend({
      */
     init_from_JSON: function(json) {
         var client;
-        if (json.pos_session_id !== this.pos.pos_session.id) {
+        if (json.state && ['done', 'invoiced', 'paid'].includes(json.state)) {
+            this.sequence_number = json.sequence_number;
+        } else if (json.pos_session_id !== this.pos.pos_session.id) {
             this.sequence_number = this.pos.pos_session.sequence_number++;
         } else {
             this.sequence_number = json.sequence_number;
@@ -3143,6 +3240,9 @@ exports.Order = Backbone.Model.extend({
             receipt.footer_html = render_html(this.pos.config.receipt_footer);
         } else {
             receipt.footer = this.pos.config.receipt_footer || '';
+        }
+        if (!receipt.date.localestring && (!this.state || this.state == 'draft')){
+            receipt.date.localestring = field_utils.format.datetime(moment(new Date()), {}, {timezone: false});
         }
 
         return receipt;

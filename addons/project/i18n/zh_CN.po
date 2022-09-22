@@ -9,8 +9,10 @@
 # 黎伟杰 <674416404@qq.com>, 2021
 # Martin Trigaux, 2021
 # xu aaron, 2021
-# Jeffery CHEN <jeffery9@gmail.com>, 2022
 # 山西清水欧度(QQ:54773801) <54773801@qq.com>, 2022
+# Raymond Yu <cl_yu@hotmail.com>, 2022
+# bower Guo <124358678@qq.com>, 2022
+# Jeffery CHEN <jeffery9@gmail.com>, 2022
 # 
 msgid ""
 msgstr ""
@@ -18,7 +20,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-01-24 08:19+0000\n"
 "PO-Revision-Date: 2021-09-14 12:25+0000\n"
-"Last-Translator: 山西清水欧度(QQ:54773801) <54773801@qq.com>, 2022\n"
+"Last-Translator: Jeffery CHEN <jeffery9@gmail.com>, 2022\n"
 "Language-Team: Chinese (China) (https://www.transifex.com/odoo/teams/41243/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -603,7 +605,7 @@ msgstr "<span>报告</span>"
 #. module: project
 #: model_terms:ir.ui.view,arch_db:project.view_project_kanban
 msgid "<span>View</span>"
-msgstr "<span>视图</span>"
+msgstr "<span>查看</span>"
 
 #. module: project
 #: model_terms:ir.ui.view,arch_db:project.project_delete_wizard_form
@@ -675,6 +677,14 @@ msgid ""
 "A collaborator cannot be selected more than once in the project sharing "
 "access. Please remove duplicate(s) and try again."
 msgstr "在项目共享访问中，一个合作者不能被选择多次。请删除重复的内容并重试。"
+
+#. module: project
+#: code:addons/project/models/project.py:0
+#, python-format
+msgid ""
+"A personal stage cannot be linked to a project because it is only visible to"
+" its corresponding user."
+msgstr "个人阶段无法链接到项目，因为它只对其相应的用户可见。"
 
 #. module: project
 #: model:ir.model.constraint,message:project.constraint_project_task_user_rel_project_personal_stage_unique
@@ -765,7 +775,7 @@ msgstr "添加描述..."
 #. module: project
 #: model_terms:ir.ui.view,arch_db:project.project_share_wizard_view_form
 msgid "Add a note"
-msgstr "新建便签"
+msgstr "新建笔记"
 
 #. module: project
 #. openerp-web
@@ -775,7 +785,7 @@ msgstr "新建便签"
 msgid ""
 "Add columns to organize your tasks into <b>stages</b> <i>e.g. New - In "
 "Progress - Done</i>."
-msgstr "添加列来配置您的项目 <b>阶段</b><i>比如，开始->进行中->完成</i>."
+msgstr "添加列来组织您的项目 <b>阶段</b><i>比如，开始->进行中->完成</i>."
 
 #. module: project
 #: model_terms:ir.ui.view,arch_db:project.project_share_wizard_view_form
@@ -867,12 +877,12 @@ msgstr "分析账户"
 #. module: project
 #: model:ir.model.fields,field_description:project.field_project_task__analytic_tag_ids
 msgid "Analytic Tag"
-msgstr "辅助核算标签"
+msgstr "分析标签"
 
 #. module: project
 #: model:ir.model,name:project.model_account_analytic_tag
 msgid "Analytic Tags"
-msgstr "辅助核算标签"
+msgstr "分析会计标签"
 
 #. module: project
 #: model:ir.model.fields,help:project.field_project_project__analytic_account_id
@@ -893,7 +903,7 @@ msgstr "该任务与之相连的分析账户，用于财务管理。使用分析
 #. module: project
 #: model_terms:ir.ui.view,arch_db:project.res_config_settings_view_form
 msgid "Analytics"
-msgstr "辅助核算"
+msgstr "分析"
 
 #. module: project
 #: model_terms:ir.actions.act_window,help:project.action_project_task_user_tree
@@ -974,12 +984,12 @@ msgstr "分配给我"
 #. module: project
 #: model_terms:ir.ui.view,help:project.project_sharing_project_task_view_kanban
 msgid " assignee"
-msgstr " 受让人"
+msgstr " 受托人"
 
 #. module: project
 #: model_terms:ir.ui.view,help:project.project_sharing_project_task_view_kanban
 msgid " assignees"
-msgstr " 受让人"
+msgstr " 受托人"
 
 #. module: project
 #. openerp-web
@@ -1013,7 +1023,7 @@ msgstr "分派给"
 #: model_terms:ir.ui.view,arch_db:project.view_task_search_form
 #, python-format
 msgid "Assignees"
-msgstr "受让人"
+msgstr "受托人"
 
 #. module: project
 #: model:ir.model.fields,field_description:project.field_project_task__date_assign
@@ -1318,7 +1328,7 @@ msgstr "配置设置"
 #. module: project
 #: model:ir.ui.menu,name:project.menu_project_config
 msgid "Configuration"
-msgstr "基础配置"
+msgstr "配置"
 
 #. module: project
 #: model_terms:ir.ui.view,arch_db:project.res_config_settings_view_form
@@ -1451,7 +1461,7 @@ msgstr "币种"
 #. module: project
 #: model_terms:ir.ui.view,arch_db:project.portal_tasks_list
 msgid "Current project of the task"
-msgstr "任务当前的项目"
+msgstr "任务所属项目"
 
 #. module: project
 #: model_terms:ir.ui.view,arch_db:project.portal_tasks_list
@@ -1564,7 +1574,7 @@ msgstr "日期"
 #. module: project
 #: model:ir.model.fields,field_description:project.field_project_task_burndown_chart_report__date_group_by
 msgid "Date Group By"
-msgstr "日期分组被"
+msgstr "日期分组"
 
 #. module: project
 #: model:ir.model.fields.selection,name:project.selection__project_task__repeat_on_month__date
@@ -1670,6 +1680,20 @@ msgid ""
 "\n"
 "In any case, an internal user with no project access rights can still access a task, provided that they are given the corresponding URL (and that they are part of the followers if the project is private)."
 msgstr ""
+"可以看到此项目及其任务的人员.\n"
+"\n"
+"- 受邀的内部用户：当关注一个项目时，内部用户将无差别地访问其所有任务。否则，他们将只能访问他们正在执行的特定任务。\n"
+" 具有项目 > 管理员访问权限级别的用户仍然可以访问此项目及其任务，即使他们不是明确的追随者\n"
+"\n"
+"- 所有内部用户：所有内部用户都可以无差别地访问项目及其所有任务。\n"
+"\n"
+"- 受邀门户用户和所有内部用户：所有内部用户都可以无差别地访问项目及其所有任务。\n"
+"关注项目时，门户用户将可以无差别地访问其所有任务。否则，他们将只能访问他们正在执行的特定任务。\n"
+"\n"
+"当项目以只读方式共享时，门户用户将被重定向到他们的门户。他们可以查看任务，但不能编辑它们。\n"
+"当项目以可编辑方式共享时，门户用户将被重定向到任务的看板和列表视图。他们可以修改任务中选定数量的字段。\n"
+"\n"
+"在任何情况下，没有项目访问权限的内部用户仍然可以访问任务，前提是为他们提供相应的 URL（如果项目是私有的，他们是关注者的一部分）。"
 
 #. module: project
 #: model:ir.actions.server,name:project.unlink_project_action
@@ -1864,7 +1888,7 @@ msgstr "编辑"
 #: code:addons/project/static/src/js/project_kanban.js:0
 #, python-format
 msgid "Edit Personal Stage"
-msgstr "编辑个人舞台"
+msgstr "编辑个人阶段"
 
 #. module: project
 #: model_terms:ir.ui.view,arch_db:project.view_task_form2
@@ -1933,7 +1957,7 @@ msgstr "错误!项目开始日期必须在项目结束日期之前。"
 #: code:addons/project/models/project.py:0
 #, python-format
 msgid "Error! You cannot create a recursive hierarchy of tasks."
-msgstr "错误！您不能创建循环的电商品类。"
+msgstr "错误！ 您不能创建递归的任务层次结构。"
 
 #. module: project
 #. openerp-web
@@ -1976,7 +2000,7 @@ msgid ""
 "review the %s column to move important tasks %s. Every Monday, you review "
 "the %s column. %s"
 msgstr ""
-"通过电子邮件网关轻松填充你的收件箱。定期视图你的收件箱，通过将任务移到其他列来安排任务。每天，你审查%s列，将重要的任务%s移动。每周一，你审查%s栏。%s"
+"通过电子邮件网关轻松填充你的收件箱。定期查看你的收件箱，通过将任务移到其他列来安排任务。每天，你审查%s列，将重要的任务%s移动。每周一，你审查%s栏。%s"
 
 #. module: project
 #. openerp-web
@@ -3080,7 +3104,7 @@ msgstr "正常"
 #. module: project
 #: model:ir.model.fields,field_description:project.field_project_share_wizard__note
 msgid "Note"
-msgstr "便签"
+msgstr "笔记"
 
 #. module: project
 #: model:ir.model.fields.selection,name:project.selection__project_task__repeat_month__november
@@ -3094,7 +3118,7 @@ msgstr "十一月"
 #: model:ir.model.fields,field_description:project.field_project_task__message_needaction_counter
 #: model:ir.model.fields,field_description:project.field_project_update__message_needaction_counter
 msgid "Number of Actions"
-msgstr "动作个数"
+msgstr "动作数量"
 
 #. module: project
 #: model:ir.model.fields.selection,name:project.selection__project_task__repeat_type__after
@@ -3339,7 +3363,7 @@ msgstr "个人阶段"
 #. module: project
 #: model:ir.model.fields,field_description:project.field_project_task__personal_stage_id
 msgid "Personal Stage State"
-msgstr "个人任务状态"
+msgstr "个人阶段状态"
 
 #. module: project
 #: model:ir.model,name:project.model_project_task_stage_personal
@@ -5051,7 +5075,7 @@ msgstr "使用循环任务"
 #. module: project
 #: model:res.groups,name:project.group_project_stages
 msgid "Use Stages on Project"
-msgstr "在项目中使用阶段"
+msgstr "使用项目阶段"
 
 #. module: project
 #: model:res.groups,name:project.group_subtask_project

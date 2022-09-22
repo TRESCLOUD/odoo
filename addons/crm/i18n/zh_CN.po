@@ -9,6 +9,7 @@
 # xu aaron, 2021
 # 深圳市耀影科技有限公司_QQ1006399173, 2021
 # 山西清水欧度(QQ:54773801) <54773801@qq.com>, 2022
+# Aniket Chauhan, 2022
 # Jeffery CHEN <jeffery9@gmail.com>, 2022
 # 
 msgid ""
@@ -131,7 +132,7 @@ msgstr "<b>写几封信</b> 寻找公司，或创建一个新的公司。"
 msgid ""
 "<i class=\"fa fa-fw fa-star\" aria-label=\"Opportunities\" role=\"img\" "
 "title=\"Opportunities\"/>"
-msgstr "<i class=\"fa fa-fw fa-star\" aria-label=“机会” role=\"img\" title=“机会”/>"
+msgstr "<i class=\"fa fa-fw fa-star\" aria-label=“商机” role=\"img\" title=“商机”/>"
 
 #. module: crm
 #: model_terms:ir.ui.view,arch_db:crm.crm_lead_view_form
@@ -145,9 +146,7 @@ msgstr "<i class=\"fa fa-gear\" role=\"img\" title=\"切换到自动概率\" ari
 msgid ""
 "<i title=\"Update now\" role=\"img\" aria-label=\"Update now\" class=\"fa "
 "fa-fw fa-refresh\"/>"
-msgstr ""
-"<i title=\"Update now\" role=\"img\" aria-label=\"Update now\" class=\"fa "
-"fa-fw fa-refresh\"/>"
+msgstr "<i title=\"现在更新\" role=\"img\" aria-label=\"现在更新\" class=\"fa fa-fw fa-refresh\"/>"
 
 #. module: crm
 #: code:addons/crm/models/crm_team.py:0
@@ -247,7 +246,7 @@ msgstr "<span class=\"oe_grey p-2\"> 在 </span>"
 #. module: crm
 #: model_terms:ir.ui.view,arch_db:crm.crm_lead_view_form
 msgid "<span class=\"oe_grey\"> %</span>"
-msgstr "<span class=\"oe_grey\">( </span>"
+msgstr "<span class=\"oe_grey\">% </span>"
 
 #. module: crm
 #: model_terms:ir.ui.view,arch_db:crm.crm_team_member_view_form
@@ -414,7 +413,7 @@ msgstr ""
 "</td></tr>\n"
 "<!-- POWERED BY -->\n"
 "<tr><td align=\"center\" style=\"min-width: 590px;\">\n"
-"    由<a target=\"_blank\" href=\"https://www.odoo.com?utm_source=db&amp;utm_medium=email\" style=\"color: #875A7B;\">Odoo</a>提供技术支持\n"
+"    由<a target=\"_blank\" href=\"https://www.odoo.com?utm_source=db&amp;utm_medium=email\" style=\"color: #875A7B;\">Odoo</a>提供技术提供\n"
 "</td></tr>\n"
 "</table>\n"
 "        "
@@ -654,7 +653,7 @@ msgstr "分配日期"
 #: model:ir.model.fields,field_description:crm.field_crm_team__assignment_domain
 #: model:ir.model.fields,field_description:crm.field_crm_team_member__assignment_domain
 msgid "Assignment Domain"
-msgstr "分配条件"
+msgstr "分配域"
 
 #. module: crm
 #: model_terms:ir.ui.view,arch_db:crm.sales_team_form_view_in_crm
@@ -879,7 +878,7 @@ msgstr "配置设置"
 #. module: crm
 #: model:ir.ui.menu,name:crm.crm_menu_config
 msgid "Configuration"
-msgstr "基础配置"
+msgstr "配置"
 
 #. module: crm
 #: model_terms:ir.ui.view,arch_db:crm.sales_team_form_view_in_crm
@@ -2433,7 +2432,7 @@ msgstr "点击这里<b>添加商机</b>， 并且加入到您的商机渠道."
 #. module: crm
 #: model:ir.model.fields,field_description:crm.field_crm_lead__message_needaction_counter
 msgid "Number of Actions"
-msgstr "操作次数"
+msgstr "动作数量"
 
 #. module: crm
 #: model:ir.model.fields,field_description:crm.field_crm_lead__message_has_error_counter
@@ -2905,7 +2904,7 @@ msgstr "循环"
 #. module: crm
 #: model:ir.ui.menu,name:crm.crm_menu_report
 msgid "Reporting"
-msgstr "报表"
+msgstr "报告"
 
 #. module: crm
 #: model:ir.model.fields,field_description:crm.field_crm_stage__requirements
