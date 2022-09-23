@@ -282,6 +282,7 @@ class WebsiteSale(http.Controller):
 
         values = {
             'search': search,
+            'order': post.get('order', ''),
             'category': category,
             'attrib_values': attrib_values,
             'attrib_set': attrib_set,
@@ -575,6 +576,13 @@ class WebsiteSale(http.Controller):
         error = dict()
         error_message = []
 
+        # prevent name change if invoices exist
+        if data.get('partner_id'):
+            partner = request.env['res.partner'].browse(int(data['partner_id']))
+            if partner.exists() and not partner.sudo().can_edit_vat() and 'name' in data and (data['name'] or False) != (partner.name or False):
+                error['name'] = 'error'
+                error_message.append(_('Changing your name is not allowed once invoices have been issued for your account. Please contact us directly for this operation.'))
+
         # Required fields from form
         required_fields = [f for f in (all_form_values.get('field_required') or '').split(',') if f]
 
@@ -710,7 +718,7 @@ class WebsiteSale(http.Controller):
                 return request.redirect('/shop/checkout')
 
         # IF POSTED
-        if 'submitted' in kw:
+        if 'submitted' in kw and request.httprequest.method == "POST":
             pre_values = self.values_preprocess(order, mode, kw)
             errors, error_msg = self.checkout_form_validate(mode, kw, pre_values)
             post, errors, error_msg = self.values_postprocess(order, mode, pre_values, errors, error_msg)

@@ -236,7 +236,7 @@ class StockWarehouseOrderpoint(models.Model):
                 orderpoint.qty_forecast = False
                 continue
             orderpoint_context = orderpoint._get_product_context()
-            product_context = frozendict({**self.env.context, **orderpoint_context})
+            product_context = frozendict({**orderpoint_context})
             orderpoints_contexts[product_context] |= orderpoint
         for orderpoint_context, orderpoints_by_context in orderpoints_contexts.items():
             products_qty = orderpoints_by_context.product_id.with_context(orderpoint_context)._product_available()
@@ -378,7 +378,7 @@ class StockWarehouseOrderpoint(models.Model):
         to_refill = {k: v for k, v in to_refill.items() if float_compare(
             v, 0.0, precision_digits=rounding) < 0.0}
 
-        lot_stock_id_by_warehouse = self.env['stock.warehouse'].search_read([
+        lot_stock_id_by_warehouse = self.env['stock.warehouse'].with_context(active_test=False).search_read([
             ('id', 'in', [g[1] for g in to_refill.keys()])
         ], ['lot_stock_id'])
         lot_stock_id_by_warehouse = {w['id']: w['lot_stock_id'][0] for w in lot_stock_id_by_warehouse}
@@ -429,7 +429,7 @@ class StockWarehouseOrderpoint(models.Model):
     def _get_replenishment_order_notification(self):
         self.ensure_one()
         domain = [('orderpoint_id', 'in', self.ids)]
-        if self.env.context.get('written_date'):
+        if self.env.context.get('written_after'):
             domain = expression.AND([domain, [('write_date', '>', self.env.context.get('written_after'))]])
         move = self.env['stock.move'].search(domain, limit=1)
         if move.picking_id:

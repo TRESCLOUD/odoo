@@ -4,6 +4,7 @@
 # 
 # Translators:
 # Cécile Collart <cco@odoo.com>, 2021
+# Braulio D. López Vázquez <bdl@odoo.com>, 2022
 # Lucia Pacheco <lpo@odoo.com>, 2022
 # 
 msgid ""
@@ -18,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Language: es_MX\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
 
 #. module: survey
 #: model:survey.question.answer,value:survey.vendor_certification_page_2_question_1_choice_4
@@ -645,7 +646,7 @@ msgid ""
 msgstr ""
 "<span class=\"o_survey_key text-center position-absolute bg-white rounded-"
 "left py-0 pl-2\"><span class=\"text-primary text-center text-center w-100 "
-"position-relative\">Llave</span></span>"
+"position-relative\">Tecla</span></span>"
 
 #. module: survey
 #: model_terms:ir.ui.view,arch_db:survey.survey_kanban
@@ -1559,7 +1560,7 @@ msgid ""
 "authentication."
 msgstr ""
 "Solo las personas internas pueden crear tokens para las encuestas que "
-"soliciten autentificación."
+"soliciten autenticación."
 
 #. module: survey
 #: model:ir.model.fields,field_description:survey.field_survey_survey__session_question_id

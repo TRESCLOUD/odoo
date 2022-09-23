@@ -1524,7 +1524,7 @@ exports.PosModel = Backbone.Model.extend({
         return taxes;
     },
 
-    get_taxes_after_fp: function(taxes_ids){
+    get_taxes_after_fp: function(taxes_ids, order = false){
         var self = this;
         var taxes =  this.taxes;
         var product_taxes = [];
@@ -1532,7 +1532,7 @@ exports.PosModel = Backbone.Model.extend({
             var tax = _.detect(taxes, function(t){
                 return t.id === el;
             });
-            product_taxes.push.apply(product_taxes, self._map_tax_fiscal_position(tax));
+            product_taxes.push.apply(product_taxes, self._map_tax_fiscal_position(tax, order));
         });
         product_taxes = _.uniq(product_taxes, function(tax) { return tax.id; });
         return product_taxes;
@@ -2245,7 +2245,7 @@ exports.Orderline = Backbone.Model.extend({
         return round_pr(this.get_unit_price() * this.get_quantity() * (1 - this.get_discount()/100), rounding);
     },
     get_taxes_after_fp: function(taxes_ids){
-        return this.pos.get_taxes_after_fp(taxes_ids);
+        return this.pos.get_taxes_after_fp(taxes_ids, this.order);
     },
     get_display_price_one: function(){
         var rounding = this.pos.currency.rounding;
@@ -2267,6 +2267,16 @@ exports.Orderline = Backbone.Model.extend({
         } else {
             return this.get_base_price();
         }
+    },
+    get_taxed_lst_unit_price: function(){
+        var lst_price = this.get_lst_price();
+        if (this.pos.config.iface_tax_included === 'total') {
+            var product =  this.get_product();
+            var taxes_ids = product.taxes_id;
+            var product_taxes = this.get_taxes_after_fp(taxes_ids);
+            return this.compute_all(product_taxes, lst_price, 1, this.pos.currency.rounding).total_included;
+        }
+        return lst_price;
     },
     get_price_without_tax: function(){
         return this.get_all_prices().priceWithoutTax;
@@ -2687,6 +2697,7 @@ exports.Order = Backbone.Model.extend({
     },
     save_to_db: function(){
         if (!this.temporary && !this.locked) {
+            this.assert_editable();
             this.pos.db.save_unpaid_order(this);
         }
     },

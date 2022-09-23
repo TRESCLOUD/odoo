@@ -75,7 +75,8 @@ class AccountEdiXmlCII(models.AbstractModel):
             # invoiced item VAT rate (BT-152) shall be greater than 0 (zero).
             'igic_tax_rate': self._check_non_0_rate_tax(vals)
                 if vals['record']['commercial_partner_id']['country_id']['code'] == 'ES'
-                   and vals['record']['commercial_partner_id']['zip'][:2] in ['35', '38'] else None,
+                    and vals['record']['commercial_partner_id']['zip']
+                    and vals['record']['commercial_partner_id']['zip'][:2] in ['35', '38'] else None,
         })
         return constraints
 
@@ -189,7 +190,7 @@ class AccountEdiXmlCII(models.AbstractModel):
         if supplier.country_id.code == 'DE':
             template_values['document_context_id'] = "urn:cen.eu:en16931:2017#compliant#urn:xoev-de:kosit:standard:xrechnung_2.2"
         else:
-            template_values['document_context_id'] = "urn:cen.eu:en16931:2017"
+            template_values['document_context_id'] = "urn:cen.eu:en16931:2017#conformant#urn:factur-x.eu:1p0:extended"
 
         return template_values
 
@@ -310,13 +311,14 @@ class AccountEdiXmlCII(models.AbstractModel):
 
         # Product.
         name = _find_value('.//ram:SpecifiedTradeProduct/ram:Name', tree)
-        if name:
-            invoice_line_form.name = name
         invoice_line_form.product_id = self.env['account.edi.format']._retrieve_product(
             default_code=_find_value('.//ram:SpecifiedTradeProduct/ram:SellerAssignedID', tree),
             name=_find_value('.//ram:SpecifiedTradeProduct/ram:Name', tree),
             barcode=_find_value('.//ram:SpecifiedTradeProduct/ram:GlobalID', tree)
         )
+        # force original line description instead of the one copied from product's Sales Description
+        if name:
+            invoice_line_form.name = name
 
         xpath_dict = {
             'basis_qty': [
@@ -373,9 +375,9 @@ class AccountEdiXmlCII(models.AbstractModel):
         if move_type_code is None:
             return None, None
         if move_type_code.text == '381':
-            return 'in_refund', 1
+            return ('in_refund', 'out_refund'), 1
         if move_type_code.text == '380':
             amount_node = tree.find('.//{*}SpecifiedTradeSettlementHeaderMonetarySummation/{*}TaxBasisTotalAmount')
             if amount_node is not None and float(amount_node.text) < 0:
-                return 'in_refund', -1
-            return 'in_invoice', 1
+                return ('in_refund', 'out_refund'), -1
+            return ('in_invoice', 'out_invoice'), 1

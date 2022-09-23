@@ -102,7 +102,7 @@ class AccountEdiFormat(models.Model):
         self.ensure_one()
 
         if self.code not in FORMAT_CODES:
-            return super()._post_invoice_edi(invoices)
+            return super()._post_invoice_edi(invoices, test_mode=test_mode)
 
         res = {}
         for invoice in invoices:
@@ -118,9 +118,9 @@ class AccountEdiFormat(models.Model):
                 'raw': xml_content,
                 'mimetype': 'application/xml',
             }
-            # we don't want the Factur-X and E-FFF xml to appear in the attachment of the invoice when confirming it
-            # E-FFF will appear after the pdf is generated, Factur-X will never appear (it's contained in the PDF)
-            if self.code not in ['facturx_1_0_05', 'efff_1']:
+            # we don't want the Factur-X, E-FFF and NLCIUS xml to appear in the attachment of the invoice when confirming it
+            # E-FFF and NLCIUS will appear after the pdf is generated, Factur-X will never appear (it's contained in the PDF)
+            if self.code not in ['facturx_1_0_05', 'efff_1', 'nlcius_1']:
                 attachment_create_vals.update({'res_id': invoice.id, 'res_model': 'account.move'})
 
             attachment = self.env['ir.attachment'].create(attachment_create_vals)
@@ -171,11 +171,7 @@ class AccountEdiFormat(models.Model):
         # EXTENDS account_edi
         self.ensure_one()
 
-        if not journal:
-            # infer the journal
-            journal = self.env['account.journal'].search([
-                ('company_id', '=', self.env.company.id), ('type', '=', 'purchase')
-            ], limit=1)
+        journal = journal or self.env['account.move']._get_default_journal()
 
         if not self._is_ubl_cii_available(journal.company_id):
             return super()._create_invoice_from_xml_tree(filename, tree, journal=journal)

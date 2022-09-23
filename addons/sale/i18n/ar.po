@@ -4,7 +4,6 @@
 # 
 # Translators:
 # Sherif Abd Ekmoniem <sherif.tsupport@gmail.com>, 2020
-# nle_odoo, 2020
 # Amer Hazaa <eng.amer.it@gmail.com>, 2020
 # Akram Alfusayal <akram_ma@hotmail.com>, 2020
 # hoxhe Aits <hoxhe0@gmail.com>, 2020
@@ -32,6 +31,8 @@
 # Rachid Al Assir <rachidalassir@gmail.com>, 2020
 # Talal Albahra <talal.albahra@outlook.com>, 2020
 # Mustafa J. Kadhem <safi2266@gmail.com>, 2021
+# nle_odoo, 2022
+# Abdullah Mohamed, 2022
 # Malaz Abuidris <msea@odoo.com>, 2022
 # 
 msgid ""
@@ -106,8 +107,8 @@ msgid ""
 "(object.state in ('draft', 'sent') and 'Quotation - %s' % (object.name)) or "
 "'Order - %s' % (object.name)"
 msgstr ""
-"(object.state in ('draft', 'sent') و 'عرض السعر - %s' % (object.name)) أو "
-"'الطلب - %s' % (object.name) "
+"(object.state in ('draft', 'sent') and 'عرض السعر - %s' % (object.name)) or "
+"'الطلب - %s' % (object.name)"
 
 #. module: sale
 #: model:product.product,description_sale:sale.product_product_4e
@@ -1240,7 +1241,7 @@ msgstr "حساب العميل"
 #. module: sale
 #: model:ir.model.fields,field_description:sale.field_res_config_settings__group_sale_delivery_address
 msgid "Customer Addresses"
-msgstr "عناوين العميل"
+msgstr "عناوين العملاء "
 
 #. module: sale
 #: model:ir.model.fields,field_description:sale.field_sale_report__country_id
@@ -4383,7 +4384,7 @@ msgstr ""
 msgid ""
 "You cannot change the product's type because it is already used in sales "
 "orders."
-msgstr ""
+msgstr "لا يمكنك تغيير نوع المنتج لأنه مستخدم بالفعل في أوامر المبيعات."
 
 #. module: sale
 #: code:addons/sale/models/sale.py:0
