@@ -995,6 +995,42 @@
                     'minus_report_line_ids': [ref('tax_report_line_104_555')],
                 })]"/>
         </record>
+        <record id="tax_vat_510_08" model="account.tax.template">
+            <field name="name">IVA 8%</field>
+            <field name="type_tax_use">purchase</field>
+            <field name="amount_type">percent</field>
+            <field name="sequence">50</field>
+            <field name="amount">8.0</field>
+            <field name="description">IVA 8%</field>
+            <field name="l10n_ec_code_base">510</field>
+            <field name="l10n_ec_code_applied">520</field>
+            <field name="chart_template_id" ref="l10n_ec.l10n_ec_ifrs"/>
+            <field name="tax_group_id" ref="tax_group_vat_08"/>
+            <field name="invoice_repartition_line_ids" eval="[(5, 0, 0),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                    'plus_report_line_ids': [ref('tax_report_line_104_510')],
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('l10n_ec.ec_purchase_vat'),
+                    'plus_report_line_ids': [ref('tax_report_line_104_520')],
+                })]"/>
+            <field name="refund_repartition_line_ids" eval="[(5, 0, 0),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                    'minus_report_line_ids': [ref('tax_report_line_104_510')],
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('l10n_ec.ec_purchase_vat'),
+                    'minus_report_line_ids': [ref('tax_report_line_104_520')],
+                })]"/>
+        </record>
         <record id="tax_vat_545" model="account.tax.template">
             <!-- IVA EN COMPRAS POR REEMBOLSO COMO INTERMEDIARIO -->
             <field name="name">IVA 12% (Reembolso Intermediario)</field>
