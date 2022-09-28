@@ -80,7 +80,6 @@
                 })]"/>
         </record>
 
-
         <record id="tax_vat_412" model="account.tax.template">
             <!-- IVA EN VENTAS DE ACTIVOS FIJOS -->
             <field name="name">IVA 12% (Activos)</field>
@@ -118,8 +117,6 @@
                     'minus_report_line_ids': [ref('tax_report_line_104_422')],
                 })]"/>
         </record>
-
-
 
         <record id="tax_vat_415" model="account.tax.template">
             <!-- IVA EN VENTAS LOCALES 0% (EXCLUYE ACTIVOS FIJOS) CON DERECHO A CREDITO TRIBUTARIO -->
@@ -398,9 +395,6 @@
                 })]"/>
         </record>
 
-
-
-
         <!--        IMPUESTOS DE COMPRAS   -->
 
         <!--IVA 12%-->
@@ -595,14 +589,7 @@
                 })]"/>
         </record>
 
-
-
-
-
         <!--IVA 12% (Activos)-->
-
-
-
 
         <record id="tax_vat_511_03" model="account.tax.template">
             <!-- IVA EN COMPRAS LOCALES DE ACTIVOS FIJOS CON DERECHO A CREDITO TRIBUTARIO -->
@@ -641,7 +628,6 @@
                     'minus_report_line_ids': [ref('tax_report_line_104_521')],
                 })]"/>
         </record>
-
 
         <record id="tax_vat_511_04" model="account.tax.template">
             <!-- IVA EN COMPRAS LOCALES DE ACTIVOS FIJOS CON DERECHO A CREDITO TRIBUTARIO -->
@@ -827,9 +813,7 @@
                 })]"/>
         </record>
 
-
         <!--IVA 0%-->
-
 
         <record id="tax_vat_517_02" model="account.tax.template">
             <!-- IVA EN COMPRAS 0% (INCLUYE ACTIVOS FIJOS) -->
@@ -1010,10 +994,6 @@
                 })]"/>
 
         </record>
-
-
-
-
 
         <!--IVA 0% (No Objeto de IVA)-->
 
