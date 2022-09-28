@@ -80,44 +80,6 @@
                 })]"/>
         </record>
 
-        <record id="tax_vat_412" model="account.tax.template">
-            <!-- IVA EN VENTAS DE ACTIVOS FIJOS -->
-            <field name="name">IVA 12% (Activos)</field>
-            <field name="type_tax_use">sale</field>
-            <field name="amount_type">percent</field>
-            <field name="sequence">10</field>
-            <field name="amount">12.0</field>
-            <field name="description">IVA 12%</field>
-            <field name="l10n_ec_code_base">412</field>
-            <field name="l10n_ec_code_applied">422</field>
-            <field name="chart_template_id" ref="l10n_ec.l10n_ec_ifrs"/>
-            <field name="tax_group_id" ref="tax_group_vat_12"/>
-            <field name="invoice_repartition_line_ids" eval="[(5, 0, 0),
-                (0,0, {
-                    'factor_percent': 100,
-                    'repartition_type': 'base',
-                    'plus_report_line_ids': [ref('tax_report_line_104_412')],
-                }),
-                (0,0, {
-                    'factor_percent': 100,
-                    'repartition_type': 'tax',
-                    'account_id': ref('l10n_ec.ec_sale_vat'),
-                    'plus_report_line_ids': [ref('tax_report_line_104_422')],
-                })]"/>
-            <field name="refund_repartition_line_ids" eval="[(5, 0, 0),
-                (0,0, {
-                    'factor_percent': 100,
-                    'repartition_type': 'base',
-                    'minus_report_line_ids': [ref('tax_report_line_104_412')],
-                }),
-                (0,0, {
-                    'factor_percent': 100,
-                    'repartition_type': 'tax',
-                    'account_id': ref('l10n_ec.ec_sale_vat'),
-                    'minus_report_line_ids': [ref('tax_report_line_104_422')],
-                })]"/>
-        </record>
-
         <record id="tax_vat_415" model="account.tax.template">
             <!-- IVA EN VENTAS LOCALES 0% (EXCLUYE ACTIVOS FIJOS) CON DERECHO A CREDITO TRIBUTARIO -->
             <field name="name">IVA 0%</field>
@@ -1019,6 +981,43 @@
                     'factor_percent': 100,
                     'repartition_type': 'tax',
                     'account_id': ref('l10n_ec.ec_purchase_vat_zero'),
+                })]"/>
+            <field name="refund_repartition_line_ids" eval="[(5, 0, 0),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                    'minus_report_line_ids': [ref('tax_report_line_104_545')],
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('l10n_ec.ec_other_downpayments'),
+                    'minus_report_line_ids': [ref('tax_report_line_104_555')],
+                })]"/>
+        </record>
+        <record id="tax_vat_545" model="account.tax.template">
+            <!-- IVA EN COMPRAS POR REEMBOLSO COMO INTERMEDIARIO -->
+            <field name="name">IVA 12% (Reembolso Intermediario)</field>
+            <field name="type_tax_use">purchase</field>
+            <field name="amount_type">percent</field>
+            <field name="sequence">10</field>
+            <field name="amount">12.0</field>
+            <field name="description">IVA 12%</field>
+            <field name="l10n_ec_code_base">545</field>
+            <field name="l10n_ec_code_applied">555</field>
+            <field name="chart_template_id" ref="l10n_ec.l10n_ec_ifrs"/>
+            <field name="tax_group_id" ref="tax_group_vat_12"/>
+            <field name="invoice_repartition_line_ids" eval="[(5, 0, 0),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'base',
+                    'plus_report_line_ids': [ref('tax_report_line_104_545')],
+                }),
+                (0,0, {
+                    'factor_percent': 100,
+                    'repartition_type': 'tax',
+                    'account_id': ref('l10n_ec.ec_other_downpayments'),
+                    'plus_report_line_ids': [ref('tax_report_line_104_555')],
                 })]"/>
             <field name="refund_repartition_line_ids" eval="[(5, 0, 0),
                 (0,0, {
