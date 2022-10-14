@@ -13,3 +13,5 @@ Andrés Calle andres.calle@trescloud.com https://github.com/pepetreshere
 List of contributors:
 
 Andrés Calle andres.calle@trescloud.com https://github.com/pepetreshere
+Juan Álvarez juan.alvarez02@epn.edu.ec https://github.com/DanielAlvarez02
+Steven Luna steven.luna@trescloud.com https://github.com/stevTresCloud
