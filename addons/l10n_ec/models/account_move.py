@@ -184,7 +184,7 @@ class AccountMove(models.Model):
             if self.debit_origin_id: # show/hide the debit note document type
                 domain.extend([("internal_type", "=", 'debit_note')])
             elif self.move_type in ('out_invoice', 'in_invoice'):
-                domain.extend([("internal_type", "=", 'invoice')])            
+                domain.extend([("internal_type", "=", 'invoice')])
             allowed_documents = self._get_l10n_ec_documents_allowed(self._get_l10n_ec_ats_identification_type())
             if allowed_documents: #TODO Joss, Andres suggest to remove the condition, so that if no ID matches then no document is available
                 domain.extend([("id", "in", allowed_documents.ids)])
