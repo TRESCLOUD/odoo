@@ -137,33 +137,33 @@ class AccountMove(models.Model):
     def _get_l10n_ec_ats_identification_type(self):
         # Helps filter out document types based on subset of Table 2 of SRI's ATS specification
         self.ensure_one()
-        move = self
-        it_ruc = self.env.ref("l10n_ec.ec_ruc", False)
-        it_dni = self.env.ref("l10n_ec.ec_dni", False)
-        it_passport = self.env.ref("l10n_ec.ec_passport", False)
-        is_final_consumer = verify_final_consumer(move.partner_id.commercial_partner_id.vat)
-        is_ruc = move.partner_id.commercial_partner_id.l10n_latam_identification_type_id.id == it_ruc.id
-        is_dni = move.partner_id.commercial_partner_id.l10n_latam_identification_type_id.id == it_dni.id
-        is_passport = move.partner_id.commercial_partner_id.l10n_latam_identification_type_id.id == it_passport.id
+        ec_ruc = self.env.ref("l10n_ec.ec_ruc", False)
+        ec_dni = self.env.ref("l10n_ec.ec_dni", False)
+        ec_passport = self.env.ref("l10n_ec.ec_passport", False)
+        it_pass = self.env.ref("l10n_latam_base.it_pass", False) # Passport
+        it_vat = self.env.ref("l10n_latam_base.it_vat", False)
+        it_fid = self.env.ref("l10n_latam_base.it_fid", False) # Foreign ID
+        # find partner identification type
+        is_ruc = self.partner_id.l10n_latam_identification_type_id == ec_ruc
+        is_dni = self.partner_id.l10n_latam_identification_type_id == ec_dni
+        #TODO Joss, for "is_foreign", are we sure it_vat is intended to be a foreigner? it will affect the edi module in sister method _get_l10n_ec_edi_identification_type()
+        is_foreign = self.partner_id.l10n_latam_identification_type_id in [ec_passport, it_pass, it_vat, it_fid]
+        # map identification code considering sale or purchase as per table 2 of ATS
         identification_code = False
-        if move.move_type in ("in_invoice", "in_refund"):
-            if is_ruc:
+        if self.move_type in ("in_invoice", "in_refund"):
+            if is_ruc: # includes final consumer
                 identification_code = "01"
             elif is_dni:
                 identification_code = "02"
-            elif is_final_consumer:
-                identification_code = "07"
-            else: #passport or foreign ID l10n_latam_base.it_vat, 
+            elif is_foreign: 
                 identification_code = "03"
-        elif move.move_type in ("out_invoice", "out_refund"):
-            if is_ruc:
+        elif self.move_type in ("out_invoice", "out_refund"):
+            if is_ruc: # includes final consumer
                 identification_code = "04"
             elif is_dni:
                 identification_code = "05"
-            elif is_passport: #passport or foreign ID
+            elif is_foreign: #passport or foreign ID
                 identification_code = "06"
-            elif is_final_consumer:
-                identification_code = "07"
         return identification_code
 
     _get_l10n_ec_identification_type = _get_l10n_ec_ats_identification_type #For backward compatibility, remove in master
@@ -186,7 +186,7 @@ class AccountMove(models.Model):
             elif self.move_type in ('out_invoice', 'in_invoice'):
                 domain.extend([("internal_type", "=", 'invoice')])
             allowed_documents = self._get_l10n_ec_documents_allowed(self._get_l10n_ec_ats_identification_type())
-            if allowed_documents:
+            if allowed_documents: #TODO Joss, Andres suggest to remove the condition, so that if no ID matches then no document is available
                 domain.extend([("id", "in", allowed_documents.ids)])
         return domain
 
