@@ -6,7 +6,7 @@
         -->
         <record id="tax_vat_411_goods" model="account.tax.template">
             <!-- IVA en ventas locales (excluye activos fijos) -->
-            <field name="name">IVA 12% (Bienes)</field>
+            <field name="name">IVA 12% (411, Bienes)</field>
             <field name="type_tax_use">sale</field>
             <field name="amount_type">percent</field>
             <field name="sequence">10</field>
@@ -43,7 +43,7 @@
         </record>
         <record id="tax_vat_411_services" model="account.tax.template">
             <!-- IVA en ventas locales (excluye activos fijos) -->
-            <field name="name">IVA 12% (Servicios)</field>
+            <field name="name">IVA 12% (411, Servicios)</field>
             <field name="type_tax_use">sale</field>
             <field name="amount_type">percent</field>
             <field name="sequence">20</field>
@@ -76,7 +76,7 @@
         </record>
         <record id="tax_vat_412" model="account.tax.template">
             <!-- IVA en ventas de activos fijos -->
-            <field name="name">IVA 12% (Activos)</field>
+            <field name="name">IVA 12% (412, Activos)</field>
             <field name="type_tax_use">sale</field>
             <field name="amount_type">percent</field>
             <field name="sequence">30</field>
@@ -109,7 +109,7 @@
         </record>
         <record id="tax_vat_415_goods" model="account.tax.template">
             <!-- IVA en ventas locales 0% (excluye activos fijos) con derecho a credito tributario -->
-            <field name="name">IVA 0% (Bienes)</field>
+            <field name="name">IVA 0% (415, Bienes)</field>
             <field name="type_tax_use">sale</field>
             <field name="amount_type">percent</field>
             <field name="sequence">40</field>
@@ -143,7 +143,7 @@
         </record>
         <record id="tax_vat_415_services" model="account.tax.template">
             <!-- IVA en ventas locales 0% (excluye activos fijos) con derecho a credito tributario -->
-            <field name="name">IVA 0% (Servicios)</field>
+            <field name="name">IVA 0% (415, Servicios)</field>
             <field name="type_tax_use">sale</field>
             <field name="amount_type">percent</field>
             <field name="sequence">50</field>
@@ -173,7 +173,7 @@
         </record>
         <record id="tax_vat_416" model="account.tax.template">
             <!-- IVA ventas de activos fijos gravadas tarifa 0% con derecho a credito tributario -->
-            <field name="name">IVA 0% (Activos)</field>
+            <field name="name">IVA 0% (416, Activos)</field>
             <field name="type_tax_use">sale</field>
             <field name="amount_type">percent</field>
             <field name="sequence">60</field>
@@ -203,7 +203,7 @@
         </record>
         <record id="tax_vat_413" model="account.tax.template">
             <!-- IVA en ventas locales 0% (excluye activos fijos) sin derecho a credito tributario -->
-            <field name="name">IVA 0% (Sin Crédito Tributario)</field>
+            <field name="name">IVA 0% (413, Sin Crédito Tributario)</field>
             <field name="type_tax_use">sale</field>
             <field name="amount_type">percent</field>
             <field name="sequence">70</field>
@@ -233,7 +233,7 @@
         </record>
         <record id="tax_vat_414" model="account.tax.template">
             <!-- IVA en ventas de activos fijos gravadas 0% sin derecho a credito tributario -->
-            <field name="name">IVA 0% (Activos Sin Crédito Tributario)</field>
+            <field name="name">IVA 0% (414, Activos Sin Crédito Tributario)</field>
             <field name="type_tax_use">sale</field>
             <field name="amount_type">percent</field>
             <field name="sequence">80</field>
@@ -263,7 +263,7 @@
         </record>
         <record id="tax_vat_417" model="account.tax.template">
             <!-- IVA 0% por exportaciones de bienes -->
-            <field name="name">IVA 0% (Exportación Bienes)</field>
+            <field name="name">IVA 0% (417, Exportación Bienes)</field>
             <field name="type_tax_use">sale</field>
             <field name="amount_type">percent</field>
             <field name="sequence">90</field>
@@ -293,7 +293,7 @@
         </record>
         <record id="tax_vat_418" model="account.tax.template">
             <!-- IVA por exportaciones de servicios -->
-            <field name="name">IVA 0% (Exportación Servicios)</field>
+            <field name="name">IVA 0% (418, Exportación Servicios)</field>
             <field name="type_tax_use">sale</field>
             <field name="amount_type">percent</field>
             <field name="sequence">100</field>
@@ -323,7 +323,7 @@
         </record>
         <record id="tax_vat_441" model="account.tax.template">
             <!-- Transferencias en ventas no objeto o exentas de IVA -->
-            <field name="name">IVA 0% (No Objeto/Exentas)</field>
+            <field name="name">IVA 0% (441, No Objeto/Exentas)</field>
             <field name="type_tax_use">sale</field>
             <field name="amount_type">percent</field>
             <field name="sequence">110</field>
@@ -353,7 +353,7 @@
         </record>
         <record id="tax_vat_444" model="account.tax.template">
             <!-- IVA en ventas por reembolso como intermediario -->
-            <field name="name">IVA 12% (Reembolsos)</field>
+            <field name="name">IVA 12% (444, Reembolsos)</field>
             <field name="type_tax_use">sale</field>
             <field name="amount_type">percent</field>
             <field name="sequence">120</field>
