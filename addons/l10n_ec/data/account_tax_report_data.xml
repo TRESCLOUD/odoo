@@ -2256,8 +2256,9 @@
                             <record id="tax_report_line_parent_line_report_249" model="account.report.line">
                                 <field name="name">Aplicables el 2,75%</field>
                                 <field name="children_ids">
-                                    <!-- TODO delete below ? -->
-                                    <!-- <record id="tax_report_line_103_3440" model="account.report.line">
+                                    <!-- TODO delete record below ? -->
+                                    <!-- It is being used in tax_withhold_profit_sale_2_75x100 -->
+                                    <record id="tax_report_line_103_3440" model="account.report.line">
                                         <field name="name">Base imponible(3440)</field>
                                         <field name="code">c3440</field>
                                         <field name="expression_ids">
@@ -2267,7 +2268,7 @@
                                                 <field name="formula">3440 (Reporte 103)</field>
                                             </record>
                                         </field>
-                                    </record> -->
+                                    </record>
                                     <record id="tax_report_line_103_3940" model="account.report.line">
                                         <field name="name">Valor retenido(3940)</field>
                                         <field name="code">c3940</field>
