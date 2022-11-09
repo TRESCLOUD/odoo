@@ -332,6 +332,15 @@
                                     </record>
                                 </field>
                             </record>
+                            <!-- TODO ensure line above for v16 matches line below for v15 -->
+                            <!-- <record id="tax_report_line_104_441" model="account.tax.report.line">
+                                <field name="name">Valor neto(441)</field>
+                                <field name="code">c441</field>
+                                <field name="tag_name">441 (Reporte 104)</field>
+                                <field name="report_id" ref="tax_report_104"/>
+                                <field name="parent_id" ref="tax_report_line_parent_line_report_32"/>
+                                <field name="sequence">1</field>
+                            </record> -->
                         </field>
                     </record>
                     <record id="tax_report_line_parent_line_report_39" model="account.report.line">
@@ -2247,7 +2256,8 @@
                             <record id="tax_report_line_parent_line_report_249" model="account.report.line">
                                 <field name="name">Aplicables el 2,75%</field>
                                 <field name="children_ids">
-                                    <record id="tax_report_line_103_3440" model="account.report.line">
+                                    <!-- TODO delete below ? -->
+                                    <!-- <record id="tax_report_line_103_3440" model="account.report.line">
                                         <field name="name">Base imponible(3440)</field>
                                         <field name="code">c3440</field>
                                         <field name="expression_ids">
@@ -2257,7 +2267,7 @@
                                                 <field name="formula">3440 (Reporte 103)</field>
                                             </record>
                                         </field>
-                                    </record>
+                                    </record> -->
                                     <record id="tax_report_line_103_3940" model="account.report.line">
                                         <field name="name">Valor retenido(3940)</field>
                                         <field name="code">c3940</field>
