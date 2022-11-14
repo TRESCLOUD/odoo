@@ -3480,7 +3480,7 @@ class AccountMove(models.Model):
         """ Print the invoice and mark it as sent, so that we can see more
             easily the next step of the workflow
         """
-        if any(not move.is_invoice(include_receipts=True) for move in self):
+        if any(not move._can_be_emailed() for move in self):
             raise UserError(_("Only invoices could be printed."))
 
         self.filtered(lambda inv: not inv.is_move_sent).write({'is_move_sent': True})
@@ -3648,6 +3648,12 @@ class AccountMove(models.Model):
             if all(move.move_type == 'out_refund' for move in self)
             else 'account.email_template_edi_invoice'
         )
+
+    def _can_be_emailed(self):
+        """ TODO useful docstring.
+        """
+        self.ensure_one()
+        return self.is_invoice(include_receipts=True)
 
     def _get_report_base_filename(self):
         return self._get_move_display_name()
