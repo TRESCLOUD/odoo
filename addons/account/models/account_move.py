@@ -3565,6 +3565,13 @@ class AccountMove(models.Model):
 
         return report_action
 
+    def _get_invoice_report_ref(self):
+        """ This method needs to be inherited by the localizations in order to show a different report ref.
+            TODO more useful docstring?
+        """
+        self.ensure_one()
+        return 'account.account_invoices'
+
     def preview_invoice(self):
         self.ensure_one()
         return {
