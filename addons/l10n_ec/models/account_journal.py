@@ -15,12 +15,9 @@ class AccountJournal(models.Model):
 
     @api.depends('type', 'l10n_latam_use_documents')
     def _compute_l10n_ec_require_emission(self):
-        # True when there should be an entity and emission point
-        l10n_ec_require_emission = False
-        if self.country_code == 'EC' and self.l10n_latam_use_documents:
-            if self.type == 'sale':
-                l10n_ec_require_emission = True
-        self.l10n_ec_require_emission = l10n_ec_require_emission
+        for journal in self:
+            # True iff an entity and emission point must be set on the journal
+            journal.l10n_ec_require_emission = journal.type == 'sale' and journal.country_code == 'EC' and journal.l10n_latam_use_documents
 
     #TODO: Deprecate field in master as is it has no use
     l10n_ec_emission_type = fields.Selection(
