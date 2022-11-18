@@ -786,6 +786,24 @@
             <field name="parent_id" ref="tax_report_line_parent_line_report_88"/>
             <field name="sequence">1</field>
         </record>
+        <record id="tax_report_line_104_518" model="account.tax.report.line">
+            <field name="name">Valor neto(518)</field>
+            <field name="code">c518</field>
+            <field name="tag_name">518 (Reporte 104)</field>
+            <field name="report_id" ref="tax_report_104"/>
+            <!-- No se que parent_id poner -->
+            <field name="parent_id" ref="tax_report_line_parent_line_report_88"/>
+            <field name="sequence">1</field>
+        </record>
+        <record id="tax_report_line_104_516" model="account.tax.report.line">
+            <field name="name">Valor neto(516)</field>
+            <field name="code">c516</field>
+            <field name="tag_name">516 (Reporte 104)</field>
+            <field name="report_id" ref="tax_report_104"/>
+<!--            NO SE QUE NÚMERO DE LÍNEA ES-->
+            <field name="parent_id" ref="tax_report_line_parent_line_report_88"/>
+            <field name="sequence">1</field>
+        </record>
         <record id="tax_report_line_parent_line_report_91" model="account.tax.report.line">
             <field name="name">Adquisiciones realizadas a contribuyentes RISE</field>
             <field name="report_id" ref="tax_report_104"/>
