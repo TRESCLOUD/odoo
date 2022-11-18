@@ -1025,7 +1025,7 @@
             <field name="invoice_repartition_line_ids" eval="[(5, 0, 0),
                 (0,0, {
                     'repartition_type': 'base',
-                    'plus_report_expression_ids': [ref('tax_report_line_103_344_tag')],
+                    'plus_report_expression_ids': [ref('tax_report_line_103_3440_tag')],
                 }),
                 (0,0, {
                     'repartition_type': 'tax',
@@ -1035,7 +1035,7 @@
             <field name="refund_repartition_line_ids" eval="[(5, 0, 0),
                 (0,0, {
                     'repartition_type': 'base',
-                    'minus_report_expression_ids': [ref('tax_report_line_103_344_tag')],
+                    'minus_report_expression_ids': [ref('tax_report_line_103_3440_tag')],
                 }),
                 (0,0, {
                     'repartition_type': 'tax',

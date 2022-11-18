@@ -818,6 +818,28 @@
                                     </record>
                                 </field>
                             </record>
+                            <record id="tax_report_line_104_516" model="account.report.line">
+                                <field name="name">Valor neto(516)</field>
+                                <field name="code">c516</field>
+                                <field name="expression_ids">
+                                    <record id="tax_report_line_104_516_tag" model="account.report.expression">
+                                        <field name="label">balance</field>
+                                        <field name="engine">tax_tags</field>
+                                        <field name="formula">516 (Reporte 104)</field>
+                                    </record>
+                                </field>
+                            </record>
+                            <record id="tax_report_line_104_518" model="account.report.line">
+                                <field name="name">Valor neto(518)</field>
+                                <field name="code">c518</field>
+                                <field name="expression_ids">
+                                    <record id="tax_report_line_104_518_tag" model="account.report.expression">
+                                        <field name="label">balance</field>
+                                        <field name="engine">tax_tags</field>
+                                        <field name="formula">518 (Reporte 104)</field>
+                                    </record>
+                                </field>
+                            </record>
                         </field>
                     </record>
                     <record id="tax_report_line_parent_line_report_91" model="account.report.line">
