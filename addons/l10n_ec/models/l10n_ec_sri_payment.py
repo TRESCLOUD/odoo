@@ -11,3 +11,4 @@ class SriPayment(models.Model):
 
     name = fields.Char("Name")
     code = fields.Char("Code")
+    
