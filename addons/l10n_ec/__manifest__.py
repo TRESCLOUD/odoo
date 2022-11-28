@@ -73,7 +73,6 @@ Master Data:
         "views/l10n_latam_document_type_view.xml",
         "views/l10n_ec_sri_payment.xml",
         "views/account_journal_view.xml",
-        "security/ir.model.access.csv",
         # Try loading CoA
         "data/account_chart_template_configure_data.xml",
     ],

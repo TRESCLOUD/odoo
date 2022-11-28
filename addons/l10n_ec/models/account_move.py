@@ -165,14 +165,14 @@ class AccountMove(models.Model):
 
     def _get_l10n_latam_documents_domain(self):
         self.ensure_one()
-        domain = super(AccountMove, self)._get_l10n_latam_documents_domain()
+        domain = super()._get_l10n_latam_documents_domain()
         if self.country_code == 'EC' and self.journal_id.l10n_latam_use_documents:
-            if self.debit_origin_id: # show/hide the debit note document type
-                domain.extend([("internal_type", "=", 'debit_note')])
+            if self.debit_origin_id:  # show/hide the debit note document type
+                domain.extend([('internal_type', '=', 'debit_note')])
             elif self.move_type in ('out_invoice', 'in_invoice'):
-                domain.extend([("internal_type", "=", 'invoice')])
+                domain.extend([('internal_type', '=', 'invoice')])
             allowed_documents = self._get_l10n_ec_documents_allowed(self._get_l10n_ec_ats_identification_type())
-            domain.extend([("id", "in", allowed_documents.ids)])
+            domain.extend([('id', 'in', allowed_documents.ids)])
         return domain
 
     def _get_ec_formatted_sequence(self, number=0):

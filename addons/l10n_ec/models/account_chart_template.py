@@ -9,10 +9,10 @@ class AccountChartTemplate(models.Model):
 
     def _prepare_all_journals(self, acc_template_ref, company, journals_dict=None):
         res = super()._prepare_all_journals(acc_template_ref, company, journals_dict=journals_dict)
-        for journal in res:
-            if journal.get('type') == 'sale' and company.account_fiscal_country_id.code == 'EC':
-                journal.update({
-                    'name': '001-001 ' + journal.get('name'),
+        for journal_values in res:
+            if journal_values.get('type') == 'sale' and company.account_fiscal_country_id.code == 'EC':
+                journal_values.update({
+                    'name': f"001-001 {journal_values['name']}",
                     'l10n_ec_entity': '001',
                     'l10n_ec_emission': '001',
                     'l10n_ec_emission_address_id': company.partner_id.id,

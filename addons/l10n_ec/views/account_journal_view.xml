@@ -7,7 +7,7 @@
             <field name="inherit_id" ref="l10n_latam_invoice_document.view_account_journal_form"/>
             <field name="arch" type="xml">
                 <field name="l10n_latam_use_documents" position="after">
-                	<field name="l10n_ec_require_emission" invisible="1"/>
+                    <field name="l10n_ec_require_emission" invisible="1"/>
                     <field name="l10n_ec_entity"
                            placeholder="001"
                            attrs="{'invisible':[('l10n_ec_require_emission', '!=', True)],
@@ -22,7 +22,7 @@
                            attrs="{'invisible':[('l10n_ec_require_emission', '!=', True)],
                                    'required':[('l10n_ec_require_emission', '=', True)]}"
                            context="{'default_parent_id': company_partner_id, 
-                                     'default_type': 'invoice',
+                                     'default_move_type': 'invoice',
                                      'form_view_ref': 'base.view_partner_address_form'
                                      }"
                            />
