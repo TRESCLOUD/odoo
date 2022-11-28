@@ -17,4 +17,16 @@ class AccountChartTemplate(models.Model):
                     'l10n_ec_emission': '001',
                     'l10n_ec_emission_address_id': company.partner_id.id,
                 })
+
+        # Copy tax support codes from tax templates onto corresponding taxes
+        tax_templates = self.env['account.tax.template'].search([
+            ('chart_template_id', '=', self.id),
+            ('type_tax_use', '=', 'purchase')
+        ])
+        xml_ids = tax_templates.get_external_id()
+        for tax_template in tax_templates:
+            module, xml_id = xml_ids.get(tax_template.id).split('.')
+            tax = self.env.ref('%s.%s_%s' % (module, company.id, xml_id), raise_if_not_found=False)
+            if tax:
+                tax.l10n_ec_code_taxsupport = tax_template.l10n_ec_code_taxsupport
         return res
