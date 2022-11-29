@@ -22,7 +22,7 @@
                            attrs="{'invisible':[('l10n_ec_require_emission', '!=', True)],
                                    'required':[('l10n_ec_require_emission', '=', True)]}"
                            context="{'default_parent_id': company_partner_id, 
-                                     'default_move_type': 'invoice',
+                                     'default_type': 'invoice',
                                      'form_view_ref': 'base.view_partner_address_form'
                                      }"
                            />
