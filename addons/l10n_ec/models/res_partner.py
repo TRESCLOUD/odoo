@@ -61,13 +61,16 @@ class ResPartner(models.Model):
         Useful for document type domains, electronic documents, ats, others.
         """
         self.ensure_one()
-        if self.l10n_latam_identification_type_id == self.env.ref('l10n_ec.ec_dni'):
+
+        def id_type_in(*args):
+            return any([self.l10n_latam_identification_type_id == self.env.ref(arg) for arg in args])
+
+        if id_type_in('l10n_ec.ec_dni'):
             return 'cedula'  # DNI
-        elif self.l10n_latam_identification_type_id == self.env.ref('l10n_ec.ec_ruc'):
+        elif id_type_in('l10n_ec.ec_ruc'):
             return 'ruc'  # RUC
-        elif self.l10n_latam_identification_type_id == self.env.ref('l10n_latam_base.it_pass'):
+        elif id_type_in('l10n_latam_base.it_pass'):
             return 'passport'  # Pasaporte
-        elif self.l10n_latam_identification_type_id == self.env.ref('l10n_latam_base.it_fid', 'l10n_latam_base.it_vat'):
-            return 'foreign'  # Identificacion del exterior
-        elif self.l10n_latam_identification_type_id.country_id != self.env.ref('base.ec'):
+        elif id_type_in('l10n_latam_base.it_fid', 'l10n_latam_base.it_vat') \
+                or self.l10n_latam_identification_type_id.country_id != self.env.ref('base.ec'):
             return 'foreign'  # Identificacion del exterior
