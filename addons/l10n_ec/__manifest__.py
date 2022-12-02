@@ -67,7 +67,6 @@ Master Data:
         # Other data
         "data/l10n_latam.document.type.csv",
         "data/l10n_ec.sri.payment.csv",
-        "data/account.tax.template.csv",
         # Views
         "views/root_sri_menu.xml",
         "views/account_tax_view.xml",
