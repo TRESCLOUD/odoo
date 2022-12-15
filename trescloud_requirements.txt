@@ -1,6 +1,6 @@
 acme-tiny==4.1.0 # Necesario para el modulo letsencrypt del repositorio server-tools
 IPy==1.0 # Necesario para el modulo letsencrypt del repositorio server-tools
-pyOpenSSL==19.1.0 #librerias agregadas para instalarmodulosv14
+pyOpenSSL==22.0.0 #librerias agregadas para instalarmodulosv14
 firebase-admin==3.2.1
 google-api-core==1.23.0
 google-api-python-client==1.12.4

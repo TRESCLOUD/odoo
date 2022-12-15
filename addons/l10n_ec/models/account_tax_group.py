@@ -4,7 +4,8 @@
 from odoo import api, fields, models, _
 
 class AccountTaxGroup(models.Model):
-    _inherit = 'account.tax.group'
+    _name = 'account.tax.group'
+    _inherit = ['account.tax.group', 'mail.thread', 'mail.activity.mixin']
 
     _TYPE_EC = [
         ('vat12', 'VAT 12%'),
@@ -20,5 +21,5 @@ class AccountTaxGroup(models.Model):
         ('other', 'Others'),
     ]
     
-    l10n_ec_type = fields.Selection(_TYPE_EC, string='Type Ecuadorian Tax', track_visibility='onchange',
+    l10n_ec_type = fields.Selection(_TYPE_EC, string='Type Ecuadorian Tax', tracking=True,
                                     help='Ecuadorian taxes subtype')
