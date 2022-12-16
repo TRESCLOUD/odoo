@@ -20,7 +20,7 @@
                             getActiveIds="() => model.root.selection.map((r) => r.resId)"
                             context="props.context"
                             domain="props.domain"
-                            items="getActionMenuItems()"
+                            items="actionMenuItems"
                             isDomainSelected="model.root.isDomainSelected"
                             resModel="model.root.resModel"
                             onActionExecuted="() => model.load()"/>
@@ -84,6 +84,9 @@
                     <i class="fa fa-arrow-right"/> Select all <span class="font-monospace" t-esc="nbTotal"/>
                 </a>
             </t>
+            <a t-if="nbSelected > 1" href="#" class="o_list_unselect_all ms-2 btn btn-sm btn-info px-2 py-1 border-0 fw-normal" t-on-click="onUnselectAll">
+                Unselect all
+            </a>
         </div>
     </t>
 

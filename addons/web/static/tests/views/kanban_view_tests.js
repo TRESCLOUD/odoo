@@ -6657,6 +6657,67 @@ QUnit.module("Views", (hooks) => {
         assert.containsOnce(target, ".o_kanban_example_background_container");
     });
 
+    QUnit.test(
+        "empty kanban with sample data grouped by date range (fill temporal)",
+        async (assert) => {
+            serverData.models.partner.records = [];
+
+            await makeView({
+                arch: `
+                <kanban sample="1">
+                    <field name="date" allow_group_range_value="true"/>
+                    <field name="state"/>
+                    <field name="int_field"/>
+                    <progressbar field="state" sum_field="int_field" help="progress" colors="{}"/>
+                    <templates>
+                        <div t-name="kanban-box">
+                            <field name="foo"/>
+                            <field name="int_field"/>
+                        </div>
+                    </templates>
+                </kanban>`,
+                serverData,
+                groupBy: ["date:month"],
+                resModel: "partner",
+                type: "kanban",
+                noContentHelp: "No content helper",
+                mockRPC(route, args) {
+                    if (args.method === "web_read_group") {
+                        // Simulate fill temporal
+                        return {
+                            groups: [
+                                {
+                                    date_count: 0,
+                                    state: false,
+                                    "date:month": "December 2022",
+                                    __range: {
+                                        "date:month": {
+                                            from: "2022-12-01",
+                                            to: "2023-01-01",
+                                        },
+                                    },
+                                    __domain: [
+                                        ["date", ">=", "2022-12-01"],
+                                        ["date", "<", "2023-01-01"],
+                                    ],
+                                },
+                            ],
+                            length: 1,
+                        };
+                    }
+                },
+            });
+
+            assert.containsOnce(target, ".o_view_nocontent");
+            assert.strictEqual(
+                target.querySelector(".o_kanban_group .o_column_title").textContent,
+                "December 2022"
+            );
+            assert.containsOnce(target, ".o_kanban_group");
+            assert.containsN(target, ".o_kanban_group .o_kanban_record", 16);
+        }
+    );
+
     QUnit.test("empty grouped kanban with sample data and click quick create", async (assert) => {
         await makeView({
             type: "kanban",
@@ -9089,12 +9150,12 @@ QUnit.module("Views", (hooks) => {
         assert.strictEqual(imageOnRecord.length, 1, "partner with image display image by url");
     });
 
-    QUnit.test("test displaying image (__last_update field)", async (assert) => {
-        // the presence of __last_update field ensures that the image is reloaded when necessary
+    QUnit.test("test displaying image (write_date field)", async (assert) => {
+        // the presence of write_date field ensures that the image is reloaded when necessary
         assert.expect(2);
 
         const rec = serverData.models.partner.records.find((r) => r.id === 1);
-        rec.__last_update = "2022-08-05 08:37:00";
+        rec.write_date = "2022-08-05 08:37:00";
 
         await makeView({
             type: "kanban",
@@ -9109,7 +9170,7 @@ QUnit.module("Views", (hooks) => {
                 </kanban>`,
             mockRPC(route, { method, kwargs }) {
                 if (method === "web_search_read") {
-                    assert.deepEqual(kwargs.fields, ["id", "__last_update"]);
+                    assert.deepEqual(kwargs.fields, ["id", "write_date"]);
                 }
             },
             domain: [["id", "in", [1]]],

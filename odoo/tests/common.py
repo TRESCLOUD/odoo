@@ -320,6 +320,9 @@ class OdooSuite(BackportSuite):
         with result.collectStats(test_id):
             super()._tearDownPreviousClass(test, result)
 
+    def has_http_case(self):
+        return self.countTestCases() and any(isinstance(test_case, HttpCase) for test_case in self)
+
 
 class MetaCase(type):
     """ Metaclass of test case classes to assign default 'test_tags':
@@ -2295,6 +2298,10 @@ class Form(object):
         '>': operator.gt,
         'in': lambda a, b: (a in b) if isinstance(b, (tuple, list)) else (b in a),
         'not in': lambda a, b: (a not in b) if isinstance(b, (tuple, list)) else (b not in a),
+        'like': lambda a, b: a and b and isinstance(a, str) and isinstance(b, str) and a in b,
+        'ilike': lambda a, b: a and b and isinstance(a, str) and isinstance(b, str) and a.lower() in b.lower(),
+        'not like': lambda a, b: a and b and isinstance(a, str) and isinstance(b, str) and a not in b,
+        'not ilike': lambda a, b: a and b and isinstance(a, str) and isinstance(b, str) and a.lower() not in b.lower(),
     }
     def _get_context(self, field):
         c = self._view['contexts'].get(field)

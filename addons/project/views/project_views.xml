@@ -1178,13 +1178,13 @@
                                 options="{'no_open': True, 'no_quick_create': True}"
                                 widget="many2many_avatar_user"
                                 domain="[('share', '=', False), ('active', '=', True)]"/>
+                            <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}" context="{'project_id': project_id}"/>
                         </group>
                         <group>
                             <field name="active" invisible="1"/>
                             <field name="partner_id" widget="res_partner_many2one" class="o_task_customer_field"/>
                             <field name="partner_phone" widget="phone" attrs="{'invisible': True}"/>
                             <field name="date_deadline" attrs="{'invisible': [('is_closed', '=', True)]}"/>
-                            <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}" context="{'project_id': project_id}"/>
                             <field name="legend_blocked" invisible="1"/>
                             <field name="legend_normal" invisible="1"/>
                             <field name="legend_done" invisible="1"/>
@@ -1663,6 +1663,30 @@
             </field>
         </record>
 
+        <record id="open_view_my_tasks_list_view" model="ir.ui.view">
+            <field name="name">open.view.my.tasks.list.view</field>
+            <field name="model">project.task</field>
+            <field name="inherit_id" ref="view_task_tree2"/>
+            <field name="mode">primary</field>
+            <field name="arch" type="xml">
+                <field name="stage_id" position="replace">
+                    <field name="stage_display" optional="show" string="Stage"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="open_view_all_tasks_list_view" model="ir.ui.view">
+            <field name="name">open.view.all.tasks.list.view</field>
+            <field name="model">project.task</field>
+            <field name="inherit_id" ref="view_task_tree2"/>
+            <field name="mode">primary</field>
+            <field name="arch" type="xml">
+                <field name="stage_id" position="replace">
+                    <field name="stage_display" optional="show" string="Stage"/>
+                </field>
+            </field>
+        </record>
+
         <record id="action_view_my_task" model="ir.actions.act_window">
             <field name="name">My Tasks</field>
             <field name="res_model">project.task</field>
@@ -1677,18 +1701,6 @@
                     Organize your tasks by dispatching them across the pipeline.<br/>
                     Collaborate efficiently by chatting in real-time or via email.
                 </p>
-            </field>
-        </record>
-
-        <record id="open_view_my_tasks_list_view" model="ir.ui.view">
-            <field name="name">open.view.my.tasks.list.view</field>
-            <field name="model">project.task</field>
-            <field name="inherit_id" ref="view_task_tree2"/>
-            <field name="mode">primary</field>
-            <field name="arch" type="xml">
-                <field name="stage_id" position="replace">
-                    <field name="stage_display" optional="show"/>
-                </field>
             </field>
         </record>
 
@@ -1743,6 +1755,7 @@
             <field name="sequence" eval="10"/>
             <field name="view_mode">tree</field>
             <field name="act_window_id" ref="action_view_all_task"/>
+            <field name="view_id" ref="open_view_all_tasks_list_view"/>
         </record>
         <record id="open_view_all_task_list_kanban" model="ir.actions.act_window.view">
             <field name="sequence" eval="20"/>
@@ -1757,8 +1770,17 @@
             <field name="view_id" ref="view_task_all_calendar"/>
         </record>
 
+        <record id="action_server_view_my_task" model="ir.actions.server">
+            <field name="name">menu view My Tasks</field>
+            <field name="model_id" ref="project.model_project_task"/>
+            <field name="state">code</field>
+            <field name="code">
+                model._ensure_personal_stages(); action = env["ir.actions.actions"]._for_xml_id("project.action_view_my_task")
+            </field>
+        </record>
+
         <menuitem name="My Tasks" id="menu_project_management" parent="menu_main_pm"
-            action="action_view_my_task" sequence="2" groups="group_project_user"/>
+            action="action_server_view_my_task" sequence="2" groups="group_project_user"/>
 
         <menuitem name="All Tasks" id="menu_project_management_all_tasks" parent="menu_main_pm"
             action="action_view_all_task" sequence="2" groups="group_project_user"/>

@@ -48,6 +48,11 @@ class Pricelist(models.Model):
         comodel_name='product.pricelist.item',
         inverse_name='pricelist_id',
         string="Pricelist Rules",
+        domain=[
+            '&',
+            '|', ('product_tmpl_id', '=', None), ('product_tmpl_id.active', '=', True),
+            '|', ('product_id', '=', None), ('product_id.active', '=', True),
+        ],
         copy=True)
 
     def name_get(self):
@@ -185,7 +190,7 @@ class Pricelist(models.Model):
 
         return [
             ('pricelist_id', '=', self.id),
-            '|', ('categ_id', '=', False), ('categ_id', 'child_of', products.categ_id.ids),
+            '|', ('categ_id', '=', False), ('categ_id', 'parent_of', products.categ_id.ids),
             '|', ('product_tmpl_id', '=', False), templates_domain,
             '|', ('product_id', '=', False), products_domain,
             '|', ('date_start', '=', False), ('date_start', '<=', date),

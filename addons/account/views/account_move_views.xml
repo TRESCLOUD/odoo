@@ -30,10 +30,6 @@
                                         <field name="balance" readonly="1"/>
                                         <field name="quantity" readonly="1"/>
                                     </group>
-                                    <group string="Accounting Documents">
-                                        <field name="move_id" readonly="1"/>
-                                        <field name="statement_line_id" readonly="True" attrs="{'invisible': [('statement_line_id','=',False)]}"/>
-                                    </group>
                                     <group string="Dates">
                                         <field name="date" groups="account.group_account_readonly"/>
                                         <field name="date_maturity"/>
@@ -78,6 +74,14 @@
                             <page string="Analytic Lines" name="analytic_lines" groups="analytic.group_analytic_accounting">
                                 <field name="date" invisible="1"/>
                                 <field name="analytic_line_ids" context="{'tree_view_ref':'analytic.view_account_analytic_line_tree', 'default_general_account_id':account_id, 'default_name': name, 'default_date':date, 'amount': (debit or 0.0)-(credit or 0.0)}"/>
+                            </page>
+                            <page string="Accounting documents">
+                                <label for="move_id" string="Journal Entry"/>
+                                <field name="move_id" readonly="1" nolabel="1"/>
+                                <group readonly="1" attrs="{'invisible': [('statement_line_id','=',False)]}">
+                                    <label for="statement_line_id" string="Originator Statement Line"/>
+                                    <field name="statement_line_id"/>
+                                </group>
                             </page>
                         </notebook>
                     </sheet>
@@ -426,7 +430,7 @@
                            decoration-danger="payment_state == 'not_paid'"
                            decoration-warning="payment_state in ('partial', 'in_payment')"
                            decoration-success="payment_state in ('paid', 'reversed')"
-                           attrs="{'invisible': ['|', ('payment_state', 'in', ('invoicing_legacy')), ('state', '!=', 'posted')]}"
+                           attrs="{'invisible': ['|', '|', ('payment_state', 'in', ('invoicing_legacy')), ('state', '!=', 'posted'), ('move_type', '=', 'entry')]}"
                            optional="show"/>
                     <field name="state" widget="badge" decoration-success="state == 'posted'" decoration-info="state == 'draft'" optional="show"/>
                     <field name="move_type" invisible="context.get('default_move_type', True)"/>
@@ -847,6 +851,11 @@
                                            groups="base.group_multi_currency"
                                            attrs="{'readonly': [('state', '!=', 'draft')], 'invisible': [('move_type', '=', 'entry')]}"/>
                                 </div>
+
+                                <field name="currency_id"
+                                       attrs="{'readonly': [('state', '!=', 'draft')]}"
+                                       groups="!account.group_account_readonly,base.group_multi_currency"/>
+
                             </group>
                         </group>
                         <notebook>
@@ -1561,8 +1570,8 @@
             <field name="search_view_id" ref="view_account_move_filter"/>
         </record>
 
-        <record model="ir.actions.server" id="action_move_switch_invoice_to_credit_note">
-            <field name="name">Switch into refund/credit note</field>
+        <record model="ir.actions.server" id="action_move_switch_move_type">
+            <field name="name">Switch into invoice/credit note</field>
             <field name="model_id" ref="account.model_account_move"/>
             <field name="groups_id" eval="[(4, ref('account.group_account_invoice'))]"/>
             <field name="binding_model_id" ref="account.model_account_move" />
@@ -1570,7 +1579,7 @@
             <field name="binding_view_types">form</field>
             <field name="code">
 if records:
-    action = records.action_switch_invoice_into_refund_credit_note()
+    action = records.action_switch_move_type()
             </field>
         </record>
 

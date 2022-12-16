@@ -22,7 +22,7 @@ from odoo.tools.misc import get_lang
 from . import crm_stage
 
 _logger = logging.getLogger(__name__)
-
+_schema = logging.getLogger('odoo.schema')
 
 
 CRM_LEAD_FIELDS_TO_MERGE = [
@@ -176,10 +176,10 @@ class Lead(models.Model):
         help="Linked partner (optional). Usually created when converting the lead. You can find a partner by its Name, TIN, Email or Internal Reference.")
     partner_is_blacklisted = fields.Boolean('Partner is blacklisted', related='partner_id.is_blacklisted', readonly=True)
     contact_name = fields.Char(
-        'Contact Name', tracking=30,
+        'Contact Name', index='trigram', tracking=30,
         compute='_compute_contact_name', readonly=False, store=True)
     partner_name = fields.Char(
-        'Company Name', tracking=20,
+        'Company Name', index='trigram', tracking=20,
         compute='_compute_partner_name', readonly=False, store=True,
         help='The name of the future partner company that will be created while converting the lead into opportunity')
     function = fields.Char('Job Position', compute='_compute_function', readonly=False, store=True)
@@ -187,6 +187,7 @@ class Lead(models.Model):
     email_from = fields.Char(
         'Email', tracking=40, index='trigram',
         compute='_compute_email_from', inverse='_inverse_email_from', readonly=False, store=True)
+    email_normalized = fields.Char(index='trigram')  # inherited via mail.thread.blacklist
     phone = fields.Char(
         'Phone', tracking=50,
         compute='_compute_phone', inverse='_inverse_phone', readonly=False, store=True)
@@ -566,7 +567,7 @@ class Lead(models.Model):
 
             if email_search:
                 duplicate_lead_ids |= return_if_relevant('crm.lead', common_lead_domain + [
-                    '|', ('email_normalized', 'ilike', email_search), ('email_from', 'ilike', email_search)
+                    ('email_normalized', 'ilike', email_search)
                 ])
             if lead.partner_name and len(lead.partner_name) >= MIN_NAME_LENGTH:
                 duplicate_lead_ids |= return_if_relevant('crm.lead', common_lead_domain + [
@@ -706,12 +707,22 @@ class Lead(models.Model):
     # ------------------------------------------------------------
 
     def _auto_init(self):
-        res = super(Lead, self)._auto_init()
+        super()._auto_init()
         tools.create_index(self._cr, 'crm_lead_user_id_team_id_type_index',
                            self._table, ['user_id', 'team_id', 'type'])
         tools.create_index(self._cr, 'crm_lead_create_date_team_id_idx',
                            self._table, ['create_date', 'team_id'])
-        return res
+        phone_pattern = r'[\s\\./\(\)\-]'
+        for field_name in ('phone', 'mobile'):
+            index_name = f'crm_lead_{field_name}_partial_tgm'
+            if tools.index_exists(self._cr, index_name):
+                continue
+            regex_expression = "regexp_replace((phone::text), %s::text, ''::text, 'g'::text)"
+            self._cr.execute(
+                f'CREATE INDEX "{index_name}" ON "{self._table}" ({regex_expression}) WHERE {field_name} IS NOT NULL',
+                (phone_pattern,)
+            )
+            _schema.debug("Table %r: created index %r (%s)", self._table, index_name, regex_expression)
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -763,7 +774,7 @@ class Lead(models.Model):
         return result
 
     @api.model
-    def search(self, args, offset=0, limit=None, order=None, count=False):
+    def search(self, domain, offset=0, limit=None, order=None, count=False):
         """ Override to support ordering on my_activity_date_deadline.
 
         Ordering through web client calls search_read with an order parameter set.
@@ -794,7 +805,7 @@ class Lead(models.Model):
         side effects. Search_count is not affected by this override.
         """
         if count or not order or 'my_activity_date_deadline' not in order:
-            return super(Lead, self).search(args, offset=offset, limit=limit, order=order, count=count)
+            return super(Lead, self).search(domain, offset=offset, limit=limit, order=order, count=count)
         order_items = [order_item.strip().lower() for order_item in (order or self._order).split(',')]
 
         # Perform a read_group on my activities to get a mapping lead_id / deadline
@@ -809,7 +820,7 @@ class Lead(models.Model):
         )
         my_lead_mapping = dict((item['res_id'], item['date_deadline']) for item in my_lead_activities)
         my_lead_ids = list(my_lead_mapping.keys())
-        my_lead_domain = expression.AND([[('id', 'in', my_lead_ids)], args])
+        my_lead_domain = expression.AND([[('id', 'in', my_lead_ids)], domain])
         my_lead_order = ', '.join(item for item in order_items if 'my_activity_date_deadline' not in item)
 
         # Search leads linked to those activities and order them. See docstring
@@ -837,7 +848,7 @@ class Lead(models.Model):
         lead_order = ', '.join(item for item in order_items if 'my_activity_date_deadline' not in item)
 
         other_lead_res = super(Lead, self).search(
-            expression.AND([[('id', 'not in', my_lead_ids_skip)], args]),
+            expression.AND([[('id', 'not in', my_lead_ids_skip)], domain]),
             offset=lead_offset, limit=lead_limit, order=lead_order, count=count
         )
         return self.browse(my_lead_ids_keep) + other_lead_res
@@ -1781,7 +1792,7 @@ class Lead(models.Model):
             # search through the existing partners based on the lead's partner or contact name
             # to be aligned with _create_customer, search on lead's name as last possibility
             for customer_potential_name in [self[field_name] for field_name in ['partner_name', 'contact_name', 'name'] if self[field_name]]:
-                partner = self.env['res.partner'].search([('name', 'ilike', '%' + customer_potential_name + '%')], limit=1)
+                partner = self.env['res.partner'].search([('name', 'ilike', customer_potential_name)], limit=1)
                 if partner:
                     break
 

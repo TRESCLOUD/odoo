@@ -276,7 +276,7 @@ class SaleOrder(models.Model):
         compute='_compute_tax_country_id',
         # Avoid access error on fiscal position when reading a sale order with company != user.company_ids
         compute_sudo=True)  # used to filter available taxes depending on the fiscal country and position
-    tax_totals = fields.Binary(compute='_compute_tax_totals')
+    tax_totals = fields.Binary(compute='_compute_tax_totals', exportable=False)
     terms_type = fields.Selection(related='company_id.terms_type')
     type_name = fields.Char(string="Type Name", compute='_compute_type_name')
 
@@ -706,6 +706,7 @@ class SaleOrder(models.Model):
     def action_quotation_send(self):
         """ Opens a wizard to compose an email, with relevant mail template loaded by default """
         self.ensure_one()
+        self.order_line._validate_analytic_distribution()
         lang = self.env.context.get('lang')
         mail_template = self._find_mail_template()
         if mail_template and mail_template.lang:
@@ -781,6 +782,8 @@ class SaleOrder(models.Model):
                 "It is not allowed to confirm an order in the following states: %s",
                 ", ".join(self._get_forbidden_state_confirm()),
             ))
+
+        self.order_line._validate_analytic_distribution()
 
         for order in self:
             if order.partner_id in order.message_partner_ids:
@@ -1176,7 +1179,7 @@ class SaleOrder(models.Model):
         # We do this after the moves have been created since we need taxes, etc. to know if the total
         # is actually negative or not
         if final:
-            moves.sudo().filtered(lambda m: m.amount_total < 0).action_switch_invoice_into_refund_credit_note()
+            moves.sudo().filtered(lambda m: m.amount_total < 0).action_switch_move_type()
         for move in moves:
             move.message_post_with_view(
                 'mail.message_origin_link',
@@ -1192,7 +1195,7 @@ class SaleOrder(models.Model):
             self.filtered(lambda o: o.state == 'draft').with_context(tracking_disable=True).write({'state': 'sent'})
         so_ctx = {'mail_post_autofollow': self.env.context.get('mail_post_autofollow', True)}
         if self.env.context.get('mark_so_as_sent'):
-            so_ctx['mail_notify_author'] = self.env.user.partner_id.id in kwargs.get('partner_ids') or []
+            so_ctx['mail_notify_author'] = self.env.user.partner_id.id in (kwargs.get('partner_ids') or [])
         return super(SaleOrder, self.with_context(**so_ctx)).message_post(**kwargs)
 
     def _notify_get_recipients_groups(self, msg_vals=None):

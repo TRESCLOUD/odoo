@@ -82,6 +82,15 @@ function getGroup(position) {
     return target.querySelectorAll(".o_group_header")[position - 1];
 }
 
+/**
+ * @param {Element} el
+ * @param {string} varName
+ * @returns {string}
+ */
+function getCssVar(el, varName) {
+    return getComputedStyle(el).getPropertyValue(varName);
+}
+
 QUnit.module("Views", (hooks) => {
     hooks.beforeEach(() => {
         serverData = {
@@ -287,7 +296,7 @@ QUnit.module("Views", (hooks) => {
 
         assert.strictEqual(
             target.querySelector(".o_list_selection_box").textContent.trim(),
-            "4 selected"
+            "4 selected  Unselect all"
         );
         assert.strictEqual(
             document.querySelectorAll(".o_data_row .o_list_record_selector input:checked").length,
@@ -302,7 +311,7 @@ QUnit.module("Views", (hooks) => {
         );
         assert.strictEqual(
             target.querySelector(".o_list_selection_box").textContent.trim(),
-            "2 selected"
+            "2 selected  Unselect all"
         );
         assert.strictEqual(
             document.querySelectorAll(".o_data_row .o_list_record_selector input:checked").length,
@@ -2869,7 +2878,7 @@ QUnit.module("Views", (hooks) => {
         assert.containsNone(target.querySelector(".o_list_selection_box"), ".o_list_select_domain");
         assert.strictEqual(
             target.querySelector(".o_list_selection_box").textContent.trim(),
-            "4 selected"
+            "4 selected  Unselect all"
         );
 
         // unselect a record
@@ -2878,7 +2887,18 @@ QUnit.module("Views", (hooks) => {
         assert.containsNone(target.querySelector(".o_list_selection_box"), ".o_list_select_domain");
         assert.strictEqual(
             target.querySelector(".o_list_selection_box").textContent.trim(),
-            "3 selected"
+            "3 selected  Unselect all"
+        );
+        await click(target.querySelector(".o_list_unselect_all"));
+        assert.containsNone(
+            target,
+            ".o_list_selection_box",
+            "selection options are no longer visible"
+        );
+        assert.containsNone(
+            target,
+            ".o_data_row .o_list_record_selector input:checked",
+            "no records should be selected"
         );
     });
 
@@ -2908,7 +2928,7 @@ QUnit.module("Views", (hooks) => {
         assert.containsOnce(target.querySelector(".o_list_selection_box"), ".o_list_select_domain");
         assert.strictEqual(
             target.querySelector(".o_list_selection_box").textContent.replace(/\s+/g, " ").trim(),
-            "3 selected Select all 4"
+            "3 selected Select all 4 Unselect all"
         );
 
         // select all domain
@@ -2916,7 +2936,13 @@ QUnit.module("Views", (hooks) => {
         assert.containsOnce(target.querySelector(".o_cp_buttons"), ".o_list_selection_box");
         assert.strictEqual(
             target.querySelector(".o_list_selection_box").textContent.trim(),
-            "All 4 selected"
+            "All 4 selected Unselect all"
+        );
+        await click(target.querySelector(".o_list_unselect_all"));
+        assert.containsNone(
+            target,
+            ".o_list_selection_box",
+            "selection options are no longer visible"
         );
     });
 
@@ -2949,7 +2975,7 @@ QUnit.module("Views", (hooks) => {
         assert.containsOnce(target.querySelector(".o_list_selection_box"), ".o_list_select_domain");
         assert.strictEqual(
             target.querySelector(".o_list_selection_box").textContent.replace(/\s+/g, " ").trim(),
-            "2 selected Select all 4"
+            "2 selected Select all 4 Unselect all"
         );
 
         // select all domain
@@ -2957,7 +2983,13 @@ QUnit.module("Views", (hooks) => {
         assert.containsOnce(target.querySelector(".o_cp_buttons"), ".o_list_selection_box");
         assert.strictEqual(
             target.querySelector(".o_list_selection_box").textContent.trim(),
-            "All 4 selected"
+            "All 4 selected Unselect all"
+        );
+        await click(target.querySelector(".o_list_unselect_all"));
+        assert.containsNone(
+            target,
+            ".o_list_selection_box",
+            "selection options are no longer visible"
         );
     });
 
@@ -5334,6 +5366,108 @@ QUnit.module("Views", (hooks) => {
         );
     });
 
+    QUnit.test("apply custom static action menu (archive)", async function (assert) {
+        // add active field on foo model and make all records active
+        serverData.models.foo.fields.active = { string: "Active", type: "boolean", default: true };
+
+        const listView = registry.category("views").get("list");
+        class CustomListController extends listView.Controller {
+            getStaticActionMenuItems() {
+                const menuItems = super.getStaticActionMenuItems();
+                menuItems.archive.callback = () => {
+                    assert.step("customArchive");
+                };
+                return menuItems;
+            }
+        }
+        registry.category("views").add("custom_list", {
+            ...listView,
+            Controller: CustomListController,
+        });
+
+        await makeView({
+            type: "list",
+            resModel: "foo",
+            serverData,
+            arch: `
+                <tree js_class="custom_list">
+                    <field name="foo"/>
+                </tree>`,
+            actionMenus: {},
+        });
+        assert.containsNone(target, "div.o_control_panel .o_cp_action_menus");
+
+        await click(target, "thead .o_list_record_selector input");
+        assert.containsOnce(target, "div.o_control_panel .o_cp_action_menus");
+
+        await toggleActionMenu(target);
+        await toggleMenuItem(target, "Archive");
+        assert.verifySteps(["customArchive"]);
+    });
+
+    QUnit.test("add custom static action menu", async function (assert) {
+        const listView = registry.category("views").get("list");
+        class CustomListController extends listView.Controller {
+            getStaticActionMenuItems() {
+                const menuItems = super.getStaticActionMenuItems();
+                menuItems.customAvailable = {
+                    isAvailable: () => true,
+                    description: "Custom Available",
+                    sequence: 35,
+                    callback: () => {
+                        assert.step("Custom Available");
+                    },
+                };
+                menuItems.customNotAvailable = {
+                    isAvailable: () => false,
+                    description: "Custom Not Available",
+                    callback: () => {
+                        assert.step("Custom Not Available");
+                    },
+                };
+                menuItems.customDefaultAvailable = {
+                    description: "Custom Default Available",
+                    callback: () => {
+                        assert.step("Custom Default Available");
+                    },
+                };
+                return menuItems;
+            }
+        }
+        registry.category("views").add("custom_list", {
+            ...listView,
+            Controller: CustomListController,
+        });
+
+        await makeView({
+            type: "list",
+            resModel: "foo",
+            serverData,
+            arch: `
+                <tree js_class="custom_list">
+                    <field name="foo"/>
+                </tree>`,
+            actionMenus: {},
+        });
+        assert.containsNone(target, "div.o_control_panel .o_cp_action_menus");
+
+        await click(target, "thead .o_list_record_selector input");
+        assert.containsOnce(target, "div.o_control_panel .o_cp_action_menus");
+
+        await toggleActionMenu(target);
+        assert.deepEqual(
+            getNodesTextContent(target.querySelectorAll(".o_cp_action_menus .dropdown-item")),
+            ["Custom Default Available", "Export", "Custom Available", "Delete"]
+        );
+
+        await toggleMenuItem(target, "Custom Available");
+        assert.verifySteps(["Custom Available"]);
+
+        await toggleActionMenu(target);
+        await toggleMenuItem(target, "Custom Default Available");
+        assert.verifySteps(["Custom Default Available"]);
+    });
+
     QUnit.test(
         "grouped, update the count of the group (and ancestors) when a record is deleted",
         async function (assert) {
@@ -7417,9 +7551,8 @@ QUnit.module("Views", (hooks) => {
             "the carret of closed groups should be right"
         );
         assert.strictEqual(
-            value1Group.querySelector("span").style["padding-left"],
-            "2px",
-            "groups of level 1 should have a 2px padding-left"
+            getCssVar(value1Group.querySelector("span"), "--o-list-group-level").trim(),
+            "0"
         );
         assert.strictEqual(
             [...value1Group.querySelectorAll("td")].pop().textContent,
@@ -7459,9 +7592,8 @@ QUnit.module("Views", (hooks) => {
             "group should have correct name and count"
         );
         assert.strictEqual(
-            blipGroup.querySelector("span").style["padding-left"],
-            "22px",
-            "groups of level 2 should have a 22px padding-left"
+            getCssVar(blipGroup.querySelector("span"), "--o-list-group-level").trim(),
+            "1"
         );
         assert.strictEqual(
             [...blipGroup.querySelectorAll("td")].pop().textContent,
@@ -11525,9 +11657,12 @@ QUnit.module("Views", (hooks) => {
             "There should be an element creating the indentation for the subgroup."
         );
         assert.notStrictEqual(
-            target.querySelector("tr:nth-child(1) th.o_group_name .fa").style.paddingLeft,
+            getCssVar(
+                target.querySelector("tr:nth-child(1) th.o_group_name span"),
+                "--o-list-group-level"
+            ).trim(),
             "",
-            "The element creating the indentation should have a padding."
+            "The element creating the indentation should have a group level to use for margin css calculation."
         );
     });
 

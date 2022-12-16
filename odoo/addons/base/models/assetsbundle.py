@@ -257,7 +257,9 @@ class AssetsBundle(object):
         Such a view would be website.layout when main_object is an ir.ui.view.
         """
         to_delete = set(attach.store_fname for attach in attachments if attach.store_fname)
-        self.env.cr.execute(f"DELETE FROM {attachments._table} WHERE id IN %s", [tuple(attachments.ids)])
+        self.env.cr.execute(f"""DELETE FROM {attachments._table} WHERE id IN (
+            SELECT id FROM {attachments._table} WHERE id in %s FOR NO KEY UPDATE SKIP LOCKED
+        )""", [tuple(attachments.ids)])
         for file_path in to_delete:
             attachments._file_delete(file_path)
 
@@ -682,7 +684,7 @@ class AssetsBundle(object):
                 old_attachments += attachments
                 for attachment in attachments:
                     asset = assets[attachment.url]
-                    if asset.last_modified > attachment['__last_update']:
+                    if asset.last_modified > attachment.write_date:
                         outdated = True
                         break
                     if asset._content is None:
@@ -887,7 +889,7 @@ class WebAsset(object):
             if self._filename:
                 return datetime.fromtimestamp(os.path.getmtime(self._filename))
             elif self._ir_attach:
-                return self._ir_attach['__last_update']
+                return self._ir_attach.write_date
         except Exception:
             pass
         return datetime(1970, 1, 1)

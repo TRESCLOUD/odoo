@@ -15,6 +15,7 @@ FORMAT_CODES = [
     'nlcius_1',
     'efff_1',
     'ubl_2_1',
+    'ubl_a_nz',
 ]
 
 class AccountEdiFormat(models.Model):
@@ -63,6 +64,8 @@ class AccountEdiFormat(models.Model):
             return self.env['account.edi.xml.ubl_de']
         if self.code == 'efff_1' and company.country_id.code == 'BE':
             return self.env['account.edi.xml.ubl_efff']
+        if self.code == 'ubl_a_nz' and company.country_id.code in ['AU', 'NZ']:
+            return self.env['account.edi.xml.ubl_a_nz']
 
     def _is_ubl_cii_available(self, company):
         """
@@ -173,12 +176,6 @@ class AccountEdiFormat(models.Model):
     def _create_invoice_from_xml_tree(self, filename, tree, journal=None):
         # EXTENDS account_edi
         self.ensure_one()
-
-        if not journal:
-            # infer the journal
-            journal = self.env['account.journal'].search([
-                ('company_id', '=', self.env.company.id), ('type', '=', 'purchase')
-            ], limit=1)
 
         if not self._is_ubl_cii_available(journal.company_id) and self.code != 'facturx_1_0_05':
             return super()._create_invoice_from_xml_tree(filename, tree, journal=journal)
