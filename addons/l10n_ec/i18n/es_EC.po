@@ -4,10 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 16.0+e\n"
+"Project-Id-Version: Odoo Server 16.1alpha1+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-10 22:46+0000\n"
-"PO-Revision-Date: 2022-11-10 22:46+0000\n"
+"POT-Creation-Date: 2023-01-02 18:11+0000\n"
+"PO-Revision-Date: 2023-01-02 18:11+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -16,7 +16,6 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_612_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_612
 msgid ""
 "(+) Ajuste por IVA devuelto e IVA rechazado (por concepto de devoluciones de"
@@ -25,7 +24,6 @@ msgid ""
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_613_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_613
 msgid ""
 "(+) Ajuste por IVA devuelto e IVA rechazado, ajuste de IVA por procesos de "
@@ -34,7 +32,6 @@ msgid ""
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_610_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_610
 msgid ""
 "(+) Ajuste por IVA devuelto o descontado por adquisiciones efectuadas con "
@@ -42,7 +39,6 @@ msgid ""
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_614_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_614
 msgid ""
 "(+) Ajuste por IVA devuelto por otras instituciones del sector público "
@@ -50,7 +46,6 @@ msgid ""
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_604_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_604
 msgid ""
 "(-) Compensación de IVA por ventas efectuadas en zonas afectadas - Ley de "
@@ -58,7 +53,6 @@ msgid ""
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_609_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_609
 msgid ""
 "(-) Retenciones en la fuente de IVA que le han sido efectuadas en este "
@@ -71,27 +65,96 @@ msgid "(-) Saldo crédito tributario del mes anterior"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_799_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_799
 msgid "(799)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_800_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_800
 msgid "(800)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_801_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_801
 msgid "(801)"
 msgstr ""
 
 #. module: l10n_ec
+#: model:ir.model.fields.selection,name:l10n_ec.selection__account_tax__l10n_ec_code_taxsupport__00
+#: model:ir.model.fields.selection,name:l10n_ec.selection__account_tax_template__l10n_ec_code_taxsupport__00
+msgid "00 Special cases whose support does not apply to the above options"
+msgstr "00 Casos especiales cuyo sustento no aplica en las opciones anteriores"
+
+#. module: l10n_ec
 #: model_terms:ir.ui.view,arch_db:l10n_ec.view_account_journal_form
 msgid "001"
 msgstr ""
+
+#. module: l10n_ec
+#: model:ir.model.fields.selection,name:l10n_ec.selection__account_tax__l10n_ec_code_taxsupport__01
+#: model:ir.model.fields.selection,name:l10n_ec.selection__account_tax_template__l10n_ec_code_taxsupport__01
+msgid ""
+"01 Tax credit for VAT declaration (services and goods other than inventories"
+" and fixed assets)"
+msgstr "01 Crédito Tributario para declaración de IVA (servicios y bienes distintos de inventarios y activos fijos)"
+
+#. module: l10n_ec
+#: model:ir.model.fields.selection,name:l10n_ec.selection__account_tax__l10n_ec_code_taxsupport__02
+#: model:ir.model.fields.selection,name:l10n_ec.selection__account_tax_template__l10n_ec_code_taxsupport__02
+msgid ""
+"02 Cost or Expense for IR declaration (services and goods other than "
+"inventories and fixed assets)"
+msgstr "02 Costo o Gasto para declaración de IR (servicios y bienes distintos de inventarios y activos fijos)"
+
+#. module: l10n_ec
+#: model:ir.model.fields.selection,name:l10n_ec.selection__account_tax__l10n_ec_code_taxsupport__03
+#: model:ir.model.fields.selection,name:l10n_ec.selection__account_tax_template__l10n_ec_code_taxsupport__03
+msgid "03 Fixed Asset - Tax Credit for VAT return"
+msgstr "03 Activo Fijo - Crédito Tributario para declaración de IVA"
+
+#. module: l10n_ec
+#: model:ir.model.fields.selection,name:l10n_ec.selection__account_tax__l10n_ec_code_taxsupport__04
+#: model:ir.model.fields.selection,name:l10n_ec.selection__account_tax_template__l10n_ec_code_taxsupport__04
+msgid "04 Fixed Asset - Cost or Expense for IR declaration"
+msgstr "04 Activo Fijo - Costo o Gasto para declaración de IR"
+
+#. module: l10n_ec
+#: model:ir.model.fields.selection,name:l10n_ec.selection__account_tax__l10n_ec_code_taxsupport__05
+#: model:ir.model.fields.selection,name:l10n_ec.selection__account_tax_template__l10n_ec_code_taxsupport__05
+msgid ""
+"05 Settlement of travel, lodging and food expenses IR expenses (on behalf of"
+" employees and not of the company)"
+msgstr "05 Liquidación Gastos de Viaje, hospedaje y alimentación Gastos IR (a nombre de empleados y no de la empresa)"
+
+#. module: l10n_ec
+#: model:ir.model.fields.selection,name:l10n_ec.selection__account_tax__l10n_ec_code_taxsupport__06
+#: model:ir.model.fields.selection,name:l10n_ec.selection__account_tax_template__l10n_ec_code_taxsupport__06
+msgid "06 Inventory - Tax Credit for VAT return"
+msgstr "06 Inventario - Crédito Tributario para declaración de IVA"
+
+#. module: l10n_ec
+#: model:ir.model.fields.selection,name:l10n_ec.selection__account_tax__l10n_ec_code_taxsupport__07
+#: model:ir.model.fields.selection,name:l10n_ec.selection__account_tax_template__l10n_ec_code_taxsupport__07
+msgid "07 Inventory - Cost or Expense for IR declaration"
+msgstr "07 Inventario - Costo o Gasto para declaración de IR"
+
+#. module: l10n_ec
+#: model:ir.model.fields.selection,name:l10n_ec.selection__account_tax__l10n_ec_code_taxsupport__08
+#: model:ir.model.fields.selection,name:l10n_ec.selection__account_tax_template__l10n_ec_code_taxsupport__08
+msgid "08 Amount paid to request Expense Reimbursement (intermediary)"
+msgstr "08 Valor pagado para solicitar Reembolso de Gasto (intermediario)"
+
+#. module: l10n_ec
+#: model:ir.model.fields.selection,name:l10n_ec.selection__account_tax__l10n_ec_code_taxsupport__09
+#: model:ir.model.fields.selection,name:l10n_ec.selection__account_tax_template__l10n_ec_code_taxsupport__09
+msgid "09 Claims Reimbursement"
+msgstr "09 Reembolso por Siniestros"
+
+#. module: l10n_ec
+#: model:ir.model.fields.selection,name:l10n_ec.selection__account_tax__l10n_ec_code_taxsupport__10
+#: model:ir.model.fields.selection,name:l10n_ec.selection__account_tax_template__l10n_ec_code_taxsupport__10
+msgid "10 Distribution of Dividends, Benefits or Profits"
+msgstr "10 Distribución de Dividendos, Beneficios o Utilidades"
 
 #. module: l10n_ec
 #: model:account.report,name:l10n_ec.tax_report_103
@@ -102,6 +165,13 @@ msgstr ""
 #: model:account.report,name:l10n_ec.tax_report_104
 msgid "104"
 msgstr ""
+
+#. module: l10n_ec
+#: model:ir.model.fields.selection,name:l10n_ec.selection__account_tax__l10n_ec_code_taxsupport__15
+#: model:ir.model.fields.selection,name:l10n_ec.selection__account_tax_template__l10n_ec_code_taxsupport__15
+msgid ""
+"15 Payments made for own and third-party consumption of digital services"
+msgstr "15 Pagos efectuados por consumos propios y de terceros de servicios digitales"
 
 #. module: l10n_ec
 #: model:account.report.line,name:l10n_ec.tax_report_line_parent_line_report_230
@@ -126,7 +196,7 @@ msgstr ""
 #. module: l10n_ec
 #: model:ir.model,name:l10n_ec.model_account_chart_template
 msgid "Account Chart Template"
-msgstr ""
+msgstr "Plantilla de Plan de Cuentas"
 
 #. module: l10n_ec
 #: model:account.report.line,name:l10n_ec.tax_report_line_parent_line_report_101
@@ -169,10 +239,10 @@ msgid ""
 "identify the kind of document we are working with. (not only related to "
 "account.move, could be for documents of other models like stock.picking)"
 msgstr ""
-"Análogo a odoo account.move.move_type pero con más opciones que permiten "
-"identificar el tipo de documento con el que estamos trabajando. (No solo "
-"relacionado con account.move, podría ser para documentos de otros modelos "
-"como stock.picking)"
+"Análogo a account.move.type de Odoo pero con más opciones, permitiendo "
+"identificar el tipo de documento sobre el que estamos trabajando. (no "
+"solamente relativo a account.move, podría ser relativo a otros modelos, como"
+" por ejemplo stock.picking)"
 
 #. module: l10n_ec
 #: model:account.report.line,name:l10n_ec.tax_report_line_parent_line_report_275
@@ -217,438 +287,362 @@ msgid "Arrendamiento"
 msgstr ""
 
 #. module: l10n_ec
-#: model:ir.model.fields.selection,name:l10n_ec.selection__account_journal__l10n_ec_emission_type__auto_printer
-msgid "Auto Printer"
-msgstr "Impresora Automática"
-
-#. module: l10n_ec
 #: model:account.report.column,name:l10n_ec.tax_report_103_balance
 #: model:account.report.column,name:l10n_ec.tax_report_104_balance
 msgid "Balance"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_302_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_302
 msgid "Base imponible(302)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_303_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_303
 msgid "Base imponible(303)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_304_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_304
 msgid "Base imponible(304)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_307_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_307
 msgid "Base imponible(307)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_308_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_308
 msgid "Base imponible(308)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_309_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_309
 msgid "Base imponible(309)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_310_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_310
 msgid "Base imponible(310)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_311_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_311
 msgid "Base imponible(311)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_312_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_312
 msgid "Base imponible(312)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_314_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_314
 msgid "Base imponible(314)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_319_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_319
 msgid "Base imponible(319)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_320_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_320
 msgid "Base imponible(320)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_3210_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_3210
 msgid "Base imponible(3210)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_322_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_322
 msgid "Base imponible(322)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_323_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_323
 msgid "Base imponible(323)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_324_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_324
 msgid "Base imponible(324)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_325_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_325
 msgid "Base imponible(325)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_326_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_326
 msgid "Base imponible(326)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_327_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_327
 msgid "Base imponible(327)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_328_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_328
 msgid "Base imponible(328)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_329_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_329
 msgid "Base imponible(329)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_331_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_331
 msgid "Base imponible(331)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_332_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_332
 msgid "Base imponible(332)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_333_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_333
 msgid "Base imponible(333)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_334_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_334
 msgid "Base imponible(334)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_335_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_335
 msgid "Base imponible(335)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_336_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_336
 msgid "Base imponible(336)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_337_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_337
 msgid "Base imponible(337)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_3380_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_3380
 msgid "Base imponible(3380)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_3400_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_3400
 msgid "Base imponible(3400)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_343_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_343
 msgid "Base imponible(343)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_344_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_344
 msgid "Base imponible(344)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_3440_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_3440
 msgid "Base imponible(3440)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_345_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_345
 msgid "Base imponible(345)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_346_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_346
 msgid "Base imponible(346)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_348_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_348
 msgid "Base imponible(348)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_349_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_349
 msgid "Base imponible(349)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_350_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_350
 msgid "Base imponible(350)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_402_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_402
 msgid "Base imponible(402)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_403_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_403
 msgid "Base imponible(403)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_404_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_404
 msgid "Base imponible(404)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_4050_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_4050
 msgid "Base imponible(4050)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_4060_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_4060
 msgid "Base imponible(4060)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_4070_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_4070
 msgid "Base imponible(4070)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_408_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_408
 msgid "Base imponible(408)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_409_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_409
 msgid "Base imponible(409)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_410_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_410
 msgid "Base imponible(410)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_411_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_411
 msgid "Base imponible(411)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_412_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_412
 msgid "Base imponible(412)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_413_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_413
 msgid "Base imponible(413)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_414_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_414
 msgid "Base imponible(414)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_415_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_415
 msgid "Base imponible(415)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_4160_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_4160
 msgid "Base imponible(4160)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_4170_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_4170
 msgid "Base imponible(4170)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_4180_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_4180
 msgid "Base imponible(4180)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_419_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_419
 msgid "Base imponible(419)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_420_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_420
 msgid "Base imponible(420)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_421_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_421
 msgid "Base imponible(421)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_422_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_422
 msgid "Base imponible(422)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_423_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_423
 msgid "Base imponible(423)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_424_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_424
 msgid "Base imponible(424)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_425_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_425
 msgid "Base imponible(425)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_4260_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_4260
 msgid "Base imponible(4260)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_4270_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_4270
 msgid "Base imponible(4270)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_4280_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_4280
 msgid "Base imponible(4280)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_429_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_429
 msgid "Base imponible(429)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_430_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_430
 msgid "Base imponible(430)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_431_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_431
 msgid "Base imponible(431)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_432_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_432
 msgid "Base imponible(432)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_433_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_433
 msgid "Base imponible(433)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_487_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_487
 msgid "Base imponible(487)"
 msgstr ""
@@ -661,12 +655,12 @@ msgstr ""
 #. module: l10n_ec
 #: model:ir.model.fields,field_description:l10n_ec.field_l10n_latam_document_type__l10n_ec_check_format
 msgid "Check Number Format EC"
-msgstr "Revisar formato de número EC"
+msgstr "Validar Formato Numérico EC"
 
 #. module: l10n_ec
 #: model:ir.model.fields,field_description:l10n_ec.field_l10n_ec_sri_payment__code
 msgid "Code"
-msgstr "Código"
+msgstr ""
 
 #. module: l10n_ec
 #: model:ir.model.fields,field_description:l10n_ec.field_account_tax__l10n_ec_code_ats
@@ -719,7 +713,6 @@ msgid "Created on"
 msgstr "Creado en"
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_602_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_602
 msgid ""
 "Crédito tributario aplicable en este período (si la diferencia de los campos"
@@ -799,26 +792,21 @@ msgid "Ecuadorian Configuration"
 msgstr "Configuración Ecuatoriana"
 
 #. module: l10n_ec
+#. odoo-python
 #: code:addons/l10n_ec/models/l10n_latam_document_type.py:0
-#: code:addons/odoo/addons/l10n_ec/models/l10n_latam_document_type.py:0
 #, python-format
 msgid "Ecuadorian Document %s must be like 001-001-123456789"
-msgstr ""
+msgstr "El Documento Ecuatoriano %s debe ser de la forma 001-001-123456789"
 
 #. module: l10n_ec
 #: model:ir.ui.menu,name:l10n_ec.sri_menu
 msgid "Ecuadorian SRI"
-msgstr "SRI Ecuatoriano"
+msgstr "Ecuador SRI"
 
 #. module: l10n_ec
 #: model:ir.model.fields,help:l10n_ec.field_account_tax_group__l10n_ec_type
 msgid "Ecuadorian taxes subtype"
 msgstr "Subtipo de impuestos Ecuatorianos"
-
-#. module: l10n_ec
-#: model:ir.model.fields.selection,name:l10n_ec.selection__account_journal__l10n_ec_emission_type__electronic
-msgid "Electronic"
-msgstr "Electrónico"
 
 #. module: l10n_ec
 #: model:ir.model.fields,field_description:l10n_ec.field_account_journal__l10n_ec_entity
@@ -833,12 +821,7 @@ msgstr "Punto de emisión"
 #. module: l10n_ec
 #: model:ir.model.fields,field_description:l10n_ec.field_account_journal__l10n_ec_emission_address_id
 msgid "Emission address"
-msgstr "Dirección de emisión"
-
-#. module: l10n_ec
-#: model:ir.model.fields,field_description:l10n_ec.field_account_journal__l10n_ec_emission_type
-msgid "Emission type"
-msgstr "Tipo de emisión"
+msgstr "Dirección Emisión"
 
 #. module: l10n_ec
 #: model:account.report.line,name:l10n_ec.tax_report_line_parent_line_report_334
@@ -905,7 +888,6 @@ msgid ""
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_701_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_701
 msgid "ISD pagado(701)"
 msgstr ""
@@ -939,7 +921,6 @@ msgid ""
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_621_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_621
 msgid ""
 "IVA presuntivo de salas de juego (bingo mecánicos) y otros juegos de azar "
@@ -947,18 +928,18 @@ msgid ""
 msgstr ""
 
 #. module: l10n_ec
+#. odoo-python
 #: code:addons/l10n_ec/models/res_partner.py:0
-#: code:addons/odoo/addons/l10n_ec/models/res_partner.py:0
 #, python-format
 msgid "If your identification type is %s, it must be 10 digits"
-msgstr ""
+msgstr "Si su tipo de identificación es %s, debe ser de 10 digitos"
 
 #. module: l10n_ec
+#. odoo-python
 #: code:addons/l10n_ec/models/res_partner.py:0
-#: code:addons/odoo/addons/l10n_ec/models/res_partner.py:0
 #, python-format
 msgid "If your identification type is %s, it must be 13 digits"
-msgstr ""
+msgstr "Si su tipo de identificación es %s, debe ser de 13 digitos"
 
 #. module: l10n_ec
 #: model:account.report.line,name:l10n_ec.tax_report_line_parent_line_report_77
@@ -991,25 +972,21 @@ msgid ""
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_483_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_483
 msgid "Impuesto a liquidar del mes anterior(483)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_495_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_495
 msgid "Impuesto a liquidar en el próximo mes(495)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_484_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_484
 msgid "Impuesto a liquidar en este mes(484)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_601_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_601
 msgid ""
 "Impuesto causado (si la diferencia de los campos 499-564 es mayor que "
@@ -1017,109 +994,91 @@ msgid ""
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_421_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_421
 msgid "Impuesto generado(421)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_422_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_422
 msgid "Impuesto generado(422)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_423_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_423
 msgid "Impuesto generado(423)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_424_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_424
 msgid "Impuesto generado(424)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_429_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_429
 msgid "Impuesto generado(429)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_453_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_453
 msgid "Impuesto generado(453)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_454_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_454
 msgid "Impuesto generado(454)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_520_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_520
 msgid "Impuesto generado(520)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_521_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_521
 msgid "Impuesto generado(521)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_522_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_522
 msgid "Impuesto generado(522)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_523_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_523
 msgid "Impuesto generado(523)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_524_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_524
 msgid "Impuesto generado(524)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_525_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_525
 msgid "Impuesto generado(525)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_526_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_526
 msgid "Impuesto generado(526)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_527_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_527
 msgid "Impuesto generado(527)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_529_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_529
 msgid "Impuesto generado(529)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_554_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_554
 msgid "Impuesto generado(554)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_555_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_555
 msgid "Impuesto generado(555)"
 msgstr ""
@@ -1134,6 +1093,14 @@ msgstr ""
 #. module: l10n_ec
 #: model:account.report.line,name:l10n_ec.tax_report_line_parent_line_report_239
 msgid "Impuesto único a la exportación de banano"
+msgstr ""
+
+#. module: l10n_ec
+#: model:ir.model.fields,help:l10n_ec.field_account_tax__l10n_ec_code_taxsupport
+#: model:ir.model.fields,help:l10n_ec.field_account_tax_template__l10n_ec_code_taxsupport
+msgid ""
+"Indicates if the purchase invoice supports tax credit or cost or expenses, "
+"conforming table 5 of ATS"
 msgstr ""
 
 #. module: l10n_ec
@@ -1163,7 +1130,7 @@ msgstr ""
 #. module: l10n_ec
 #: model:ir.model.fields,field_description:l10n_ec.field_l10n_latam_document_type__internal_type
 msgid "Internal Type"
-msgstr "Tipo Interno"
+msgstr "Tipo interno"
 
 #. module: l10n_ec
 #: model:ir.model,name:l10n_ec.model_account_journal
@@ -1179,11 +1146,6 @@ msgstr "Entrada de diario"
 #: model:account.report.line,name:l10n_ec.tax_report_line_parent_line_report_48
 msgid "LIQUIDACIÓN DEL IVA EN EL MES"
 msgstr ""
-
-#. module: l10n_ec
-#: model:ir.model.fields,field_description:l10n_ec.field_l10n_ec_sri_payment____last_update
-msgid "Last Modified on"
-msgstr "Última modificación el"
 
 #. module: l10n_ec
 #: model:ir.model.fields,field_description:l10n_ec.field_l10n_ec_sri_payment__write_uid
@@ -1213,7 +1175,7 @@ msgstr ""
 #. module: l10n_ec
 #: model:ir.model.fields,field_description:l10n_ec.field_l10n_ec_sri_payment__name
 msgid "Name"
-msgstr "Nombre"
+msgstr ""
 
 #. module: l10n_ec
 #: model:account.report.line,name:l10n_ec.tax_report_line_parent_line_report_104
@@ -1295,7 +1257,7 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:l10n_ec.view_payment_method_form
 #: model_terms:ir.ui.view,arch_db:l10n_ec.view_payment_method_tree
 msgid "Payment Method"
-msgstr "Método de Pago"
+msgstr ""
 
 #. module: l10n_ec
 #: model:ir.model.fields,field_description:l10n_ec.field_account_bank_statement_line__l10n_ec_sri_payment_id
@@ -1308,7 +1270,7 @@ msgstr "Método de pago (SRI)"
 #: model:ir.actions.act_window,name:l10n_ec.action_account_l10n_ec_sri_payment_tree
 #: model:ir.ui.menu,name:l10n_ec.menu_action_account_l10n_ec_sri_payment
 msgid "Payment Methods SRI"
-msgstr "Método de pago SRI"
+msgstr ""
 
 #. module: l10n_ec
 #: model:account.tax.group,name:l10n_ec.tax_group_irbpnr
@@ -1317,13 +1279,11 @@ msgid "Plastic Bottles (IRBPNR)"
 msgstr "Botellas de plástico (IRBPNR)"
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_615_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_615
 msgid "Por adquisiciones e Importaciones(615)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_605_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_605
 msgid ""
 "Por adquisiciones e importaciones (trasládese el campo 615 de la declaración"
@@ -1331,7 +1291,6 @@ msgid ""
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_608_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_608
 msgid ""
 "Por compensación de IVA por ventas efectuadas en zonas afectadas - Ley de "
@@ -1340,7 +1299,6 @@ msgid ""
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_619_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_619
 msgid ""
 "Por compensación de IVA por ventas efectuadas en zonas afectadas - Ley de "
@@ -1353,7 +1311,6 @@ msgid "Por regalías, derechos de autor, marcas, patentes y similares"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_606_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_606
 msgid ""
 "Por retenciones en la fuente de IVA que le han sido efectuadas (trasládese "
@@ -1361,15 +1318,9 @@ msgid ""
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_617_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_617
 msgid "Por retenciones en la fuente de IVA que le han sido efectuadas(617)"
 msgstr ""
-
-#. module: l10n_ec
-#: model:ir.model.fields.selection,name:l10n_ec.selection__account_journal__l10n_ec_emission_type__pre_printed
-msgid "Pre Printed"
-msgstr "Preimpreso"
 
 #. module: l10n_ec
 #: model:account.report.line,name:l10n_ec.tax_report_line_parent_line_report_158
@@ -1388,22 +1339,16 @@ msgid ""
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.tax.group,name:l10n_ec.tax_group_withhold_income
-#: model:ir.model.fields.selection,name:l10n_ec.selection__account_tax_group__l10n_ec_type__withhold_income_tax
-msgid "Profit Withhold (Deprecated)"
-msgstr "Retención de ganancias (Obsoleto)"
-
-#. module: l10n_ec
 #: model:account.tax.group,name:l10n_ec.tax_group_withhold_income_purchase
 #: model:ir.model.fields.selection,name:l10n_ec.selection__account_tax_group__l10n_ec_type__withhold_income_purchase
 msgid "Profit Withhold on Purchases"
-msgstr "Retención de ganancias en compras"
+msgstr "Retención Renta en Compras"
 
 #. module: l10n_ec
 #: model:account.tax.group,name:l10n_ec.tax_group_withhold_income_sale
 #: model:ir.model.fields.selection,name:l10n_ec.selection__account_tax_group__l10n_ec_type__withhold_income_sale
 msgid "Profit Withhold on Sales"
-msgstr "Retención de utilidades sobre ventas"
+msgstr "Retención Renta en Ventas"
 
 #. module: l10n_ec
 #: model:account.report.line,name:l10n_ec.tax_report_line_parent_line_report_167
@@ -1413,7 +1358,7 @@ msgstr ""
 #. module: l10n_ec
 #: model:ir.model.fields.selection,name:l10n_ec.selection__l10n_latam_document_type__internal_type__purchase_liquidation
 msgid "Purchase Liquidation"
-msgstr "Liquidación de compra"
+msgstr "Liquidación de Compras"
 
 #. module: l10n_ec
 #: model:account.report.line,name:l10n_ec.tax_report_line_parent_line_report_56
@@ -1451,40 +1396,34 @@ msgstr ""
 #. module: l10n_ec
 #: model:ir.model.fields,field_description:l10n_ec.field_account_journal__l10n_ec_require_emission
 msgid "Require Emission"
-msgstr "Requiere Emisión"
+msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_721_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_721
 msgid "Retención del 10%(721)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_731_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_731
 msgid "Retención del 100%(731)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_723_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_723
 msgid "Retención del 20%(723)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_725_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_725
 msgid "Retención del 30%(725)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_727_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_727
 msgid "Retención del 50%(727)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_729_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_729
 msgid "Retención del 70%(729)"
 msgstr ""
@@ -1492,10 +1431,9 @@ msgstr ""
 #. module: l10n_ec
 #: model:ir.model,name:l10n_ec.model_l10n_ec_sri_payment
 msgid "SRI Payment Method"
-msgstr "Método de pago SRI"
+msgstr "SRI Forma de Pago"
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_620_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_620
 msgid ""
 "SUBTOTAL A PAGAR Si "
@@ -1558,13 +1496,11 @@ msgid "TOTAL ADQUISICIONES Y PAGOS"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_499_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_499
 msgid "TOTAL IMPUESTO A LIQUIDAR EN ESTE MES(499)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_699_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_699
 msgid "TOTAL IMPUESTO A PAGAR POR PERCEPCIÓN(699)"
 msgstr ""
@@ -1602,6 +1538,12 @@ msgstr ""
 "Código de Identificación Fiscal para el Anexo Transaccional Simplificado"
 
 #. module: l10n_ec
+#: model:ir.model.fields,field_description:l10n_ec.field_account_tax__l10n_ec_code_taxsupport
+#: model:ir.model.fields,field_description:l10n_ec.field_account_tax_template__l10n_ec_code_taxsupport
+msgid "Tax Support"
+msgstr "Sustento Tributario"
+
+#. module: l10n_ec
 #: model:ir.model.fields,help:l10n_ec.field_account_tax__l10n_ec_code_base
 #: model:ir.model.fields,help:l10n_ec.field_account_tax_template__l10n_ec_code_base
 msgid ""
@@ -1626,13 +1568,11 @@ msgid "Templates for Taxes"
 msgstr "Plantillas para Impuestos"
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_482_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_482
 msgid "Total impuesto generado(482)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_480_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_480
 msgid ""
 "Total transferencias gravadas tarifa diferente de cero a contado este "
@@ -1640,7 +1580,6 @@ msgid ""
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_481_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_481
 msgid ""
 "Total transferencias gravadas tarifa diferente de cero a crédito este "
@@ -1678,22 +1617,26 @@ msgid "Utilización o aprovechamiento de la imagen o renombre"
 msgstr ""
 
 #. module: l10n_ec
+#. odoo-python
 #: code:addons/l10n_ec/models/res_partner.py:0
-#: code:addons/odoo/addons/l10n_ec/models/res_partner.py:0
 #, python-format
 msgid ""
 "VAT %s is not valid for an Ecuadorian DNI, it must be like this form "
 "1234567897"
 msgstr ""
+"Cédula %s no es valida para el DNI de Ecuador, debe ser de esta forma "
+"1234567897"
 
 #. module: l10n_ec
+#. odoo-python
 #: code:addons/l10n_ec/models/res_partner.py:0
-#: code:addons/odoo/addons/l10n_ec/models/res_partner.py:0
 #, python-format
 msgid ""
 "VAT %s is not valid for an Ecuadorian company, it must be like this form "
 "1234567897001"
 msgstr ""
+"RUC %s no es valida para una compañía ecuatoriana, debe ser de esta forma "
+"1234567897001"
 
 #. module: l10n_ec
 #: model:account.tax.group,name:l10n_ec.tax_group_vat0
@@ -1717,12 +1660,12 @@ msgstr "IVA 14%"
 #: model:account.tax.group,name:l10n_ec.tax_group_vat_08
 #: model:ir.model.fields.selection,name:l10n_ec.selection__account_tax_group__l10n_ec_type__vat08
 msgid "VAT 8%"
-msgstr "IVA 8%"
+msgstr ""
 
 #. module: l10n_ec
 #: model:account.tax.group,name:l10n_ec.tax_group_vat_excempt
 msgid "VAT Excempt"
-msgstr "Exento de IVA"
+msgstr ""
 
 #. module: l10n_ec
 #: model:ir.model.fields.selection,name:l10n_ec.selection__account_tax_group__l10n_ec_type__exempt_vat
@@ -1736,733 +1679,608 @@ msgid "VAT Not Charged"
 msgstr "IVA no cobrado"
 
 #. module: l10n_ec
-#: model:account.tax.group,name:l10n_ec.tax_group_withhold_vat
-#: model:ir.model.fields.selection,name:l10n_ec.selection__account_tax_group__l10n_ec_type__withhold_vat
-msgid "VAT Withhold (Deprecated)"
-msgstr "Retención de IVA (obsoleto)"
-
-#. module: l10n_ec
 #: model:account.tax.group,name:l10n_ec.tax_group_withhold_vat_purchase
 #: model:ir.model.fields.selection,name:l10n_ec.selection__account_tax_group__l10n_ec_type__withhold_vat_purchase
 msgid "VAT Withhold on Purchases"
-msgstr "Retención de IVA en Compras"
+msgstr "Retención IVA en Compras"
 
 #. module: l10n_ec
 #: model:account.tax.group,name:l10n_ec.tax_group_withhold_vat_sale
 #: model:ir.model.fields.selection,name:l10n_ec.selection__account_tax_group__l10n_ec_type__withhold_vat_sale
 msgid "VAT Withhold on Sales"
-msgstr "Retención de IVA sobre Ventas"
+msgstr "Retención IVA en Ventas"
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_401_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_401
 msgid "Valor bruto(401)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_402_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_402
 msgid "Valor bruto(402)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_403_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_403
 msgid "Valor bruto(403)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_404_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_404
 msgid "Valor bruto(404)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_405_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_405
 msgid "Valor bruto(405)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_406_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_406
 msgid "Valor bruto(406)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_407_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_407
 msgid "Valor bruto(407)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_408_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_408
 msgid "Valor bruto(408)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_409_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_409
 msgid "Valor bruto(409)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_431_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_431
 msgid "Valor bruto(431)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_434_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_434
 msgid "Valor bruto(434)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_500_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_500
 msgid "Valor bruto(500)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_501_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_501
 msgid "Valor bruto(501)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_502_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_502
 msgid "Valor bruto(502)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_503_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_503
 msgid "Valor bruto(503)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_504_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_504
 msgid "Valor bruto(504)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_505_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_505
 msgid "Valor bruto(505)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_506_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_506
 msgid "Valor bruto(506)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_507_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_507
 msgid "Valor bruto(507)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_508_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_508
 msgid "Valor bruto(508)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_509_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_509
 msgid "Valor bruto(509)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_531_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_531
 msgid "Valor bruto(531)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_532_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_532
 msgid "Valor bruto(532)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_535_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_535
 msgid "Valor bruto(535)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_411_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_411
 msgid "Valor neto(411)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_412_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_412
 msgid "Valor neto(412)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_413_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_413
 msgid "Valor neto(413)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_414_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_414
 msgid "Valor neto(414)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_415_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_415
 msgid "Valor neto(415)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_416_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_416
 msgid "Valor neto(416)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_417_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_417
 msgid "Valor neto(417)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_418_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_418
 msgid "Valor neto(418)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_419_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_419
 msgid "Valor neto(419)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_441_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_441
 msgid "Valor neto(441)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_442_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_442
 msgid "Valor neto(442)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_443_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_443
 msgid "Valor neto(443)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_444_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_444
 msgid "Valor neto(444)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_510_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_510
 msgid "Valor neto(510)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_511_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_511
 msgid "Valor neto(511)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_512_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_512
 msgid "Valor neto(512)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_513_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_513
 msgid "Valor neto(513)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_514_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_514
 msgid "Valor neto(514)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_515_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_515
 msgid "Valor neto(515)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_516_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_516
 msgid "Valor neto(516)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_517_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_517
 msgid "Valor neto(517)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_518_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_518
 msgid "Valor neto(518)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_519_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_519
 msgid "Valor neto(519)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_541_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_541
 msgid "Valor neto(541)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_542_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_542
 msgid "Valor neto(542)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_543_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_543
 msgid "Valor neto(543)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_544_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_544
 msgid "Valor neto(544)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_545_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_545
 msgid "Valor neto(545)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_352_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_352
 msgid "Valor retenido(352)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_353_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_353
 msgid "Valor retenido(353)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_354_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_354
 msgid "Valor retenido(354)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_357_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_357
 msgid "Valor retenido(357)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_358_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_358
 msgid "Valor retenido(358)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_359_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_359
 msgid "Valor retenido(359)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_360_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_360
 msgid "Valor retenido(360)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_361_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_361
 msgid "Valor retenido(361)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_362_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_362
 msgid "Valor retenido(362)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_3620_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_3620
 msgid "Valor retenido(3620)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_364_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_364
 msgid "Valor retenido(364)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_369_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_369
 msgid "Valor retenido(369)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_370_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_370
 msgid "Valor retenido(370)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_372_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_372
 msgid "Valor retenido(372)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_373_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_373
 msgid "Valor retenido(373)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_374_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_374
 msgid "Valor retenido(374)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_375_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_375
 msgid "Valor retenido(375)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_376_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_376
 msgid "Valor retenido(376)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_377_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_377
 msgid "Valor retenido(377)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_378_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_378
 msgid "Valor retenido(378)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_379_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_379
 msgid "Valor retenido(379)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_383_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_383
 msgid "Valor retenido(383)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_384_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_384
 msgid "Valor retenido(384)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_385_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_385
 msgid "Valor retenido(385)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_386_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_386
 msgid "Valor retenido(386)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_387_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_387
 msgid "Valor retenido(387)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_3880_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_3880
 msgid "Valor retenido(3880)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_3900_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_3900
 msgid "Valor retenido(3900)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_393_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_393
 msgid "Valor retenido(393)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_394_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_394
 msgid "Valor retenido(394)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_3940_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_3940
 msgid "Valor retenido(3940)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_395_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_395
 msgid "Valor retenido(395)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_396_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_396
 msgid "Valor retenido(396)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_398_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_398
 msgid "Valor retenido(398)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_399_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_399
 msgid "Valor retenido(399)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_400_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_400
 msgid "Valor retenido(400)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_452_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_452
 msgid "Valor retenido(452)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_453_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_453
 msgid "Valor retenido(453)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_454_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_454
 msgid "Valor retenido(454)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_4550_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_4550
 msgid "Valor retenido(4550)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_4560_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_4560
 msgid "Valor retenido(4560)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_4570_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_4570
 msgid "Valor retenido(4570)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_458_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_458
 msgid "Valor retenido(458)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_459_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_459
 msgid "Valor retenido(459)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_460_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_460
 msgid "Valor retenido(460)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_461_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_461
 msgid "Valor retenido(461)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_463_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_463
 msgid "Valor retenido(463)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_464_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_464
 msgid "Valor retenido(464)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_465_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_465
 msgid "Valor retenido(465)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_4660_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_4660
 msgid "Valor retenido(4660)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_4670_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_4670
 msgid "Valor retenido(4670)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_4680_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_4680
 msgid "Valor retenido(4680)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_469_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_469
 msgid "Valor retenido(469)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_470_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_470
 msgid "Valor retenido(470)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_471_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_471
 msgid "Valor retenido(471)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_472_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_472
 msgid "Valor retenido(472)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_474_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_474
 msgid "Valor retenido(474)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_475_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_475
 msgid "Valor retenido(475)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_4760_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_4760
 msgid "Valor retenido(4760)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_4770_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_4770
 msgid "Valor retenido(4770)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_4780_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_4780
 msgid "Valor retenido(4780)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_479_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_479
 msgid "Valor retenido(479)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_480_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_480
 msgid "Valor retenido(480)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_481_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_481
 msgid "Valor retenido(481)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_482_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_482
 msgid "Valor retenido(482)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_103_498_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_103_498
 msgid "Valor retenido(498)"
 msgstr ""
 
 #. module: l10n_ec
-#: model:account.report.expression,report_line_name:l10n_ec.tax_report_line_104_700_tag
 #: model:account.report.line,name:l10n_ec.tax_report_line_104_700
 msgid "Valor(700)"
 msgstr ""
