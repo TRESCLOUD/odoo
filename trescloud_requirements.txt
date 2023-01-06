@@ -20,3 +20,4 @@ ERPpeek==1.7.1 #Usado en el modulo trescloud_erpdeuna
 Wand==0.5.8 # Se usa en ecua_sale_invoice para la importacion masiva de imagenes
 acme-tiny==4.1.0 # Necesario para el modulo letsencrypt del reposiotrio server-tools
 IPy==1.0 # Necesario para el modulo letsencrypt del reposiotrio server-tools
+pathlib==1.0.1 # Requerido por el modulo odoo_cloc del reposiotrio server-tools
