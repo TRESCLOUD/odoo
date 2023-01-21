@@ -1,5 +1,5 @@
 id,code,name,reconcile,account_type,chart_template_id/id
-l10n_ec_ifrs_liquidity_transfer,111010301,Transferencias interbancarias,TRUE,asset_current,l10n_ec_ifrs
+l10n_ec_ifrs_liquidity_transfer,11010301,Transferencias interbancarias,TRUE,asset_current,l10n_ec_ifrs
 ec11010401,11010401,Valores en custodia,FALSE,asset_current,l10n_ec_ifrs
 ec110201,110201,Activos financieros a valor razonable con cambios en resultados,FALSE,asset_current,l10n_ec_ifrs
 ec110202,110202,Activos financieros disponibles para la venta,FALSE,asset_current,l10n_ec_ifrs
