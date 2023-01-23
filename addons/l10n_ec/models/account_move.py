@@ -154,6 +154,9 @@ class AccountMove(models.Model):
                 identification_code = "06"
         return identification_code
 
+    # NOTE: For backward compatibility, removed in master
+    _get_l10n_ec_identification_type = _get_l10n_ec_ats_identification_type
+
     @api.model
     def _get_l10n_ec_documents_allowed(self, identification_code):
         documents_allowed = self.env['l10n_latam.document.type']

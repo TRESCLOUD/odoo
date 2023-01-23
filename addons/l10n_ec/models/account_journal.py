@@ -18,3 +18,14 @@ class AccountJournal(models.Model):
         for journal in self:
             # True iff an entity and emission point must be set on the journal
             journal.l10n_ec_require_emission = journal.type == 'sale' and journal.country_code == 'EC' and journal.l10n_latam_use_documents
+
+    # NOTE: Removed in master as it has no use
+    l10n_ec_emission_type = fields.Selection(
+        string="Emission type",
+        selection=[
+            ("pre_printed", "Pre Printed"),
+            ("auto_printer", "Auto Printer"),
+            ("electronic", "Electronic"),
+        ],
+        default="electronic",
+    )
