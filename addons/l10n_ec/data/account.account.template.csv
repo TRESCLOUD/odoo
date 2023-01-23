@@ -274,6 +274,8 @@ ec510405,510405,Gasto por garantias en venta de productos o servicios,FALSE,expe
 ec510406,510406,Mantenimiento y reparaciones,FALSE,expense_direct_cost,l10n_ec_ifrs
 ec510407,510407,Suministros materiales y repuestos,FALSE,expense_direct_cost,l10n_ec_ifrs
 ec51040801,51040801,Otros costos de produccion,FALSE,expense_direct_cost,l10n_ec_ifrs
+ec51040802,51040802,Faltantes y sobrantes de ajustes de inventario,FALSE,expense_direct_cost,l10n_ec_ifrs
+ec51040803,51040803,Desperdicios en el proceso productivo,FALSE,expense_direct_cost,l10n_ec_ifrs
 ec52010101,52010101,"Sueldos, salarios y demas remuneraciones",FALSE,expense,l10n_ec_ifrs
 ec52010102,52010102,Horas extra,FALSE,expense,l10n_ec_ifrs
 ec52010103,52010103,Bonificaciones por desempeño,FALSE,expense,l10n_ec_ifrs
