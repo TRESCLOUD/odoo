@@ -85,6 +85,12 @@ class AccountMove(models.Model):
         remaining = self - recs_with_journal_id
         remaining.l10n_latam_manual_document_number = False
 
+    def _compute_made_sequence_hole(self):
+        # Avoid showing red flag entries when those are purchase invoices
+        super()._compute_made_sequence_hole()
+        for move in self.filtered(lambda m: m.l10n_latam_manual_document_number):
+            move.made_sequence_hole = False
+
     def _is_manual_document_number(self):
         return self.journal_id.type == 'purchase'
 
