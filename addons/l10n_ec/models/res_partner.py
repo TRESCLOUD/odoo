@@ -1,21 +1,13 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 import enum
-import logging
 
 from odoo import _, api, models
 from odoo.exceptions import ValidationError
 
-_logger = logging.getLogger(__name__)
-
 
 def verify_final_consumer(vat):
-    all_number_9 = False
-    try:
-        all_number_9 = vat and all(int(number) == 9 for number in vat) or False
-    except ValueError as e:
-        _logger.debug('Vat is not only numbers %s', e)
-    return all_number_9 and len(vat) == 13
+    return vat == '9' * 13  # final consumer is identified with 9999999999999
 
 
 class PartnerIdTypeEc(enum.Enum):
