@@ -1,6 +1,6 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-import enum
+from enum import Flag, auto
 
 from odoo import _, api, models
 from odoo.exceptions import ValidationError
@@ -10,40 +10,41 @@ def verify_final_consumer(vat):
     return vat == '9' * 13  # final consumer is identified with 9999999999999
 
 
-class PartnerIdTypeEc(enum.Enum):
+class PartnerIdTypeEc(Flag):
     """
     Ecuadorian partner identification type/code for ATS and SRI.
     """
+    MOVE_IN = auto()
+    MOVE_OUT = ~MOVE_IN
+    RUC = auto()
+    CEDULA = auto()
+    PASSPORT = auto()
+    FOREIGN = auto()
+    FINAL_CONSUMER = auto()
 
-    IN_RUC = '01'
-    IN_CEDULA = '02'
-    IN_PASSPORT = '03'
-    OUT_RUC = '04'
-    OUT_CEDULA = '05'
-    OUT_PASSPORT = '06'
-    FINAL_CONSUMER = '07'
-    FOREIGN = '08'
+    def __str__(self):
+        return {
+            self.MOVE_IN & self.RUC: '01',
+            self.MOVE_IN & self.CEDULA: '02',
+            self.MOVE_IN & self.PASSPORT: '03',
+            self.MOVE_OUT & self.RUC: '04',
+            self.MOVE_OUT & self.CEDULA: '05',
+            self.MOVE_OUT & self.PASSPORT: '06',
+            # only for move_out:
+            self.MOVE_OUT & self.FINAL_CONSUMER: '07',
+            self.MOVE_OUT & self.FOREIGN: '08'
+        }[self]
 
     @classmethod
     def get_ats_code_for_partner(cls, partner, move_type):
         """
         Returns ID code for move and partner based on subset of Table 2 of SRI's ATS specification
         """
-        partner_id_type = partner._l10n_ec_get_identification_type()
-        if move_type.startswith('in_'):
-            if partner_id_type == 'ruc':  # includes final consumer
-                return cls.IN_RUC
-            elif partner_id_type == 'cedula':
-                return cls.IN_CEDULA
-            elif partner_id_type in ['foreign', 'passport']:
-                return cls.IN_PASSPORT
-        elif move_type.startswith('out_'):
-            if partner_id_type == 'ruc':  # includes final consumer
-                return cls.OUT_RUC
-            elif partner_id_type == 'cedula':
-                return cls.OUT_CEDULA
-            elif partner_id_type in ['foreign', 'passport']:
-                return cls.OUT_PASSPORT
+        move_flag = cls.MOVE_IN if move_type.startswith('in_') else cls.MOVE_OUT
+        partner_flag = partner._l10n_ec_get_identification_type()
+        if partner_flag == cls.FOREIGN:
+            partner_flag = cls.PASSPORT  # ATS does not distinguish between foreign & passport
+        return move_flag & partner_flag
 
 
 class ResPartner(models.Model):
@@ -69,8 +70,7 @@ class ResPartner(models.Model):
                     if partner.l10n_latam_identification_type_id.id == it_ruc.id and len(partner.vat) != 13:
                         raise ValidationError(_('If your identification type is %s, it must be 13 digits')
                                               % it_ruc.display_name)
-                    final_consumer = verify_final_consumer(partner.vat)
-                    if final_consumer:
+                    if verify_final_consumer(partner.vat):  # final consumer is represented by a vat of 9999999999999
                         valid = True
                     else:
                         valid = self.is_valid_ruc_ec(partner.vat)
@@ -95,11 +95,11 @@ class ResPartner(models.Model):
             return any([self.l10n_latam_identification_type_id == self.env.ref(arg) for arg in args])
 
         if id_type_in('l10n_ec.ec_dni'):
-            return 'cedula'  # DNI
+            return PartnerIdTypeEc.CEDULA  # DNI
         elif id_type_in('l10n_ec.ec_ruc'):
-            return 'ruc'  # RUC
+            return PartnerIdTypeEc.RUC  # RUC
         elif id_type_in('l10n_latam_base.it_pass'):
-            return 'passport'  # Pasaporte
+            return PartnerIdTypeEc.PASSPORT  # Pasaporte
         elif id_type_in('l10n_latam_base.it_fid', 'l10n_latam_base.it_vat') \
                 or self.l10n_latam_identification_type_id.country_id != self.env.ref('base.ec'):
-            return 'foreign'  # Identificacion del exterior
+            return PartnerIdTypeEc.FOREIGN  # Identificacion del exterior
