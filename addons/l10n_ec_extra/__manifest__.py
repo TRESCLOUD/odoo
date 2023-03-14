@@ -4,7 +4,7 @@
 {
     'name': 'Extra functions for EC',
     'version': '1.0',
-    'category': 'Tools',
+    'category': 'Accounting/Localizations',
     'description': '''
         Extended functions for EC.
     ''',
@@ -19,5 +19,5 @@
         'views/res_partner_view.xml'
     ],
     'installable': True,
-    'application': True,
+    'auto_install': True,
 }
