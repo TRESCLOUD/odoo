@@ -1017,7 +1017,7 @@ class AccountMoveLine(models.Model):
         limit_previous = sys.getrecursionlimit()
         _logger.info("Limite actual recursividad: %s" % (limit_previous))
         flag_modified = False
-        if limit_previous > len(self.ids):
+        if limit_previous < len(self.ids):
             Max_limit = 5020
             sys.setrecursionlimit(Max_limit)
             _logger.info("Limite recursividad modificado a: %s" % (Max_limit))
