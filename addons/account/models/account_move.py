@@ -986,8 +986,10 @@ class AccountMoveLine(models.Model):
             raise UserError(_('The partner has to be the same on all lines for receivable and payable accounts!'))
 
         #reconcile everything that can be
+        #los metodo _pre_auto_reconcile_lines y _post_auto_reconcile_lines agregados Por Trescloud
+        dict_result = self._pre_auto_reconcile_lines()
         remaining_moves = self.auto_reconcile_lines()
-
+        self._post_auto_reconcile_lines(dict_result)
         #if writeoff_acc_id specified, then create write-off move with value the remaining amount from move in self
         if writeoff_acc_id and writeoff_journal_id and remaining_moves:
             all_aml_share_same_currency = all([x.currency_id == self[0].currency_id for x in self])
@@ -1002,6 +1004,14 @@ class AccountMoveLine(models.Model):
             remaining_moves = (remaining_moves + writeoff_to_reconcile).auto_reconcile_lines()
             return writeoff_to_reconcile
         return True
+
+    def _pre_auto_reconcile_lines(self):
+        '''metodo hook agredados por Trescloud sera sobre escrito en modulo superior'''
+        return {}
+
+    def _post_auto_reconcile_lines(self, dict_result):
+        '''metodo hook agredados por Trescloud sera sobre escrito en modulo superior'''
+        pass
 
     def _create_writeoff(self, vals):
         """ Create a writeoff move for the account.move.lines in self. If debit/credit is not specified in vals,
