@@ -10,6 +10,9 @@ from odoo.tools import float_is_zero, float_compare
 from odoo.tools.safe_eval import safe_eval
 import odoo.addons.decimal_precision as dp
 from lxml import etree
+import sys
+import logging
+_logger = logging.getLogger(__name__)
 #----------------------------------------------------------
 # Entries
 #----------------------------------------------------------
@@ -894,6 +897,7 @@ class AccountMoveLine(models.Model):
             can find a debit and a credit to reconcile together. It returns the recordset of the
             account move lines that were not reconciled during the process.
         """
+        _logger.info("numero de lineas por recorrer: %d"%(len(self.ids)))
         if not self.ids:
             return self
         sm_debit_move, sm_credit_move = self._get_pair_to_reconcile()
@@ -986,8 +990,10 @@ class AccountMoveLine(models.Model):
             raise UserError(_('The partner has to be the same on all lines for receivable and payable accounts!'))
 
         #reconcile everything that can be
+        # TODO remover los metodos helper _pre_auto_reconcile_lines y _post_auto_reconcile_lines
+        dict_result = self._pre_auto_reconcile_lines()
         remaining_moves = self.auto_reconcile_lines()
-
+        self._post_auto_reconcile_lines(dict_result)
         #if writeoff_acc_id specified, then create write-off move with value the remaining amount from move in self
         if writeoff_acc_id and writeoff_journal_id and remaining_moves:
             all_aml_share_same_currency = all([x.currency_id == self[0].currency_id for x in self])
@@ -1002,6 +1008,27 @@ class AccountMoveLine(models.Model):
             remaining_moves = (remaining_moves + writeoff_to_reconcile).auto_reconcile_lines()
             return writeoff_to_reconcile
         return True
+
+    def _pre_auto_reconcile_lines(self):
+        '''Modifica temporalmente el limite de recursividad
+        retorna:
+         diccionario con el limite anterior y si fue modificado el limite
+        '''
+        limit_previous = sys.getrecursionlimit()
+        _logger.info("Limite actual recursividad: %s" % (limit_previous))
+        flag_modified = False
+        if limit_previous > len(self.ids):
+            Max_limit = 5020
+            sys.setrecursionlimit(Max_limit)
+            _logger.info("Limite recursividad modificado a: %s" % (Max_limit))
+            flag_modified = True
+        return {'limit_prev': limit_previous, 'limit_modified': flag_modified}
+
+    def _post_auto_reconcile_lines(self, dict_result):
+        '''setea el valor por defecto del limite'''
+        if dict_result.get('limit_modified', False):
+            sys.setrecursionlimit(dict_result.get('limit_prev', 1000))# por defecto 1000
+            _logger.info("Regresando al limite por defecto recursividad: %s" % (sys.getrecursionlimit()))
 
     def _create_writeoff(self, vals):
         """ Create a writeoff move for the account.move.lines in self. If debit/credit is not specified in vals,
