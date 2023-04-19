@@ -897,9 +897,9 @@ class AccountMoveLine(models.Model):
             can find a debit and a credit to reconcile together. It returns the recordset of the
             account move lines that were not reconciled during the process.
         """
-        _logger.info("numero de lineas por recorrer: %d"%(len(self.ids)))
         if not self.ids:
             return self
+        _logger.info("numero de lineas por recorrer: %d" % (len(self.ids)))
         sm_debit_move, sm_credit_move = self._get_pair_to_reconcile()
         #there is no more pair to reconcile so return what move_line are left
         if not sm_credit_move or not sm_debit_move:
