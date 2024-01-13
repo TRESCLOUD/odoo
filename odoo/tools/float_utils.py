@@ -56,6 +56,11 @@ def float_round(value, precision_digits=None, precision_rounding=None, rounding_
         normalized_value += cmp(normalized_value,0) * epsilon
         rounded_value = round(normalized_value) # round to integer
 
+    elif rounding_method == 'DOWN':
+        sign = cmp(normalized_value, 0)
+        normalized_value += sign*epsilon
+        rounded_value = math.floor(abs(normalized_value)) * sign
+
     # TIE-BREAKING: UP (for ceiling operations)
     # When rounding the value up, we instead subtract the epsilon value
     # as the the approximation of the real value may be slightly *above* the
