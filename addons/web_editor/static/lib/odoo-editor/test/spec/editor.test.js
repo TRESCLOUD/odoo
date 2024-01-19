@@ -2656,6 +2656,15 @@ X[]
                 contentAfter: `<p>a&nbsp;[]</p>`,
             });
         });
+        it('should transform the space node preceded by a styled element to &nbsp;', async () => {
+            await testEditor(BasicEditor, {
+                contentBefore: `<p><strong>ab</strong> [cd]</p>`,
+                stepFunction: async editor => {
+                    await insertText(editor, 'x');
+                },
+                contentAfter: `<p><strong>ab</strong>&nbsp;x[]</p>`,
+            });
+        });
     });
 
     describe('insertParagraphBreak', () => {
@@ -3527,6 +3536,25 @@ X[]
                     triggerEvent(editor.editable, 'keyup', {key: ' ', code: 'Space'});
                 },
                 contentAfter: '<p>a http://test.com b <a href="http://test.com">http://test.com</a>&nbsp;[] c http://test.com d</p>',
+            });
+            await testEditor(BasicEditor, {
+                contentBefore: '<p>http://test.com[]</p>',
+                stepFunction: async (editor) => {
+                    editor.testMode = false;
+                    const p = editor.editable.querySelector('p');
+                    // Simulate multiple text nodes in a p: <p>"http://test" ".com"</p>
+                    const firstTextNode = p.childNodes[0];
+                    const secondTextNode = firstTextNode.splitText(11); 
+                    const selection = document.getSelection();
+                    const anchorOffset = selection.anchorOffset;
+                    triggerEvent(editor.editable, 'keydown', {key: ' ', code: 'Space'});
+                    secondTextNode.textContent = ".com\u00a0";
+                    selection.extend(secondTextNode, anchorOffset + 1);
+                    selection.collapseToEnd();
+                    triggerEvent(editor.editable, 'input', {data: ' ', inputType: 'insertText' });
+                    triggerEvent(editor.editable, 'keyup', {key: ' ', code: 'Space'});
+                },
+                contentAfter: '<p><a href="http://test.com">http://test.com</a>&nbsp;[]</p>',
             });
         });
         it('should not transform url after two space', async () => {

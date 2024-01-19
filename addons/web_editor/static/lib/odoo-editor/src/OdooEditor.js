@@ -60,6 +60,7 @@ import {
     prepareUpdate,
     splitTextNode,
     boundariesOut,
+    rightLeafOnlyNotBlockPath,
 } from './utils/utils.js';
 import { editorCommands } from './commands/commands.js';
 import { Powerbox } from './powerbox/Powerbox.js';
@@ -1401,12 +1402,16 @@ export class OdooEditor extends EventTarget {
                     // Only add the ZWS at the end if the link is in selection.
                     if (link === linkInSelection) {
                         this._insertLinkZws('end', link);
+                        this.observerUnactive('_setLinkZws_o_link_in_selection');
                         link.classList.add('o_link_in_selection');
+                        this.observerActive('_setLinkZws_o_link_in_selection');
                         didAddZwsInLinkInSelection = true;
                     }
                     const zwsAfter = this._insertLinkZws('after', link);
                     if (!zwsAfter.parentElement || !zwsAfter.parentElement.isContentEditable) {
+                        this.observerUnactive('_setLinkZws_zwsAfter_remove');
                         zwsAfter.remove();
+                        this.observerActive('_setLinkZws_zwsAfter_remove');
                     }
                 }
             }
@@ -1565,7 +1570,11 @@ export class OdooEditor extends EventTarget {
             fillEmpty(closestBlock(start));
         }
         fillEmpty(closestBlock(range.endContainer));
-        const joinWith = range.endContainer;
+        let joinWith = range.endContainer;
+        const rightLeaf = rightLeafOnlyNotBlockPath(joinWith).next().value;
+        if (rightLeaf && rightLeaf.nodeValue === ' ') {
+            joinWith = rightLeaf;
+        }
         // Rejoin blocks that extractContents may have split in two.
         while (
             doJoin &&
@@ -2645,11 +2654,14 @@ export class OdooEditor extends EventTarget {
                     ev.data === ' ' &&
                     selection &&
                     selection.anchorNode &&
+                    isHtmlContentSupported(selection.anchorNode) &&
                     !closestElement(selection.anchorNode).closest('a') &&
                     selection.anchorNode.nodeType === Node.TEXT_NODE &&
                     (!this.commandBar._active ||
                         this.commandBar._currentOpenOptions.closeOnSpace !== true)
                 ) {
+                    // Merge adjacent text nodes.
+                    selection.anchorNode.parentNode.normalize();
                     const textSliced = selection.anchorNode.textContent.slice(0, selection.anchorOffset);
                     const textNodeSplitted = textSliced.split(/\s/);
 
@@ -3261,7 +3273,10 @@ export class OdooEditor extends EventTarget {
             link.remove();
             setSelection(...start, ...start, false);
         }
-        if ((files.length || clipboardHtml) && targetSupportsHtmlContent) {
+        if (!targetSupportsHtmlContent) {
+            const text = ev.clipboardData.getData('text/plain');
+            this._applyCommand('insertText', text);
+        } else if (files.length || clipboardHtml) {
             // Differentiate or choose between images and html
             const clipboardElem = document.createElement('template');
             clipboardElem.innerHTML = this._prepareClipboardData(clipboardHtml);

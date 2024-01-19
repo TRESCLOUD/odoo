@@ -13,7 +13,7 @@
 # Wil Odoo, 2023
 # Éder Brito <britoederr@gmail.com>, 2023
 # a75f12d3d37ea5bf159c4b3e85eb30e7_0fa6927, 2023
-# Maitê Dietze, 2023
+# Maitê Dietze, 2024
 # 
 msgid ""
 msgstr ""
@@ -21,7 +21,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-01-24 09:03+0000\n"
 "PO-Revision-Date: 2021-09-14 12:18+0000\n"
-"Last-Translator: Maitê Dietze, 2023\n"
+"Last-Translator: Maitê Dietze, 2024\n"
 "Language-Team: Portuguese (Brazil) (https://app.transifex.com/odoo/teams/41243/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -14031,32 +14031,32 @@ msgstr "Checksum/SHA1"
 #: model:ir.model.fields,field_description:base.field_ir_actions_server__child_ids
 #: model:ir.model.fields,field_description:base.field_ir_cron__child_ids
 msgid "Child Actions"
-msgstr "Ações Iniciais"
+msgstr "Ações secundárias"
 
 #. module: base
 #: model:ir.model.fields,field_description:base.field_ir_module_category__child_ids
 msgid "Child Applications"
-msgstr "Aplicaçoes Filho"
+msgstr "Aplicativos secundários"
 
 #. module: base
 #: model:ir.model.fields,field_description:base.field_res_company__child_ids
 msgid "Child Companies"
-msgstr "Empresas Afiliadas"
+msgstr "Empresas dependentes"
 
 #. module: base
 #: model:ir.model.fields,field_description:base.field_ir_ui_view__field_parent
 msgid "Child Field"
-msgstr "Campo inferior(filho)"
+msgstr "Campo secundário"
 
 #. module: base
 #: model:ir.model.fields,field_description:base.field_ir_ui_menu__child_id
 msgid "Child IDs"
-msgstr "IDs filhos"
+msgstr "IDs secundárias"
 
 #. module: base
 #: model:ir.model.fields,field_description:base.field_res_partner_category__child_ids
 msgid "Child Tags"
-msgstr "Tags filhos"
+msgstr "Marcadores secundários"
 
 #. module: base
 #: model:ir.model.fields,help:base.field_ir_actions_server__child_ids
@@ -23287,7 +23287,7 @@ msgstr ""
 #. module: base
 #: model:res.country,name:base.ne
 msgid "Niger"
-msgstr "Nigéria"
+msgstr "Níger"
 
 #. module: base
 #: model:res.country,name:base.ng
@@ -32184,7 +32184,7 @@ msgstr "UNSPSC product codes"
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_delivery_ups
 msgid "UPS Shipping (Legacy)"
-msgstr ""
+msgstr "Envio UPS (legado)"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_delivery_ups_rest
@@ -33846,6 +33846,14 @@ msgstr ""
 "Primeiro você precisa arquivar o usuário associado dele.\n"
 "\n"
 "Usuários ativos associados : %(names)s"
+
+#. module: base
+#: code:addons/base/models/res_lang.py:0
+#, python-format
+msgid ""
+"You cannot archive the language in which Odoo was setup as it is used by "
+"automated processes."
+msgstr ""
 
 #. module: base
 #: code:addons/base/models/res_partner.py:0

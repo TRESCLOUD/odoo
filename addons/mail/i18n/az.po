@@ -1678,7 +1678,7 @@ msgstr ""
 #. module: mail
 #: model:ir.model.fields,field_description:mail.field_mail_compose_message__reply_to_force_new
 msgid "Considers answers as new thread"
-msgstr ""
+msgstr "Cavabları yeni mövzu kimi nəzərə alır"
 
 #. module: mail
 #: model:ir.model,name:mail.model_res_partner
@@ -3846,7 +3846,7 @@ msgstr "Yükləmə"
 #: code:addons/mail/static/src/xml/web_kanban_activity.xml:0
 #, python-format
 msgid "Loading..."
-msgstr ""
+msgstr "Yüklənir..."
 
 #. module: mail
 #. openerp-web
@@ -3902,9 +3902,9 @@ msgstr ""
 
 #. module: mail
 #. openerp-web
-#: code:addons/mail/static/src/components/welcome_view/welcome_view.xml:0
+#: code:addons/mail/static/src/components/welcome_view/welcome_view.js:0
 #, python-format
-msgid "Logged as"
+msgid "Logged in as %s"
 msgstr ""
 
 #. module: mail
@@ -8271,7 +8271,7 @@ msgstr ""
 #. module: mail
 #: model_terms:ir.ui.view,arch_db:mail.message_notification_email
 msgid "using"
-msgstr ""
+msgstr "istifadə edərək"
 
 #. module: mail
 #. openerp-web
