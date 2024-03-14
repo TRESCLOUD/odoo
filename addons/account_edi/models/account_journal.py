@@ -3,6 +3,7 @@
 
 from odoo import api, models, fields, _
 from odoo.exceptions import UserError
+from odoo.tools import column_exists
 
 from collections import defaultdict
 
@@ -56,7 +57,7 @@ class AccountJournal(models.Model):
         edi_formats = self.env['account.edi.format'].search([])
         journal_ids = self.ids
 
-        if journal_ids:
+        if journal_ids and column_exists(self._cr, 'account_edi_document', 'edi_format_id'):
             self._cr.execute('''
                 SELECT
                     move.journal_id,
