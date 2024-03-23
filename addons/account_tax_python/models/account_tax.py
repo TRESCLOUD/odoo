@@ -26,20 +26,13 @@ class AccountTaxPython(models.Model):
             ":param product: product.product recordset singleton or None\n"
             ":param partner: res.partner recordset singleton or None")
 
-    def _compute_l10n_ec_vat_amount(self):
-        """ Metodo de TRESCLOUD para usar la variable l10n_ec_vat_amount (monto de IVA) en el campo python_compute """
-        tax = self.filtered(lambda t: t.amount_type == 'code')
-        if tax and tax.vat_percentage:
-            return float(tax.vat_percentage.split('vat')[1]) / 100
-        return 0.0
-
     def _compute_amount(self, base_amount, price_unit, quantity=1.0, product=None, partner=None):
         self.ensure_one()
         if self.amount_type == 'code':
             company = self.env.user.company_id
             #Código modificado por TRESCLOD para usar el float_round del core de odoo en el redondeo de impuestos
             ############################################################################################################################################################################
-            localdict = {'l10n_ec_vat_amount': self._compute_l10n_ec_vat_amount, 'float_round': tools.float_round,'base_amount': base_amount, 'price_unit':price_unit, 'quantity': quantity, 'product':product, 'partner':partner, 'company': company}
+            localdict = {'float_round': tools.float_round,'base_amount': base_amount, 'price_unit':price_unit, 'quantity': quantity, 'product':product, 'partner':partner, 'company': company}
             ############################################################################################################################################################################
             safe_eval(self.python_compute, localdict, mode="exec", nocopy=True)
             return localdict['result']
