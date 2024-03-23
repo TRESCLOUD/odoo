@@ -812,7 +812,23 @@ class AccountTax(models.Model):
                 tax_amount = total_included - total_excluded
                 taxes += ret['taxes']
                 continue
-
+            
+            if tax.type_ec == 'withhold_vat':
+                # Para el caso de retención IVA alteramos la base imponible,
+                # en lugar de usar la base imponible estándar que era el subtotal antes de impuestos
+                # usamos como base imponible el valor del IVA calculado en los impuestos previos
+                # (los impuestos se calculan en ordenn, primero los de IVA y al ultimo los de retención)
+                base = 0.0 #para tener un valor cuando por error no escojo ningún impuesto de IVA
+                vat_tax_records = self.filtered(lambda t: t.type_ec == 'vat')
+                if vat_tax_records: #solo si hubo computo de impuestos precedentes
+                    #obtenemos la posición del impuesto vat (podría haber computos de ICE, Botellas, etc)
+                    for vals in taxes:
+                        if vals['id'] == vat_tax_records[0].id: #se toma el primer impuesto IVA (el usuario pudo erroneamente digitar 2 IVAs)
+                            base = vals['amount'] #base de la retención es el valor del iva, osea el amount del impuesto anterior
+                            break
+                    #invoice_line = self._context.get('invoice_line', False)
+                    #vat_tax_id = invoice_line.mapped('invoice_line_tax_ids').filtered(lambda t: t.type_ec=='vat')
+                        
             tax_amount = tax._compute_amount(base, price_unit, quantity, product, partner)
             
             #TRESCLOUD: Ponemos un metodo para que sea heredable para casos especiales de monto aplicado
@@ -828,7 +844,8 @@ class AccountTax(models.Model):
             # Keep base amount used for the current tax
             #tax_base = base
             tax_base = self._compute_base_amount(tax, base, total_excluded, price_unit, currency=currency, quantity=quantity, product=product, partner=partner)                
-
+            
+            
             if tax.include_base_amount:
                 base += tax_amount
 
