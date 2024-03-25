@@ -653,7 +653,11 @@ class AccountTax(models.Model):
     @api.one
     @api.returns('self', lambda value: value.id)
     def copy(self, default=None):
+        # TRESCLOUD: Evitamos que el name del Tax sea duplicado con (Copia) al final para la migracion de IVAs.
+        origin_default = default
         default = dict(default or {}, name=_("%s (Copy)") % self.name)
+        if self._context.get('l10n_ec_migration_tax', False) and 'name' in default:
+            default = origin_default
         return super(AccountTax, self).copy(default=default)
 
     @api.model
