@@ -687,7 +687,8 @@ class AccountInvoice(models.Model):
         tax_grouped = {}
         for line in self.invoice_line_ids:
             price_unit = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
-            taxes = line.invoice_line_tax_ids.compute_all(price_unit, self.currency_id, line.quantity, line.product_id, self.partner_id)['taxes']
+            # TRESCLOUD, mandamos por contexto la linea exacta para calcular el impuesto al iva
+            taxes = line.invoice_line_tax_ids.with_context(invoice_line=line).compute_all(price_unit, self.currency_id, line.quantity, line.product_id, self.partner_id)['taxes']
             for tax in taxes:
                 val = self._prepare_tax_line_vals(line, tax)
                 key = self.env['account.tax'].browse(tax['id']).get_grouping_key(val)
