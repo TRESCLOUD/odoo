@@ -13,7 +13,7 @@
         "Python Code" defines the amount of the tax.
         """,
     'category': 'Accounting',
-    'version': '1.0',
+    'version': '1.1',
     'depends': ['account'],
     'data': [
         'views/account_tax_views.xml',

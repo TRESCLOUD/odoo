@@ -10,7 +10,7 @@ class AccountTaxPython(models.Model):
 
     amount_type = fields.Selection(selection_add=[('code', 'Python Code')])
 
-    python_compute = fields.Text(string='Python Code', default="result = price_unit * 0.10",
+    python_compute = fields.Text(string='Python Code', default="result = price_unit * 0.10", track_visibility='onchange',
         help="Compute the amount of the tax by setting the variable 'result'.\n\n"
             ":param base_amount: float, actual amount on which the tax is applied\n"
             ":param price_unit: float\n"
