@@ -2072,7 +2072,7 @@ class account_tax(osv.osv):
         context.update({'computed_data': res})
         # FIN DEL CODIGO AGREGADO POR TRESCLOUD
         cur_price_unit=price_unit
-        for tax in taxes:
+        for tax in sorted(taxes, key=lambda t: t.sequence):
             # we compute the amount for the current tax object and append it to the result
             data = {'id':tax.id,
                     'name':tax.description and tax.description + " - " + tax.name or tax.name,
