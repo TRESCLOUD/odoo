@@ -143,7 +143,7 @@ class account_invoice(osv.osv):
                     result[invoice.id] = new_value
 
             #prevent the residual amount on the invoice to be less than 0
-            result[invoice.id] = max(result[invoice.id], 0.0)            
+            result[invoice.id] = max(result[invoice.id], 0.0)
         return result
 
     # Give Journal Items related to the payment reconciled to this invoice
@@ -844,7 +844,7 @@ class account_invoice(osv.osv):
         :return: the (possibly updated) final move_lines to create for this invoice
         """
         return move_lines
-    
+
     def _extend_taxes_manual(self, cr, uid, tax, tax_key, context=None):
         """
         Hook para extender el cambio de bases imponibles
@@ -862,7 +862,11 @@ class account_invoice(osv.osv):
                 if tax.manual:
                     tax_key = self._extend_taxes_manual(cr, uid, tax, tax_key, context={})
                     continue
-                key = (tax.tax_code_id.id, tax.base_code_id.id, tax.account_id.id, tax.account_analytic_id.id)
+                # INCIIO DEL CODIGO MODIFICADO POR TRESCLOUD
+                # Hay que cambiar la forma en que se define la clave de los impuestos
+                # pues lo hemos cambiado en el método compute de los impuestos de factura
+                key = (tax.tax_id.id, tax.account_id.id, tax.account_analytic_id.id)
+                # FIN DEL CODIGO MODIFICADO POR TRESCLOUD
                 tax_key.append(key)
                 if not key in compute_taxes:
                     raise osv.except_osv(_('Warning!'), _('Global taxes defined, but they are not in invoice lines !'))
@@ -1440,8 +1444,8 @@ class account_invoice_line(osv.osv):
         res = {}
         tax_obj = self.pool.get('account.tax')
         cur_obj = self.pool.get('res.currency')
-        module_ids = self.pool.get('ir.module.module').search(cr, uid, [('name','=','vat_tax_fourteen_percent'), 
-                                                                                ('state','=','installed')], 
+        module_ids = self.pool.get('ir.module.module').search(cr, uid, [('name','=','vat_tax_fourteen_percent'),
+                                                                                ('state','=','installed')],
                                                                                 context=context)
         for line in self.browse(cr, uid, ids):
             if line.invoice_id:
@@ -1538,7 +1542,7 @@ class account_invoice_line(osv.osv):
                     node.set('domain', "[('sale_ok', '=', True)]")
             res['arch'] = etree.tostring(doc)
         return res
-    
+
     def get_account_account(self, cr, uid, product, partner, type, context=None):
         """
         HOOK creado para cambiar de manera facil la cuenta contable
@@ -1589,7 +1593,7 @@ class account_invoice_line(osv.osv):
         ##################################################################################
         ctx = context.copy()                                                             #
         ctx.update({'product': product})                                                 #
-        tax_id = fpos_obj.map_tax(cr, uid, fpos, taxes, context=ctx)                     # 
+        tax_id = fpos_obj.map_tax(cr, uid, fpos, taxes, context=ctx)                     #
         ##################################################################################
         if type in ('in_invoice', 'in_refund'):
             result.update( {'price_unit': price_unit or res.standard_price,'invoice_line_tax_id': tax_id} )
