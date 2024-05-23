@@ -34,8 +34,8 @@
 # artol <arto.leskinen@tek.fi>, 2022
 # Konsta Aavaranta, 2023
 # Tuomo Aura <tuomo.aura@web-veistamo.fi>, 2023
-# Miku Laitinen <miku.laitinen@gmail.com>, 2024
 # Jarmo Kortetjärvi <jarmo.kortetjarvi@gmail.com>, 2024
+# Miku Laitinen <miku.laitinen@gmail.com>, 2024
 # Ossi Mantylahti <ossi.mantylahti@obs-solutions.fi>, 2024
 # 
 msgid ""
@@ -3838,6 +3838,9 @@ msgid ""
 "\n"
 "%s)"
 msgstr ""
+"QWeb-mallin renderöinti epäonnistui : %s\n"
+"\n"
+"%s)"
 
 #. module: mail
 #. odoo-python
@@ -9522,7 +9525,7 @@ msgstr ""
 #: code:addons/mail/static/src/models/blur_manager.js:0
 #, python-format
 msgid "The selfie segmentation library was not loaded"
-msgstr ""
+msgstr "Itsiö-segmentointikirjastoa ei ladattu"
 
 #. module: mail
 #. odoo-python
@@ -10580,7 +10583,7 @@ msgstr "Näytetäänkö kaikki vastaanottajat vai vain tärkeät."
 #: code:addons/mail/static/src/xml/activity.xml:0
 #, python-format
 msgid "Write Feedback"
-msgstr "Kirjoita muistiinpanot"
+msgstr "Kirjoita palaute"
 
 #. module: mail
 #: model_terms:ir.ui.view,arch_db:mail.email_compose_message_wizard_form
@@ -10781,6 +10784,16 @@ msgid ""
 msgstr ""
 "Voit liittää tähän mallipohjaan liitetiedostoja, jotka lähetetään tämän "
 "mallin perusteella tehtyjen viestien liitteinä."
+
+#. module: mail
+#: code:addons/mail/models/ir_attachment.py:0
+#, python-format
+msgid ""
+"You may not unlink or modify the content of attachments from other people's "
+"messages"
+msgstr ""
+"Et saa poistaa linkkejä tai muuttaa toisten viestien liitetiedostojen "
+"sisältöä"
 
 #. module: mail
 #. odoo-javascript

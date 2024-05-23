@@ -10,8 +10,8 @@
 # Vo Thanh Thuy, 2022
 # Nancy Momoland <thanh.np2502@gmail.com>, 2022
 # Duy BQ <duybq86@gmail.com>, 2022
-# Martin Trigaux, 2023
 # Wil Odoo, 2024
+# Martin Trigaux, 2024
 # Thi Huong Nguyen, 2024
 # 
 msgid ""
@@ -726,7 +726,8 @@ msgid ""
 "<i class=\"fa fa-1x fa-fw fa-envelope "
 "me-2\"/><span>info@yourcompany.example.com</span>"
 msgstr ""
-"<i class=\"fa fa-1x fa-fw fa-envelope me-2\"/><span>info@bizapps.vn</span>"
+"<i class=\"fa fa-1x fa-fw fa-envelope "
+"me-2\"/><span>info@yourcompany.example.com</span>"
 
 #. module: website
 #: model_terms:ir.ui.view,arch_db:website.template_footer_call_to_action
@@ -7893,8 +7894,8 @@ msgstr "Kiểu định trước"
 #. odoo-javascript
 #: code:addons/website/static/src/components/fullscreen_indication/fullscreen_indication.js:0
 #, python-format
-msgid "Press %(key)s to exit full string"
-msgstr ""
+msgid "Press %(key)s to exit full screen"
+msgstr "Nhấn %(key)s để thoát chế độ toàn màn hình"
 
 #. module: website
 #. odoo-javascript
@@ -11837,7 +11838,7 @@ msgstr "heading, h1"
 #: model_terms:ir.ui.view,arch_db:website.template_footer_contact
 #: model_terms:ir.ui.view,arch_db:website.template_footer_descriptive
 msgid "hello@mycompany.com"
-msgstr "support@openerp.vn"
+msgstr "hello@mycompany.com"
 
 #. module: website
 #: model_terms:ir.ui.view,arch_db:website.snippets
@@ -11889,7 +11890,7 @@ msgstr "ở góc trên cùng bên phải để bắt đầu thiết kế."
 #. module: website
 #: model_terms:ir.ui.view,arch_db:website.template_footer_links
 msgid "info@yourcompany.com"
-msgstr "support@openerp.vn"
+msgstr "info@yourcompany.com"
 
 #. module: website
 #: model_terms:ir.ui.view,arch_db:website.footer_custom

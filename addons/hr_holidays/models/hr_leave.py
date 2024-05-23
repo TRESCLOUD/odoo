@@ -612,9 +612,9 @@ class HolidaysRequest(models.Model):
     @api.depends_context('uid')
     @api.depends('state', 'employee_id')
     def _compute_can_cancel(self):
-        now = fields.Datetime.now()
+        now = fields.Datetime.now().date()
         for leave in self:
-            leave.can_cancel = leave.id and leave.employee_id.user_id == self.env.user and leave.state == 'validate' and leave.date_from and leave.date_from > now
+            leave.can_cancel = leave.id and leave.employee_id.user_id == self.env.user and leave.state == 'validate' and leave.date_from and leave.date_from.date() >= now
 
     @api.depends('state')
     def _compute_is_hatched(self):
@@ -919,19 +919,18 @@ class HolidaysRequest(models.Model):
             for values in vals_list:
                 employee_id = values.get('employee_id')
                 if employee_id and values.get('date_from') and values.get('date_to'):
+                    employee = employees.filtered(lambda emp: emp.id == employee_id)
                     date_from = values.get('date_from')
                     date_to = values.get('date_to')
-                    employee = employees.filtered(lambda emp: emp.id == employee_id)
-                    attendance_from, attendance_to = self._get_attendances(employee, date_from.date(), date_to.date())
-                    hour_from = float_to_time(attendance_from.hour_from)
-                    hour_to = float_to_time(attendance_to.hour_to)
+                    hour_from = values.get('date_from').time()
+                    hour_to = values.get('date_to').time()
                     hour_from = hour_from.hour + hour_from.minute / 60
                     hour_to = hour_to.hour + hour_to.minute / 60
 
                     values['date_from'] = self._get_start_or_end_from_attendance(hour_from, date_from.date(), employee)
                     values['date_to'] = self._get_start_or_end_from_attendance(hour_to, date_to.date(), employee)
                     values['request_date_from'], values['request_date_to'] = values['date_from'].date(), values['date_to'].date()
-                    values['number_of_days'] = employee_leave_date_duration[(date_from, date_to)][values['employee_id']]['days']
+                    values['number_of_days'] = values.get('number_of_days', employee_leave_date_duration[(date_from, date_to)][values['employee_id']]['days'])
 
         """ Override to avoid automatic logging of creation """
         if not self._context.get('leave_fast_create'):
@@ -1018,13 +1017,13 @@ class HolidaysRequest(models.Model):
     def _unlink_if_correct_states(self):
         error_message = _('You cannot delete a time off which is in %s state')
         state_description_values = {elem[0]: elem[1] for elem in self._fields['state']._description_selection(self.env)}
-        now = fields.Datetime.now()
+        now = fields.Datetime.now().date()
 
         if not self.user_has_groups('hr_holidays.group_hr_holidays_user'):
             for hol in self:
                 if hol.state not in ['draft', 'confirm']:
                     raise UserError(error_message % state_description_values.get(self[:1].state))
-                if hol.date_from < now:
+                if hol.date_from.date() < now:
                     raise UserError(_('You cannot delete a time off which is in the past'))
                 if hol.sudo().employee_ids and not hol.employee_id:
                     raise UserError(_('You cannot delete a time off assigned to several employees'))
@@ -1134,17 +1133,42 @@ class HolidaysRequest(models.Model):
 
     def _prepare_employees_holiday_values(self, employees):
         self.ensure_one()
-        work_days_data = employees._get_work_days_data_batch(self.date_from, self.date_to)
+        date_from = self.date_from
+        date_to = self.date_to
+        # Use the start and end of the day to calculate the number of days of the leave if there is more than 1
+        # schedule as self.date_from and self.date_to are relative to the company's main schedule and hours worked
+        # on a different schedule earlier or later than the company's schedule wouldn't count in the calculation of
+        # the number of days of the leave.
+        if not self.request_unit_hours and not self.request_unit_half and len(employees.resource_calendar_id) > 1:
+            date_from = datetime.combine(date_from, time.min)
+            date_to = datetime.combine(date_to, time.max)
+        work_days_data = employees._get_work_days_data_batch(date_from, date_to)
+
+        for employee in employees:
+            if self.request_unit_hours:
+                hour_from = self.date_from.time()
+                hour_to = self.date_to.time()
+            else:
+                day_period = False
+                if self.request_unit_half:
+                    day_period = 'morning' if self.request_date_from_period == 'am' else 'afternoon'
+                attendance_from, attendance_to = self.with_context(day_period=day_period)._get_attendances(employee, date_from.date(), date_to.date())
+                hour_from = float_to_time(attendance_from.hour_from)
+                hour_to = float_to_time(attendance_to.hour_to)
+
+            work_days_data[employee.id]['date_from'] = datetime.combine(date_from, hour_from)
+            work_days_data[employee.id]['date_to'] = datetime.combine(date_to, hour_to)
+
         return [{
             'name': self.name,
             'holiday_type': 'employee',
             'holiday_status_id': self.holiday_status_id.id,
-            'date_from': self.date_from,
-            'date_to': self.date_to,
+            'date_from': work_days_data[employee.id]['date_from'],
+            'date_to': work_days_data[employee.id]['date_to'],
             'request_date_from': self.request_date_from,
             'request_date_to': self.request_date_to,
             'notes': self.notes,
-            'number_of_days': work_days_data[employee.id]['days'],
+            'number_of_days': 0.5 if self.request_unit_half and work_days_data[employee.id]['hours'] > 0 else work_days_data[employee.id]['days'],
             'parent_id': self.id,
             'employee_id': employee.id,
             'employee_ids': employee,
@@ -1635,6 +1659,9 @@ class HolidaysRequest(models.Model):
     def _get_attendances(self, employee, request_date_from, request_date_to):
         resource_calendar_id = employee.resource_calendar_id or self.env.company.resource_calendar_id
         domain = [('calendar_id', '=', resource_calendar_id.id), ('display_type', '=', False)]
+        day_period = self.env.context.get('day_period', False)
+        if day_period:
+            domain += [('day_period', '=', day_period)]
         attendances = self.env['resource.calendar.attendance'].read_group(domain,
             ['ids:array_agg(id)', 'hour_from:min(hour_from)', 'hour_to:max(hour_to)',
              'week_type', 'dayofweek', 'day_period'],

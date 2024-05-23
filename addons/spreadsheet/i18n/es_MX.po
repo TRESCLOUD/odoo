@@ -6,8 +6,8 @@
 # Lucia Pacheco, 2022
 # Braulio D. López Vázquez <bdl@odoo.com>, 2022
 # Martin Trigaux, 2022
-# Patricia Gutiérrez Capetillo <pagc@odoo.com>, 2024
 # Fernanda Alvarez, 2024
+# Patricia Gutiérrez Capetillo <pagc@odoo.com>, 2024
 # 
 msgid ""
 msgstr ""
@@ -15,7 +15,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-02-06 13:32+0000\n"
 "PO-Revision-Date: 2022-09-22 05:55+0000\n"
-"Last-Translator: Fernanda Alvarez, 2024\n"
+"Last-Translator: Patricia Gutiérrez Capetillo <pagc@odoo.com>, 2024\n"
 "Language-Team: Spanish (Mexico) (https://app.transifex.com/odoo/teams/41243/es_MX/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -170,14 +170,14 @@ msgstr ""
 #: code:addons/spreadsheet/static/src/o_spreadsheet/o_spreadsheet.js:0
 #, python-format
 msgid "A conditional count across a range."
-msgstr "Un conteo condicional a través de un rango."
+msgstr "Un conteo condicional en todo un rango."
 
 #. module: spreadsheet
 #. odoo-javascript
 #: code:addons/spreadsheet/static/src/o_spreadsheet/o_spreadsheet.js:0
 #, python-format
 msgid "A conditional sum across a range."
-msgstr "Una suma condicional a través de un rango."
+msgstr "Una suma condicional en todo un rango."
 
 #. module: spreadsheet
 #. odoo-javascript
@@ -1833,14 +1833,14 @@ msgstr "Obtenga el ID absoluto de un elemento en la tabla dinámica"
 #: code:addons/spreadsheet/static/src/list/list_functions.js:0
 #, python-format
 msgid "Get the header of a list."
-msgstr "Obtenga el encabezado de una lista."
+msgstr "Obtiene el encabezado de una lista."
 
 #. module: spreadsheet
 #. odoo-javascript
 #: code:addons/spreadsheet/static/src/pivot/pivot_functions.js:0
 #, python-format
 msgid "Get the header of a pivot."
-msgstr "Obtenga el encabezado de una tabla dinámica."
+msgstr "Obtiene el encabezado de una tabla dinámica."
 
 #. module: spreadsheet
 #. odoo-javascript
@@ -1854,14 +1854,14 @@ msgstr "Obtener el valor traducido de una cadena específica"
 #: code:addons/spreadsheet/static/src/list/list_functions.js:0
 #, python-format
 msgid "Get the value from a list."
-msgstr "Obtenga el valor de una lista."
+msgstr "Obtiene el valor de una lista."
 
 #. module: spreadsheet
 #. odoo-javascript
 #: code:addons/spreadsheet/static/src/pivot/pivot_functions.js:0
 #, python-format
 msgid "Get the value from a pivot."
-msgstr "Obtenga el valor de una tabla dinámica."
+msgstr "Obtiene el valor de una tabla dinámica."
 
 #. module: spreadsheet
 #. odoo-javascript
@@ -3413,7 +3413,7 @@ msgstr "Resultado de multiplicar una serie de números entre sí."
 #: code:addons/spreadsheet/static/src/pivot/pivot_functions.js:0
 #, python-format
 msgid "Return the current value of a spreadsheet filter."
-msgstr "Devuelve el valor actual de un filtro de hoja de cálculo."
+msgstr "Devuelve el valor actual del filtro de una hoja de cálculo."
 
 #. module: spreadsheet
 #. odoo-javascript
@@ -4588,7 +4588,7 @@ msgstr "El número pi."
 #: code:addons/spreadsheet/static/src/o_spreadsheet/o_spreadsheet.js:0
 #, python-format
 msgid "The number to be divided."
-msgstr "El número que dividir."
+msgstr "El número a dividir."
 
 #. module: spreadsheet
 #. odoo-javascript

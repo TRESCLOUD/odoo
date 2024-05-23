@@ -3276,7 +3276,7 @@ msgstr "Forfaldsdato om"
 #: code:addons/mail/static/src/models/activity_list_view_item.js:0
 #, python-format
 msgid "Due in %s days"
-msgstr ""
+msgstr "Forfalder om %s dage"
 
 #. module: mail
 #. odoo-javascript
@@ -10621,6 +10621,14 @@ msgid ""
 msgstr ""
 "Du kan vedhæfte filer til denne skabelon, der skal føjes til alle e-mails "
 "oprettet fra denne skabelon"
+
+#. module: mail
+#: code:addons/mail/models/ir_attachment.py:0
+#, python-format
+msgid ""
+"You may not unlink or modify the content of attachments from other people's "
+"messages"
+msgstr ""
 
 #. module: mail
 #. odoo-javascript
