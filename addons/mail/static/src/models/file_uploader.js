@@ -72,7 +72,7 @@ registerModel({
          * @param {Thread} param0.thread
          * @returns {Attachment}
          */
-        _onAttachmentUploaded({ attachmentData, composer, thread }) {
+        async _onAttachmentUploaded({ attachmentData, composer, thread }) {
             if (attachmentData.error || !attachmentData.id) {
                 this.messaging.notify({
                     type: 'danger',
@@ -145,8 +145,10 @@ registerModel({
                     if ((composer && !composer.exists()) || (thread && !thread.exists())) {
                         return;
                     }
-                    const attachment = this._onAttachmentUploaded({ attachmentData, composer, thread });
-                    uploadedAttachments.push(attachment);
+                    const attachment = await this._onAttachmentUploaded({ attachmentData, composer, thread });
+                    if (attachment) {
+                        uploadedAttachments.push(attachment);
+                    }
                 } catch (e) {
                     if (e.name !== 'AbortError') {
                         throw e;

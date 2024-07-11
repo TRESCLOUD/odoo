@@ -272,6 +272,7 @@ class AccountReportLine(models.Model):
     domain_formula = fields.Char(string="Domain Formula Shortcut", help="Internal field to shorten expression_ids creation for the domain engine", inverse='_inverse_domain_formula', store=False)
     account_codes_formula = fields.Char(string="Account Codes Formula Shortcut", help="Internal field to shorten expression_ids creation for the account_codes engine", inverse='_inverse_account_codes_formula', store=False)
     aggregation_formula = fields.Char(string="Aggregation Formula Shortcut", help="Internal field to shorten expression_ids creation for the aggregation engine", inverse='_inverse_aggregation_formula', store=False)
+    tax_tags_formula = fields.Char(string="Tax Tags Formula Shortcut", help="Internal field to shorten expression_ids creation for the tax_tags engine", inverse='_inverse_aggregation_tax_formula', store=False)
 
     _sql_constraints = [
         ('code_uniq', 'unique (code)', "A report line with the same code already exists."),
@@ -361,6 +362,9 @@ class AccountReportLine(models.Model):
     def _inverse_aggregation_formula(self):
         self._create_report_expression(engine='aggregation')
 
+    def _inverse_aggregation_tax_formula(self):
+        self._create_report_expression(engine='tax_tags')
+
     def _inverse_account_codes_formula(self):
         self._create_report_expression(engine='account_codes')
 
@@ -378,6 +382,8 @@ class AccountReportLine(models.Model):
                 subformula, formula = None, report_line.account_codes_formula
             elif engine == 'aggregation' and report_line.aggregation_formula:
                 subformula, formula = None, report_line.aggregation_formula
+            elif engine == 'tax_tags' and report_line.tax_tags_formula:
+                subformula, formula = None, report_line.tax_tags_formula
             else:
                 # If we want to replace a formula shortcut with a full-syntax expression, we need to make the formula field falsy
                 # We can't simply remove it from the xml because it won't be updated
@@ -706,24 +712,6 @@ class AccountReportExpression(models.Model):
             raise UserError(_("Could not determine carryover target automatically for expression %s.", self.label))
 
         return auto_chosen_target
-
-    def action_view_carryover_lines(self, options, column_group_key=None):
-        if column_group_key:
-            options = self.report_line_id.report_id._get_column_group_options(options, column_group_key)
-
-        date_from, date_to, dummy = self.report_line_id.report_id._get_date_bounds_info(options, self.date_scope)
-
-        return {
-            'type': 'ir.actions.act_window',
-            'name': _('Carryover lines for: %s', self.report_line_name),
-            'res_model': 'account.report.external.value',
-            'views': [(self.env.ref('account_reports.account_report_external_value_tree').id, 'list')],
-            'domain': [
-                ('target_report_expression_id', '=', self.id),
-                ('date', '>=', date_from),
-                ('date', '<=', date_to),
-            ],
-        }
 
 
 class AccountReportColumn(models.Model):

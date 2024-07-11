@@ -2467,14 +2467,14 @@ msgstr ""
 #. module: stock
 #: model:ir.model.fields,field_description:stock.field_stock_lot__delivery_count
 msgid "Delivery order count"
-msgstr "Contagem de ordens de entrega"
+msgstr "Total de pedidos de entrega"
 
 #. module: stock
 #. odoo-python
 #: code:addons/stock/models/stock_lot.py:0
 #, python-format
 msgid "Delivery orders of %s"
-msgstr "Ordens de entrega de %s"
+msgstr "Pedidos de entrega de %s"
 
 #. module: stock
 #: model:ir.model.fields,field_description:stock.field_stock_move__product_uom_qty
@@ -4646,7 +4646,7 @@ msgstr ""
 #. module: stock
 #: model:ir.model.fields,field_description:stock.field_stock_warehouse__mto_pull_id
 msgid "MTO rule"
-msgstr "Regra de MTO"
+msgstr "Regra de PSE"
 
 #. module: stock
 #: model:ir.model.fields,field_description:stock.field_stock_lot__message_main_attachment_id
@@ -7357,7 +7357,7 @@ msgstr "Ordens de Sucata"
 #. module: stock
 #: model_terms:ir.actions.act_window,help:stock.action_stock_scrap
 msgid "Scrap products"
-msgstr "Produtos de sucata"
+msgstr "Sucatear produtos"
 
 #. module: stock
 #: model:ir.model.fields,field_description:stock.field_stock_move__scrapped

@@ -4515,7 +4515,7 @@ msgstr "Lagerplatser"
 #: code:addons/stock/models/stock_picking.py:0
 #, python-format
 msgid "Locations to update"
-msgstr ""
+msgstr "Platser att uppdatera"
 
 #. module: stock
 #: model_terms:ir.ui.view,arch_db:stock.view_picking_form
@@ -10065,6 +10065,8 @@ msgid ""
 "You cannot pack products into the same package when they are from different "
 "transfers with different operation types."
 msgstr ""
+"Du kan inte packa produkter i samma förpackning när de kommer från olika "
+"transfereringar med olika operationstyper."
 
 #. module: stock
 #. odoo-python

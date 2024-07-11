@@ -13,6 +13,7 @@
 # Martin Trigaux, 2023
 # Morten Paaske, 2024
 # lhmflexerp <lhm@flexerp.dk>, 2024
+# Sammi Iversen <sammi@vkdata.dk>, 2024
 # Sanne Kristensen <sanne@vkdata.dk>, 2024
 # 
 msgid ""
@@ -112,7 +113,7 @@ msgstr "%(user_name)s inviterede dig til at følge et nyt dokument"
 #: code:addons/mail/models/ir_mail_server.py:0
 #, python-format
 msgid "%s (Email Template)"
-msgstr ""
+msgstr "%s(Email skabelon)"
 
 #. module: mail
 #. odoo-python
@@ -126,14 +127,14 @@ msgstr "%s (kopi)"
 #: code:addons/mail/static/src/models/messaging_notification_handler.js:0
 #, python-format
 msgid "%s Message"
-msgstr ""
+msgstr "%sBesked"
 
 #. module: mail
 #. odoo-javascript
 #: code:addons/mail/static/src/models/messaging_notification_handler.js:0
 #, python-format
 msgid "%s Messages"
-msgstr ""
+msgstr "%sBeskeder"
 
 #. module: mail
 #. odoo-javascript
@@ -1125,7 +1126,7 @@ msgstr "Aktivitet Mixin"
 #. module: mail
 #: model_terms:ir.ui.view,arch_db:mail.mail_activity_type_view_form
 msgid "Activity Settings"
-msgstr ""
+msgstr "Aktivitets indstillinger"
 
 #. module: mail
 #: model:ir.model.fields,field_description:mail.field_mail_activity_mixin__activity_state
@@ -10252,7 +10253,7 @@ msgstr "Video"
 #: code:addons/mail/static/src/components/call_settings_menu/call_settings_menu.xml:0
 #, python-format
 msgid "Video Settings"
-msgstr ""
+msgstr "Videoindstillinger"
 
 #. module: mail
 #. odoo-python
@@ -10315,7 +10316,7 @@ msgstr ""
 #: code:addons/mail/static/src/components/call_settings_menu/call_settings_menu.xml:0
 #, python-format
 msgid "Voice Settings"
-msgstr ""
+msgstr "Stemmeindstillinger"
 
 #. module: mail
 #. odoo-javascript

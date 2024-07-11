@@ -320,7 +320,7 @@ class Project(models.Model):
         string='Members')
     is_favorite = fields.Boolean(compute='_compute_is_favorite', inverse='_inverse_is_favorite', compute_sudo=True,
         string='Show Project on Dashboard')
-    label_tasks = fields.Char(string='Use Tasks as', default='Tasks', translate=True,
+    label_tasks = fields.Char(string='Use Tasks as', default=lambda s: _('Tasks'), translate=True,
         help="Name used to refer to the tasks of your project e.g. tasks, tickets, sprints, etc...")
     tasks = fields.One2many('project.task', 'project_id', string="Task Activities")
     resource_calendar_id = fields.Many2one(
@@ -1789,6 +1789,9 @@ class Task(models.Model):
         fields = {name for name, field in self._fields.items() if getattr(field, 'task_dependency_tracking', None)}
         return fields and set(self.fields_get(fields))
 
+    def _portal_get_parent_hash_token(self, pid):
+        return self.project_id._sign_token(pid)
+
     # ----------------------------------------
     # Case management
     # ----------------------------------------
@@ -1957,6 +1960,10 @@ class Task(models.Model):
     def _search(self, args, offset=0, limit=None, order=None, count=False, access_rights_uid=None):
         fields_list = {term[0] for term in args if isinstance(term, (tuple, list)) and term not in [expression.TRUE_LEAF, expression.FALSE_LEAF]}
         self._ensure_fields_are_accessible(fields_list)
+        for index, leaf in enumerate(args):
+            if leaf[0] == 'personal_stage_type_ids' and leaf[1] == '=' and not leaf[2]:
+                types = self.env['project.task.type']._search([('user_id', '=', self.env.uid)])
+                args[index] = ('personal_stage_type_ids', 'not in', types)
         return super(Task, self)._search(args, offset=offset, limit=limit, order=order, count=count, access_rights_uid=access_rights_uid)
 
     def mapped(self, func):

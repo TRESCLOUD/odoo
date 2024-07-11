@@ -680,8 +680,8 @@ class PosGlobalState extends PosModel {
 
             if (mapped_included_taxes.length > 0) {
                 if (new_included_taxes.length > 0) {
-                    const price_without_taxes = this.compute_all(mapped_included_taxes, price, 1, this.currency.rounding, true).total_excluded
-                    return this.compute_all(new_included_taxes, price_without_taxes, 1, this.currency.rounding, false).total_included
+                    //If previous tax and new tax where both included in price. The price including tax is the same
+                    return price;
                 }
                 else{
                     return this.compute_all(mapped_included_taxes, price, 1, this.currency.rounding, true).total_excluded;
@@ -2849,13 +2849,14 @@ class Order extends PosModel {
     calculate_base_amount(tax_ids_array, lines) {
         // Consider price_include taxes use case
         let has_taxes_included_in_price = tax_ids_array.filter(tax_id =>
-            this.pos.taxes_by_id[tax_id].price_include
+            this.pos.taxes_by_id[tax_id].price_include ||
+            this.pos.taxes_by_id[tax_id].children_tax_ids.length > 0 &&
+            this.pos.taxes_by_id[tax_id].children_tax_ids.every(child_tax => child_tax.price_include)
         ).length;
 
         let base_amount = lines.reduce((sum, line) =>
                 sum +
-                line.get_price_without_tax() +
-                (has_taxes_included_in_price ? line.get_total_taxes_included_in_price() : 0),
+                (has_taxes_included_in_price ? line.get_price_with_tax() : line.get_price_without_tax()),
             0
         );
         return base_amount;

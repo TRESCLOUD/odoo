@@ -14,7 +14,6 @@
 # Vojislav Opačić <vojislav.opacic@gmail.com>, 2022
 # Igor Krizanovic <krizanovic.igor@gmail.com>, 2022
 # Milan Tribuson <one.mile.code@gmail.com>, 2022
-# Vladimir Vrgoč, 2023
 # Matija Gudlin, 2023
 # Carlo Štefanac, 2023
 # Ivica Dimjašević <ivica.dimjasevic@storm.hr>, 2024
@@ -29,6 +28,9 @@
 # Bole <bole@dajmi5.com>, 2024
 # Matej Mijoč, 2024
 # etoimene, 2024
+# Gordana Bilas, 2024
+# Vladimir Vrgoč, 2024
+# Kristina Palaš, 2024
 # 
 msgid ""
 msgstr ""
@@ -36,7 +38,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-02-06 13:33+0000\n"
 "PO-Revision-Date: 2022-09-22 05:44+0000\n"
-"Last-Translator: etoimene, 2024\n"
+"Last-Translator: Kristina Palaš, 2024\n"
 "Language-Team: Croatian (https://app.transifex.com/odoo/teams/41243/hr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -10333,6 +10335,8 @@ msgid ""
 "All the emails and documents sent to this contact will be translated in this"
 " language."
 msgstr ""
+"Sva e-pošta i dokumentacija poslani ovom kontaktu biti će prevedeni na ovaj "
+"jezik."
 
 #. module: base
 #: model:ir.module.module,description:base.module_account_consolidation
@@ -11379,6 +11383,8 @@ msgid ""
 "Banks are the financial institutions at which you and your contacts have "
 "their accounts."
 msgstr ""
+"Banke su financijske institucije u kojima vi i vaši kontakti imate svoje "
+"račune."
 
 #. module: base
 #: model:res.country,name:base.bb
@@ -14981,7 +14987,7 @@ msgstr ""
 #: model:ir.module.module,shortdesc:base.module_documents_spreadsheet
 #: model:ir.module.module,summary:base.module_documents_spreadsheet
 msgid "Documents Spreadsheet"
-msgstr ""
+msgstr "Spreadsheet dokumenti"
 
 #. module: base
 #: model_terms:ir.ui.view,arch_db:base.view_base_module_uninstall
@@ -16822,6 +16828,11 @@ msgstr "Francuska - računovodstvo"
 #: model:ir.module.module,shortdesc:base.module_l10n_fr_reports
 msgid "France - Accounting Reports"
 msgstr "Francuska - računovodstvena izvješća"
+
+#. module: base
+#: model:ir.module.module,shortdesc:base.module_l10n_fr_invoice_addr
+msgid "France - Adding Mandatory Invoice Mentions (Decree no. 2022-1299)"
+msgstr ""
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_fr_fec
@@ -24237,7 +24248,7 @@ msgstr ""
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_account_followup
 msgid "Payment Follow-up Management"
-msgstr ""
+msgstr "Upravljanje Praćenja plaćanja"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_payment_adyen
@@ -27225,7 +27236,7 @@ msgstr "Postavite podatke vaše Tvrtke"
 #. module: base
 #: model_terms:ir.ui.view,arch_db:base.onboarding_company_step
 msgid "Set your company's data for documents header/footer."
-msgstr ""
+msgstr "Postavite podatke svoje tvrtke za zaglavlje/podnožje dokumenata."
 
 #. module: base
 #: model:ir.model.fields,help:base.field_ir_actions_act_url__binding_model_id
@@ -27492,7 +27503,7 @@ msgstr "Regularna pošta"
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_snailmail_account_followup
 msgid "Snail Mail Follow-Up"
-msgstr ""
+msgstr "Snail mail Praćenje"
 
 #. module: base
 #: model:ir.module.category,name:base.module_category_marketing_social
@@ -28839,7 +28850,7 @@ msgstr "Šifra jezika mora biti jedinstvena!"
 #. module: base
 #: model:ir.model.constraint,message:base.constraint_res_country_state_name_code_uniq
 msgid "The code of the state must be unique by country !"
-msgstr "Šifra države mora biti jedinstvena po državi!"
+msgstr "Šifra županije mora biti jedinstvena po državi!"
 
 #. module: base
 #: model:ir.model.constraint,message:base.constraint_res_partner_bank_unique_number

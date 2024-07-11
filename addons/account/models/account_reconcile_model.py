@@ -187,7 +187,10 @@ class AccountReconcileModelLine(models.Model):
 
         amount_currency = None
         if self.amount_type == 'percentage_st_line':
-            amount_currency = currency.round(residual_amount_currency * (self.amount / 100.0))
+            _transaction_amount, _transaction_currency, journal_amount, journal_currency, _company_amount, _company_currency \
+                = st_line._get_accounting_amounts_and_currencies()
+            amount_currency = journal_currency.round(-journal_amount * (self.amount / 100.0))
+            currency = journal_currency
         elif self.amount_type == 'regex':
             match = re.search(self.amount_string, st_line.payment_ref)
             if match:
@@ -748,7 +751,24 @@ class AccountReconcileModel(models.Model):
 
         sub_queries = []
         all_params = []
+        aml_cte = ''
         numerical_tokens, exact_tokens, _text_tokens = self._get_invoice_matching_st_line_tokens(st_line)
+        if numerical_tokens or exact_tokens:
+            aml_cte = rf'''
+                WITH aml_cte AS (
+                    SELECT
+                        account_move_line.id as account_move_line_id,
+                        account_move_line.date as account_move_line_date,
+                        account_move_line.date_maturity as account_move_line_date_maturity,
+                        account_move_line.name as account_move_line_name,
+                        account_move_line__move_id.name as account_move_line__move_id_name,
+                        account_move_line__move_id.ref as account_move_line__move_id_ref
+                    FROM {tables}
+                    JOIN account_move account_move_line__move_id ON account_move_line__move_id.id = account_move_line.move_id
+                    WHERE {where_clause}
+                )
+            '''
+            all_params += where_params
         if numerical_tokens:
             for table_alias, field in (
                 ('account_move_line', 'name'),
@@ -757,23 +777,21 @@ class AccountReconcileModel(models.Model):
             ):
                 sub_queries.append(rf'''
                     SELECT
-                        account_move_line.id,
-                        account_move_line.date,
-                        account_move_line.date_maturity,
+                        account_move_line_id as id,
+                        account_move_line_date as date,
+                        account_move_line_date_maturity as date_maturity,
                         UNNEST(
                             REGEXP_SPLIT_TO_ARRAY(
                                 SUBSTRING(
-                                    REGEXP_REPLACE({table_alias}.{field}, '[^0-9\s]', '', 'g'),
+                                    REGEXP_REPLACE({table_alias}_{field}, '[^0-9\s]', '', 'g'),
                                     '\S(?:.*\S)*'
                                 ),
                                 '\s+'
                             )
                         ) AS token
-                    FROM {tables}
-                    JOIN account_move account_move_line__move_id ON account_move_line__move_id.id = account_move_line.move_id
-                    WHERE {where_clause} AND {table_alias}.{field} IS NOT NULL
+                    FROM aml_cte
+                    WHERE {table_alias}_{field} IS NOT NULL
                 ''')
-                all_params += where_params
 
         if exact_tokens:
             for table_alias, field in (
@@ -783,19 +801,18 @@ class AccountReconcileModel(models.Model):
             ):
                 sub_queries.append(rf'''
                     SELECT
-                        account_move_line.id,
-                        account_move_line.date,
-                        account_move_line.date_maturity,
-                        {table_alias}.{field} AS token
-                    FROM {tables}
-                    JOIN account_move account_move_line__move_id ON account_move_line__move_id.id = account_move_line.move_id
-                    WHERE {where_clause} AND COALESCE({table_alias}.{field}, '') != ''
+                        account_move_line_id as id,
+                        account_move_line_date as date,
+                        account_move_line_date_maturity as date_maturity,
+                        {table_alias}_{field} AS token
+                    FROM aml_cte
+                    WHERE COALESCE({table_alias}_{field}, '') != ''
                 ''')
-                all_params += where_params
 
         if sub_queries:
             order_by = get_order_by_clause(alias='sub')
             self._cr.execute(
+                aml_cte +
                 '''
                     SELECT
                         sub.id,

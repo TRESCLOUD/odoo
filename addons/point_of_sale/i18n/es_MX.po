@@ -5,11 +5,10 @@
 # Translators:
 # Braulio D. López Vázquez <bdl@odoo.com>, 2023
 # Aimée Mendoza Sánchez, 2023
-# Wil Odoo, 2023
 # Iran Villalobos López, 2023
 # Patricia Gutiérrez Capetillo <pagc@odoo.com>, 2024
-# Martin Trigaux, 2024
 # Lucia Pacheco, 2024
+# Martin Trigaux, 2024
 # Fernanda Alvarez, 2024
 # 
 msgid ""
@@ -458,7 +457,7 @@ msgstr "Actividades"
 #. module: point_of_sale
 #: model:ir.model.fields,field_description:point_of_sale.field_pos_session__activity_exception_decoration
 msgid "Activity Exception Decoration"
-msgstr "Decoración de actividad de excepción"
+msgstr "Decoración de la actividad de excepción"
 
 #. module: point_of_sale
 #: model:ir.model.fields,field_description:point_of_sale.field_pos_session__activity_state
@@ -891,7 +890,7 @@ msgstr "Código de barras"
 #. module: point_of_sale
 #: model_terms:ir.ui.view,arch_db:point_of_sale.res_config_settings_view_form
 msgid "Barcode Nomenclature"
-msgstr "Nomenclatura de código de barras"
+msgstr "Nomenclatura del código de barras"
 
 #. module: point_of_sale
 #: model:ir.model,name:point_of_sale.model_barcode_rule
@@ -6507,12 +6506,10 @@ msgstr ""
 #, python-format
 msgid ""
 "The maximum difference allowed is %s.\n"
-"\n"
-"                        Please contact your manager to accept the closing difference."
+"Please contact your manager to accept the closing difference."
 msgstr ""
-"La diferencia maxima permitida es %s.\n"
-"\n"
-"                        Contacte a su gerente para aceptar la diferencia de cierre."
+"La diferencia máxima permitida es %s.\n"
+"Contacte a su gerente para aceptar la diferencia de cierre."
 
 #. module: point_of_sale
 #. odoo-python
@@ -7303,7 +7300,7 @@ msgstr "Error desconocido"
 #: code:addons/point_of_sale/static/src/js/Screens/PartnerListScreen/PartnerDetailsEdit.js:0
 #, python-format
 msgid "Unsupported File Format"
-msgstr "Formato de archivo no compatible"
+msgstr "Formato de archivo incompatible"
 
 #. module: point_of_sale
 #. odoo-javascript

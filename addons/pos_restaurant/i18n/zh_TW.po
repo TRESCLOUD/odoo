@@ -5,6 +5,7 @@
 # Translators:
 # 敬雲 林 <chingyun@yuanchih-consult.com>, 2022
 # Martin Trigaux, 2022
+# Pak Wai Ho, 2024
 # Tony Ng, 2024
 # 
 msgid ""
@@ -64,7 +65,7 @@ msgstr "增加"
 #: code:addons/pos_restaurant/static/src/js/Screens/ProductScreen/ControlButtons/OrderlineNoteButton.js:0
 #, python-format
 msgid "Add Internal Note"
-msgstr "添加內部備註"
+msgstr "加入內部備註"
 
 #. module: pos_restaurant
 #: model_terms:ir.actions.act_window,help:pos_restaurant.action_restaurant_floor_form
@@ -347,7 +348,7 @@ msgstr "顯示名稱"
 #. module: pos_restaurant
 #: model:pos.category,name:pos_restaurant.drinks
 msgid "Drinks"
-msgstr "饮料"
+msgstr "飲品"
 
 #. module: pos_restaurant
 #. odoo-javascript
@@ -608,7 +609,7 @@ msgstr "Logo"
 #. module: pos_restaurant
 #: model:product.template,name:pos_restaurant.pos_food_maki_product_template
 msgid "Lunch Maki 18pc"
-msgstr "午餐 Maki 18pc"
+msgstr "午餐壽司卷 18 件"
 
 #. module: pos_restaurant
 #: model:product.template,name:pos_restaurant.pos_food_salmon_product_template
@@ -618,7 +619,7 @@ msgstr "午餐鮭魚 20pc"
 #. module: pos_restaurant
 #: model:product.template,name:pos_restaurant.pos_food_temaki_product_template
 msgid "Lunch Temaki mix 3pc"
-msgstr "午餐 Temaki mix 3pc"
+msgstr "午餐手卷組合 3 件"
 
 #. module: pos_restaurant
 #: model:product.template,name:pos_restaurant.pos_food_margherita_product_template
@@ -628,12 +629,12 @@ msgstr "瑪格麗特"
 #. module: pos_restaurant
 #: model:product.template,name:pos_restaurant.minute_maid_product_template
 msgid "Minute Maid"
-msgstr "Minute Maid"
+msgstr "美粒果"
 
 #. module: pos_restaurant
 #: model:product.template,name:pos_restaurant.pos_food_mozza_product_template
 msgid "Mozzarella Sandwich"
-msgstr "Mozzarella 三明治"
+msgstr "馬蘇里拉三明治"
 
 #. module: pos_restaurant
 #: model:ir.model.fields,field_description:pos_restaurant.field_pos_order__multiprint_resume
@@ -1333,7 +1334,7 @@ msgstr "UUID"
 #: code:addons/pos_restaurant/static/src/xml/TipReceipt.xml:0
 #, python-format
 msgid "VAT:"
-msgstr "稅金:"
+msgstr "增值稅："
 
 #. module: pos_restaurant
 #: model:product.template,name:pos_restaurant.pos_food_vege_product_template
@@ -1377,7 +1378,7 @@ msgstr "黃色"
 #: code:addons/pos_restaurant/static/src/js/Screens/ProductScreen/ControlButtons/TableGuestsButton.js:0
 #, python-format
 msgid "You cannot put a number that exceeds %s "
-msgstr ""
+msgstr "您不能輸入一個超過%s的數字 "
 
 #. module: pos_restaurant
 #. odoo-python

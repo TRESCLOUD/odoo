@@ -1424,7 +1424,7 @@ msgstr "الشركة "
 #: model:ir.model.fields,field_description:point_of_sale.field_pos_config__company_has_template
 #: model:ir.model.fields,field_description:point_of_sale.field_res_config_settings__pos_company_has_template
 msgid "Company has chart of accounts"
-msgstr "لدى الشركة مخطط حسابات "
+msgstr "لدى الشركة شجرة حسابات "
 
 #. module: point_of_sale
 #: model:ir.model,name:point_of_sale.model_res_config_settings
@@ -6436,12 +6436,10 @@ msgstr "يجب أن ينتمى دفتر يومية فواتير نقطة الب�
 #, python-format
 msgid ""
 "The maximum difference allowed is %s.\n"
-"\n"
-"                        Please contact your manager to accept the closing difference."
+"Please contact your manager to accept the closing difference."
 msgstr ""
 "الحد الأقصى للفرق المسموح به هو %s.\n"
-"\n"
-"                        يرجى التواصل مع مديرك لقبول فرق الإقفال. "
+"يرجى التواصل مع مديرك لقبول فرق الإقفال. "
 
 #. module: point_of_sale
 #. odoo-python

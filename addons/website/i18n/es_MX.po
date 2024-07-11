@@ -510,7 +510,7 @@ msgstr ""
 #: code:addons/website/static/src/js/tours/tour_utils.js:0
 #, python-format
 msgid "<b>Add</b> the selected image."
-msgstr "<b>Agregar</b> la imagen seleccionada."
+msgstr "<b>Agregue</b> la imagen seleccionada."
 
 #. module: website
 #. odoo-javascript
@@ -3987,7 +3987,7 @@ msgstr "Dona"
 msgid ""
 "Drag the <b>%s</b> building block and drop it at the bottom of the page."
 msgstr ""
-"Arrastre el <b>%s</b> bloque de creación y suéltelo al final de su página."
+"Arrastre el bloque de creación <b>%s</b> y suéltelo al final de su página."
 
 #. module: website
 #. odoo-javascript
@@ -4477,7 +4477,7 @@ msgstr "Tabla de funciones"
 #. module: website
 #: model_terms:ir.ui.view,arch_db:website.s_dynamic_snippet_options_template
 msgid "Fetched elements"
-msgstr "Elementos recolectados"
+msgstr "Elementos obtenidos"
 
 #. module: website
 #: model:ir.model.fields,field_description:website.field_website_snippet_filter__field_names
@@ -5246,6 +5246,13 @@ msgstr "Ocultar"
 #: model_terms:ir.ui.view,arch_db:website.s_popup_options
 msgid "Hide For"
 msgstr "Ocultar para"
+
+#. module: website
+#. odoo-javascript
+#: code:addons/website/static/src/snippets/s_popup/000.js:0
+#, python-format
+msgid "Hide the cookies bar"
+msgstr "Ocultar la barra de cookies"
 
 #. module: website
 #: model_terms:ir.ui.view,arch_db:website.website_page_properties_view_form
@@ -8962,6 +8969,13 @@ msgid "Show site map"
 msgstr "Mostrar sitemap"
 
 #. module: website
+#. odoo-javascript
+#: code:addons/website/static/src/snippets/s_popup/000.js:0
+#, python-format
+msgid "Show the cookies bar"
+msgstr "Mostrar la barra de cookies"
+
+#. module: website
 #: model_terms:ir.ui.view,arch_db:website.snippet_options
 msgid "Show/Hide on Desktop"
 msgstr "Mostrar/ocultar en el escritorio"
@@ -9656,7 +9670,7 @@ msgstr ""
 #: code:addons/website/models/website.py:0
 #, python-format
 msgid "The homepage URL should be relative and start with '/'."
-msgstr "El URL de la página de inicio debe ser relativo e iniciar con '/'."
+msgstr "La URL de la página de inicio debe ser relativa e iniciar con '/'."
 
 #. module: website
 #. odoo-javascript
@@ -10267,7 +10281,7 @@ msgstr "Tipo"
 #: code:addons/website/static/src/xml/website.editor.xml:0
 #, python-format
 msgid "Type '"
-msgstr "Tipo \""
+msgstr "Escriba \""
 
 #. module: website
 #: model_terms:ir.ui.view,arch_db:website.qweb_500
@@ -10314,8 +10328,7 @@ msgstr "URL de"
 #: model:ir.model.fields,help:website.field_website__cdn_filters
 msgid "URL matching those filters will be rewritten using the CDN Base URL"
 msgstr ""
-"El URL que coincida con esos filtros se escribirá a través de la URL Base "
-"CDN "
+"La URL que coincida con esos filtros se reescribirá con la URL base CDN"
 
 #. module: website
 #: model:ir.model.fields,field_description:website.field_website_rewrite__url_to
@@ -11159,10 +11172,9 @@ msgid ""
 "the User by this site. The User may configure his / her browser to notify "
 "and reject the installation of the cookies sent by us."
 msgstr ""
-"El Sitio web puede utilizar cookies para personalizar y facilitar al máximo "
-"la navegación del usuario en el mismo. El usuario puede configurar su "
-"navegador para notificar y rechazar la instalación de las cookies enviadas "
-"por nosotros."
+"Es posible que el sitio web use cookies para personalizar y facilitar al "
+"máximo la navegación del usuario. El usuario puede configurar su navegador "
+"para notificar y rechazar la instalación de las cookies que enviamos."
 
 #. module: website
 #: model_terms:ir.ui.view,arch_db:website.menu_tree
@@ -11239,7 +11251,7 @@ msgstr "Sitios web a traducir"
 #: code:addons/website/static/src/client_actions/website_preview/website_preview.xml:0
 #, python-format
 msgid "Welcome to your"
-msgstr "Bienvenido a su"
+msgstr "Le damos la bienvenida a su"
 
 #. module: website
 #: model_terms:ir.ui.view,arch_db:website.s_table_of_content
@@ -11575,7 +11587,7 @@ msgstr "Su título"
 #. module: website
 #: model:ir.model.fields,field_description:website.field_website__social_youtube
 msgid "Youtube Account"
-msgstr "Cuenta de Youtube"
+msgstr "Cuenta de YouTube"
 
 #. module: website
 #: model_terms:ir.ui.view,arch_db:website.s_google_map_options

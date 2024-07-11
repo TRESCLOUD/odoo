@@ -1141,6 +1141,15 @@ msgstr "Anulat"
 
 #. module: mrp
 #. odoo-python
+#: code:addons/mrp/models/product.py:0
+#, python-format
+msgid ""
+"Cannot compute days to prepare due to missing route info for at least 1 "
+"component or for the final product."
+msgstr ""
+
+#. module: mrp
+#. odoo-python
 #: code:addons/mrp/models/mrp_production.py:0
 #, python-format
 msgid "Cannot delete a manufacturing order in done state."
@@ -6356,6 +6365,8 @@ msgid ""
 "You must indicate a non-zero amount consumed for at least one of your "
 "components"
 msgstr ""
+"Trebuie să indicați o cantitate consumată diferită de zero pentru cel puțin "
+"unul dintre componentele dvs."
 
 #. module: mrp
 #. odoo-python

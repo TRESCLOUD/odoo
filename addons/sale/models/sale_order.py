@@ -382,7 +382,7 @@ class SaleOrder(models.Model):
     def _compute_currency_rate(self):
         cache = {}
         for order in self:
-            order_date = order.date_order.date()
+            order_date = (order.date_order or fields.Datetime.now()).date()
             if not order.company_id:
                 order.currency_rate = order.currency_id.with_context(date=order_date).rate or 1.0
                 continue
@@ -559,9 +559,13 @@ class SaleOrder(models.Model):
                 lambda line: not line.display_type and not line._is_delivery()
             ).mapped(lambda line: line and line._expected_date())
             if dates_list:
-                order.expected_date = min(dates_list)
+                order.expected_date = order._select_expected_date(dates_list)
             else:
                 order.expected_date = False
+
+    def _select_expected_date(self, expected_dates):
+        self.ensure_one()
+        return min(expected_dates)
 
     def _compute_is_expired(self):
         today = fields.Date.today()
@@ -874,11 +878,6 @@ class SaleOrder(models.Model):
             )
 
     def action_done(self):
-        for order in self:
-            tx = order.sudo().transaction_ids._get_last()
-            if tx and tx.state == 'pending' and tx.provider_id.code == 'custom' and tx.provider_id.custom_mode == 'wire_transfer':
-                tx._set_done()
-                tx.write({'is_post_processed': True})
         self.write({'state': 'done'})
 
     def action_unlock(self):
@@ -947,7 +946,6 @@ class SaleOrder(models.Model):
     def action_update_taxes(self):
         self.ensure_one()
 
-        self._recompute_prices()
         self._recompute_taxes()
 
         if self.partner_id:

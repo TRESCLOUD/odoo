@@ -176,6 +176,7 @@ TRANSLATED_ATTRS.update(
 )
 
 avoid_pattern = re.compile(r"\s*<!DOCTYPE", re.IGNORECASE | re.MULTILINE | re.UNICODE)
+space_pattern = re.compile(r"[\s\uFEFF]*")  # web_editor uses \uFEFF as ZWNBSP
 
 
 def translate_xml_node(node, callback, parse, serialize):
@@ -189,7 +190,7 @@ def translate_xml_node(node, callback, parse, serialize):
 
     def nonspace(text):
         """ Return whether ``text`` is a string with non-space characters. """
-        return bool(text) and not text.isspace()
+        return bool(text) and not space_pattern.fullmatch(text)
 
     def translatable(node):
         """ Return whether the given node can be translated as a whole. """
@@ -344,7 +345,7 @@ def html_translate(callback, value):
         root = parse_html("<div>%s</div>" % value)
         result = translate_xml_node(root, callback, parse_html, serialize_html)
         # remove tags <div> and </div> from result
-        value = serialize_html(result)[5:-6]
+        value = serialize_html(result)[5:-6].replace('\xa0', '&nbsp;')
     except ValueError:
         _logger.exception("Cannot translate malformed HTML, using source value instead")
 
@@ -1566,6 +1567,7 @@ def _get_translation_upgrade_queries(cr, field):
     cleanup_queries = []
 
     if field.translate is True:
+        emtpy_src = """'{"en_US": ""}'::jsonb"""
         query = f"""
             WITH t AS (
                 SELECT it.res_id as res_id, jsonb_object_agg(it.lang, it.value) AS value, bool_or(imd.noupdate) AS noupdate
@@ -1576,7 +1578,8 @@ def _get_translation_upgrade_queries(cr, field):
               GROUP BY it.res_id
             )
             UPDATE {Model._table} m
-               SET "{field.name}" = CASE WHEN t.noupdate IS FALSE THEN t.value || m."{field.name}"
+               SET "{field.name}" = CASE WHEN m."{field.name}" IS NULL THEN {emtpy_src} || t.value
+                                         WHEN t.noupdate IS FALSE THEN t.value || m."{field.name}"
                                          ELSE m."{field.name}" || t.value
                                      END
               FROM t
