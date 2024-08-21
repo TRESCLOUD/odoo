@@ -9,6 +9,8 @@
 # Claudia Baisan, 2023
 # Foldi Robert <foldirobert@nexterp.ro>, 2023
 # Cozmin Candea <office@terrabit.ro>, 2024
+# Corina Calin, 2024
+# Alin Miclea, 2024
 # Dorin Hongu <dhongu@gmail.com>, 2024
 # 
 msgid ""
@@ -1681,7 +1683,7 @@ msgstr "Creează și editează..."
 #: code:addons/web/static/src/views/fields/x2many/x2many_field.xml:0
 #, python-format
 msgid "Create record"
-msgstr ""
+msgstr "Creați o înregistrare"
 
 #. module: web
 #. odoo-javascript
@@ -3724,7 +3726,7 @@ msgstr ""
 #: code:addons/web/static/src/views/form/form_error_dialog/form_error_dialog.xml:0
 #, python-format
 msgid "Oh snap!"
-msgstr "O, rahat!"
+msgstr "O, beteșig!"
 
 #. module: web
 #. odoo-javascript
@@ -4765,7 +4767,7 @@ msgstr ""
 #: code:addons/web/static/src/legacy/xml/base.xml:0
 #, python-format
 msgid "Search a field..."
-msgstr ""
+msgstr "Căutați un câmp..."
 
 #. module: web
 #. odoo-javascript
@@ -5919,6 +5921,7 @@ msgstr "Comutator de vizualizare"
 #: code:addons/web/static/src/legacy/js/views/list/list_controller.js:0
 #: code:addons/web/static/src/legacy/xml/base.xml:0
 #: code:addons/web/static/src/legacy/xml/base.xml:0
+#: code:addons/web/static/src/legacy/xml/control_panel.xml:0
 #: code:addons/web/static/src/search/favorite_menu/favorite_menu.js:0
 #: code:addons/web/static/src/views/fields/domain/domain_field.xml:0
 #: code:addons/web/static/src/views/fields/domain/domain_field.xml:0

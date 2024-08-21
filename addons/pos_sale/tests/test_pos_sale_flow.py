@@ -443,3 +443,78 @@ class TestPoSSale(TestPointOfSaleHttpCommon):
         self.env['pos.order'].create_from_ui([pos_order])
         self.assertEqual(sale_order.order_line[0].untaxed_amount_invoiced, 10, "Untaxed invoiced amount should be 10")
         self.assertEqual(sale_order.order_line[1].untaxed_amount_invoiced, 0, "Untaxed invoiced amount should be 0")
+
+    def test_order_does_not_remain_in_list(self):
+        """Verify that a paid order doesn't remain in the orders list"""
+
+        # Create a sale order
+        sale_order = self.env['sale.order'].create({
+            'partner_id': self.env['res.partner'].create({'name': 'Test Partner'}).id,
+            'order_line': [(0, 0, {
+                'product_id': self.whiteboard_pen.id,
+                'name': self.whiteboard_pen.name,
+                'product_uom_qty': 1,
+                'price_unit': 100,
+                'product_uom': self.whiteboard_pen.uom_id.id
+            })],
+        })
+
+        sale_order.action_confirm()
+
+        self.main_pos_config.open_ui()
+        self.start_tour("/pos/ui?config_id=%d" % self.main_pos_config.id, 'PosOrderDoesNotRemainInList', login="accountman")
+
+    def test_settle_order_change_customer(self):
+        """
+        When settling an order, the price set on the sol shouldn't reset to
+        the sale price of the product when changing customer.
+        """
+        self.product_a.lst_price = 150
+        self.product_a.taxes_id = None
+        self.product_a.available_in_pos = True
+        sale_order = self.env['sale.order'].create({
+            'partner_id': self.env['res.partner'].create({'name': 'Test Partner'}).id,
+            'order_line': [(0, 0, {
+                'product_id': self.product_a.id,
+                'name': self.product_a.name,
+                'product_uom_qty': 1,
+                'price_unit': 100,
+            })],
+        })
+        sale_order.action_confirm()
+
+        self.main_pos_config.open_ui()
+        self.start_tour("/pos/ui?config_id=%d" % self.main_pos_config.id, 'PosSettleCustomPrice', login="accountman")
+
+    def test_settle_draft_order_service_product(self):
+        """
+        Checks that, when settling a draft order (quotation), the quantity set on the corresponding
+        PoS order, for service products, is set correctly.
+        """
+
+        product_a = self.env['product.product'].create({
+            'name': 'Test service product',
+            'available_in_pos': True,
+            'type': 'service',
+            'invoice_policy': 'order',
+            'lst_price': 50.0,
+            'taxes_id': [],
+        })
+
+        partner_test = self.env['res.partner'].create({'name': 'Test Partner'})
+
+        sale_order = self.env['sale.order'].create({
+            'partner_id': partner_test.id,
+            'order_line': [(0, 0, {
+                'product_id': product_a.id,
+                'name': product_a.name,
+                'product_uom_qty': 1,
+                'product_uom': product_a.uom_id.id,
+                'price_unit': product_a.lst_price,
+            })],
+        })
+
+        self.assertEqual(sale_order.state, 'draft')
+
+        self.main_pos_config.open_ui()
+        self.start_tour("/pos/ui?config_id=%d" % self.main_pos_config.id, 'PosSettleDraftOrder', login="accountman")

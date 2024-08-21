@@ -248,6 +248,7 @@ export class OdooEditor extends EventTarget {
                 allowCommandVideo: true,
                 renderingClasses: [],
                 allowInlineAtRoot: false,
+                autoActivateContentEditable: true,
             },
             options,
         );
@@ -318,8 +319,10 @@ export class OdooEditor extends EventTarget {
         this.editable.setAttribute('dir', this.options.direction);
 
         // Set contenteditable before clone as FF updates the content at this point.
-        this._activateContenteditable();
-
+        this.canActivateContentEditable = this.options.autoActivateContentEditable;
+        if (this.canActivateContentEditable) {
+            this._activateContenteditable();
+        }
         this._collabClientId = this.options.collaborationClientId;
         this._collabClientAvatarUrl = this.options.collaborationClientAvatarUrl;
 
@@ -2320,6 +2323,11 @@ export class OdooEditor extends EventTarget {
         }
         this.observerActive('_activateContenteditable');
     }
+
+    activateContenteditable() {
+        this.canActivateContentEditable = true;
+        this._activateContenteditable();
+    } 
     _stopContenteditable() {
         this.observerUnactive('_stopContenteditable');
         if (this.options.isRootEditable) {
@@ -4307,7 +4315,10 @@ export class OdooEditor extends EventTarget {
         this._currentMouseState = ev.type;
         this._lastMouseClickPosition = [ev.x, ev.y];
 
-        this._activateContenteditable();
+        if (this.canActivateContentEditable) {
+            this._activateContenteditable();
+        }
+
         // Ignore any changes that might have happened before this point.
         this.observer.takeRecords();
 
@@ -4831,11 +4842,27 @@ export class OdooEditor extends EventTarget {
     }
     _onTableMoveUpClick() {
         if (this._rowUiTarget.previousSibling) {
+            // When moving the second row up, copy the widths of first row's td
+            // elements to second row's td elements, as td widths are only
+            // applied to the first row.
+            if (!this._rowUiTarget.previousSibling.previousSibling) {
+                this._rowUiTarget.childNodes.forEach((cell, index) => {
+                    cell.style.width = this._rowUiTarget.previousSibling.childNodes[index].style.width;
+                });
+            }
             this._rowUiTarget.previousSibling.before(this._rowUiTarget);
         }
     }
     _onTableMoveDownClick() {
         if (this._rowUiTarget.nextSibling) {
+            // When moving the first row down, copy the widths of its td
+            // elements to second row's td elements, as td widths are only
+            // applied to the first row.
+            if (!this._rowUiTarget.previousSibling) {
+                this._rowUiTarget.nextSibling.childNodes.forEach((cell, index) => {
+                    cell.style.width = this._rowUiTarget.childNodes[index].style.width;
+                });
+            }
             this._rowUiTarget.nextSibling.after(this._rowUiTarget);
         }
     }

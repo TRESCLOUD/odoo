@@ -15036,7 +15036,7 @@ msgstr "Wisaya Penggabungan Otomatis"
 #. module: base
 #: model:ir.model,name:base.model_ir_autovacuum
 msgid "Automatic Vacuum"
-msgstr "Vacuum Otomati"
+msgstr "Vacuum Otomatis"
 
 #. module: base
 #. odoo-python
@@ -18118,7 +18118,7 @@ msgstr "Dash"
 #: model:ir.ui.menu,name:base.menu_board_root
 #: model:ir.ui.menu,name:base.menu_reporting_dashboard
 msgid "Dashboards"
-msgstr "Dasbor"
+msgstr "Dashboard"
 
 #. module: base
 #: model:ir.module.category,name:base.module_category_productivity_data_cleaning
@@ -20962,6 +20962,11 @@ msgid "France - Accounting Reports"
 msgstr "France - Accounting Reports"
 
 #. module: base
+#: model:ir.module.module,shortdesc:base.module_l10n_fr_invoice_addr
+msgid "France - Adding Mandatory Invoice Mentions (Decree no. 2022-1299)"
+msgstr ""
+
+#. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_fr_fec
 msgid "France - FEC Export"
 msgstr "France - FEC Export"
@@ -22090,7 +22095,7 @@ msgstr "Human Readable"
 #: model:ir.module.category,name:base.module_category_human_resources
 #: model_terms:ir.ui.view,arch_db:base.user_groups_view
 msgid "Human Resources"
-msgstr "Personalia"
+msgstr "Sumber Daya Manusia"
 
 #. module: base
 #: model:res.country,name:base.hu
@@ -33408,7 +33413,7 @@ msgstr "Dokumen Spreadsheet"
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_spreadsheet_dashboard
 msgid "Spreadsheet dashboard"
-msgstr "Dashboard spreadshee"
+msgstr "Dashboard spreadsheet"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_spreadsheet_dashboard_edition

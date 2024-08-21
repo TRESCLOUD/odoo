@@ -153,8 +153,7 @@ class PosOrder(models.Model):
         if pos_order.to_invoice and pos_order.state == 'paid':
             pos_order._generate_pos_order_invoice()
 
-        if pos_session._is_capture_system_activated():
-            pos_session._remove_capture_content(order)
+        pos_session._remove_capture_content(order)
         return pos_order.id
 
     def _process_payment_lines(self, pos_order, order, pos_session, draft):
@@ -211,11 +210,11 @@ class PosOrder(models.Model):
         invoice_lines = []
         for line in self.lines:
             invoice_lines.append((0, None, self._prepare_invoice_line(line)))
-            if line.order_id.pricelist_id.discount_policy == 'without_discount' and float_compare(line.price_unit, line.product_id.lst_price, precision_rounding=self.currency_id.rounding) < 0:
+            if line.order_id.pricelist_id.discount_policy == 'without_discount' and float_compare(line.price_subtotal_incl, line.product_id.lst_price * line.qty, precision_rounding=self.currency_id.rounding) < 0:
                 invoice_lines.append((0, None, {
                     'name': _('Price discount from %s -> %s',
-                              float_repr(line.product_id.lst_price, self.currency_id.decimal_places),
-                              float_repr(line.price_unit, self.currency_id.decimal_places)),
+                              float_repr(line.product_id.lst_price * line.qty, self.currency_id.decimal_places),
+                              float_repr(line.price_subtotal_incl, self.currency_id.decimal_places)),
                     'display_type': 'line_note',
                 }))
             if line.customer_note:
@@ -938,6 +937,9 @@ class PosOrder(models.Model):
                     existing_orders = self.env['pos.order'].search([('pos_reference', '=', order_name)])
                     if all(not self._is_the_same_order(order['data'], existing_order) for existing_order in existing_orders):
                         order_ids.append(self._process_order(order, draft, False))
+                    else:
+                        _logger.info("PoS order %s already exists and is the same as the one sent by the PoS", order_name)
+                        self.env['pos.session']._remove_capture_content(order['data'])
             except Exception as e:
                 _logger.exception("An error occurred when processing the PoS order %s", order_name)
                 pos_session = self.env['pos.session'].browse(order['data']['pos_session_id'])

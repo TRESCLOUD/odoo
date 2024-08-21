@@ -394,7 +394,7 @@ class TestUi(TestPointOfSaleHttpCommon):
         aaa_loyalty_card = loyalty_program.coupon_ids.filtered(lambda coupon: coupon.partner_id.id == partner_aaa.id)
 
         self.assertEqual(loyalty_program.pos_order_count, 1)
-        self.assertAlmostEqual(aaa_loyalty_card.points, 5.2)
+        self.assertAlmostEqual(aaa_loyalty_card.points, 0.2)
 
     def test_pos_loyalty_tour_max_amount(self):
         """Test the loyalty program with a maximum amount and product with different taxe."""
@@ -1915,3 +1915,154 @@ class TestUi(TestPointOfSaleHttpCommon):
             login="accountman",
         )
         self.assertEqual(loyalty_card.points, 100)
+
+    def test_archived_reward_products(self):
+        """
+        Check that a loyalty_reward with no active reward product is not loaded.
+        In the case where the reward is based on reward_product_tag_id we also check
+        the case where at least one reward is  active.
+        """
+        self.env['loyalty.program'].search([]).write({'active': False})
+        free_product_tag = self.env['product.tag'].create({'name': 'Free Product'})
+
+        self.product_a.write({
+            'name': 'Test Product A',
+            'type': 'product',
+            'list_price': 100,
+            'available_in_pos': True,
+            'taxes_id': False,
+        })
+
+        self.product_b.write({'product_tag_ids': [(4, free_product_tag.id)]})
+        product_c = self.env['product.product'].create(
+            {
+                'name': 'Free Product C',
+                'list_price': 1,
+                'available_in_pos': True,
+                'taxes_id': False,
+                'product_tag_ids': [(4, free_product_tag.id)],
+            }
+        )
+
+        LoyaltyProgram = self.env['loyalty.program']
+        loyalty_program = LoyaltyProgram.create(LoyaltyProgram._get_template_values()['loyalty'])
+        loyalty_program_tag = LoyaltyProgram.create(LoyaltyProgram._get_template_values()['loyalty'])
+
+        loyalty_program.reward_ids.write({
+            'reward_type': 'product',
+            'required_points': 1,
+            'reward_product_id': self.product_b,
+        })
+
+        loyalty_program_tag.reward_ids.write({
+            'reward_type': 'product',
+            'required_points': 1,
+            'reward_product_tag_id': free_product_tag.id,
+        })
+
+        self.product_b.active = False
+        product_c.active = False
+
+        self.main_pos_config.open_ui()
+        self.start_tour(
+            "/pos/web?config_id=%d" % self.main_pos_config.id,
+            "PosLoyaltyArchivedRewardProductsInactive",
+            login="accountman",
+        )
+
+        product_c.active = True
+        self.start_tour(
+            "/pos/web?config_id=%d" % self.main_pos_config.id,
+            "PosLoyaltyArchivedRewardProductsActive",
+            login="accountman",
+        )
+
+    def test_gift_card_rewards_using_taxes(self):
+        """
+        Check the gift card value when the reward has taxes
+        """
+        self.env['loyalty.program'].search([]).write({'active': False})
+        self.env.ref('loyalty.gift_card_product_50').write({'active': True})
+
+        gift_card_program = self.create_programs([('arbitrary_name', 'gift_card')])['arbitrary_name']
+        self.product_a = self.env["product.product"].create({
+            "name": "Test Product A",
+            "type": "product",
+            "list_price": 100,
+            "available_in_pos": True,
+            "taxes_id": False,
+        })
+
+        self.tax01 = self.env["account.tax"].create({
+            "name": "C01 Tax",
+            "amount": "15.00",
+        })
+        gift_card_program.payment_program_discount_product_id.taxes_id = self.tax01
+        self.main_pos_config.write({'gift_card_settings': 'scan_use'})
+        self.env["loyalty.generate.wizard"].with_context(
+            {"active_id": gift_card_program.id}
+        ).create({"coupon_qty": 1, 'points_granted': 50}).generate_coupons()
+        gift_card_program.coupon_ids.code = '044123456'
+
+        self.main_pos_config.open_ui()
+        self.start_tour(
+            "/pos/web?config_id=%d" % self.main_pos_config.id,
+            "PosLoyaltyGiftCardTaxes",
+            login="accountman",
+        )
+        self.main_pos_config.current_session_id.close_session_from_ui()
+
+    def test_gift_card_no_points(self):
+        self.env['loyalty.program'].search([]).write({'active': False})
+        self.env.ref('loyalty.gift_card_product_50').write({'active': True})
+
+        gift_card_program = self.create_programs([('arbitrary_name', 'gift_card')])['arbitrary_name']
+        self.main_pos_config.write({'gift_card_settings': 'scan_use'})
+        self.env["loyalty.generate.wizard"].with_context(
+            {"active_id": gift_card_program.id}
+        ).create({"coupon_qty": 1, 'points_granted': 0}).generate_coupons()
+        gift_card_program.coupon_ids.code = '044123456'
+
+        self.main_pos_config.open_ui()
+        self.start_tour(
+            "/pos/web?config_id=%d" % self.main_pos_config.id,
+            "PosLoyaltyGiftCardNoPoints",
+            login="accountman",
+        )
+
+    def test_loyalty_reward_product_tag(self):
+        """
+        We test that a program using product tag to define reward products will
+        correctly compute the reward lines.
+        """
+        self.env['loyalty.program'].search([]).write({'active': False})
+
+        free_product_tag = self.env['product.tag'].create({'name': 'Free Product Tag'})
+        self.product_a.write({'product_tag_ids': [(4, free_product_tag.id)], 'lst_price': 2, 'taxes_id': None})
+        self.product_b.write({'product_tag_ids': [(4, free_product_tag.id)], 'lst_price': 5, 'taxes_id': None})
+
+        self.env['loyalty.program'].create({
+            'name': 'Buy 2 Take 1 Free Product',
+            'program_type': 'buy_x_get_y',
+            'trigger': 'auto',
+            'applies_on': 'current',
+            'rule_ids': [(0, 0, {
+                'product_ids': self.desk_organizer,
+                'reward_point_mode': 'unit',
+                'minimum_qty': 2,
+            })],
+            'reward_ids': [(0, 0, {
+                'reward_type': 'product',
+                'reward_product_tag_id': free_product_tag.id,
+                'reward_product_qty': 1,
+                'required_points': 2,
+            })],
+            'pos_config_ids': [Command.link(self.main_pos_config.id)],
+        })
+
+        self.main_pos_config.open_ui()
+        self.start_tour(
+            "/pos/web?config_id=%d" % self.main_pos_config.id,
+            "PosLoyaltyRewardProductTag",
+            login="accountman"
+        )
