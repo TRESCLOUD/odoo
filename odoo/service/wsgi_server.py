@@ -60,7 +60,15 @@ def xmlrpc_return(start_response, service, method, params, string_faultcode=Fals
             response = xmlrpc_handle_exception_string(e)
         else:
             response = xmlrpc_handle_exception_int(e)
-    start_response("200 OK", [('Content-Type','text/xml'), ('Content-Length', str(len(response)))])
+    # 2021-08-31: MODIFICADO POR TRESCLOUD, PROBLEMAS CON CORS
+    #start_response("200 OK", [('Content-Type','text/xml'), ('Content-Length', str(len(response)))])
+    start_response("200 OK", [
+    ('Content-Type','text/xml'), ('Content-Length', str(len(response))),
+    ('Access-Control-Allow-Origin','*'),
+    ('Access-Control-Allow-Methods','POST, GET, OPTIONS'),
+    ('Access-Control-Max-Age',1000),
+    ('Access-Control-Allow-Headers','origin, x-csrftoken, content-type, accept'),    ])
+    # FIN MODIFICACION
     return [response]
 
 def xmlrpc_handle_exception_int(e):
@@ -137,6 +145,15 @@ def wsgi_xmlrpc(environ, start_response):
     /xmlrpc/2/<service> is a new route that returns faultCode as int and is
     therefore fully compliant.
     """
+    # 2021-08-31: MODIFICADO POR TRESCLOUD, PROBLEMAS CON CORS
+    if environ['REQUEST_METHOD'] == "OPTIONS":
+        response = werkzeug.wrappers.Response('OPTIONS METHOD DETECTED')
+        response.headers['Access-Control-Allow-Origin'] = '*'
+        response.headers['Access-Control-Allow-Methods'] = 'POST, GET, OPTIONS'
+        response.headers['Access-Control-Max-Age'] = 1000
+        response.headers['Access-Control-Allow-Headers'] = 'origin, x-csrftoken, content-type, accept'
+        return response(environ, start_response)    
+    # FIN MODIFICACION    
     if environ['REQUEST_METHOD'] == 'POST' and environ['PATH_INFO'].startswith('/xmlrpc/'):
         length = int(environ['CONTENT_LENGTH'])
         data = environ['wsgi.input'].read(length)
