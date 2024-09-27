@@ -147,11 +147,12 @@ class Quant(models.Model):
         reserved_availability = move.reserved_availability
         # split quants if needed
         for quant, qty in quants:
-            if qty <= 0.0 or (quant and quant.qty <= 0.0):
-                #El siguiente codigo fue modificado por TRESCLOUD
-                raise UserError(_('No puede reservar una cantidad o un quant negativo, ' + \
-                                  'el proceso esta fallando con el siguiente producto: %s.') % 
-                                  (move.product_id.name_get()[0][1]))
+            # Se comenta momentaneamenta para escenario de Aditmaq 30-12-2021
+            # if qty <= 0.0 or (quant and quant.qty <= 0.0):
+            #     #El siguiente codigo fue modificado por TRESCLOUD
+            #     raise UserError(_('No puede reservar una cantidad o un quant negativo, ' + \
+            #                       'el proceso esta fallando con el siguiente producto: %s.') %
+            #                       (move.product_id.name_get()[0][1]))
             if not quant:
                 continue
             quant._quant_split(qty)
