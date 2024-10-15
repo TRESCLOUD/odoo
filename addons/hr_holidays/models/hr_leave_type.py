@@ -10,6 +10,7 @@ from collections import defaultdict
 from datetime import time, timedelta
 
 from odoo import api, fields, models
+from odoo.exceptions import UserError
 from odoo.osv import expression
 from odoo.tools import format_date
 from odoo.tools.translate import _
@@ -180,6 +181,16 @@ class HolidaysType(models.Model):
                 holiday_type.has_valid_allocation = bool(allocation)
             else:
                 holiday_type.has_valid_allocation = True
+
+    def _load_records_write(self, values):
+        if 'requires_allocation' in values and self.requires_allocation == values['requires_allocation']:
+            values.pop('requires_allocation')
+        return super()._load_records_write(values)
+
+    @api.constrains('requires_allocation')
+    def check_allocation_requirement_edit_validity(self):
+        if self.env['hr.leave'].search_count([('holiday_status_id', 'in', self.ids)], limit=1):
+            raise UserError(_("The allocation requirement of a time off type cannot be changed once leaves of that type have been taken. You should create a new time off type instead."))
 
     def _search_max_leaves(self, operator, value):
         value = float(value)

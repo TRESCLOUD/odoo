@@ -804,6 +804,11 @@ msgid "OpenWood Collection Online Reveal"
 msgstr ""
 
 #. module: website_event
+#: model_terms:ir.ui.view,arch_db:website_event.event_location
+msgid "Online Events"
+msgstr ""
+
+#. module: website_event
 #: model_terms:ir.ui.view,arch_db:website_event.event_description_full
 msgid "Organizer"
 msgstr ""
@@ -1140,7 +1145,7 @@ msgstr ""
 #. module: website_event
 #: model:ir.model.fields,field_description:website_event.field_website_event_menu__view_id
 msgid "View"
-msgstr ""
+msgstr "Skoða"
 
 #. module: website_event
 #: model:ir.model.fields,field_description:website_event.field_event_event__website_published

@@ -921,7 +921,7 @@ msgstr "已分派"
 #. module: hr_recruitment
 #: model:ir.model.fields,field_description:hr_recruitment.field_hr_applicant__message_attachment_count
 msgid "Attachment Count"
-msgstr "附件數"
+msgstr "附件數目"
 
 #. module: hr_recruitment
 #: model:ir.model.fields,field_description:hr_recruitment.field_hr_applicant__attachment_ids
@@ -2183,7 +2183,9 @@ msgstr "有發送錯誤的郵件數量"
 msgid ""
 "Odoo helps you track applicants in the recruitment\n"
 "                process and follow up all operations: meetings, interviews, etc."
-msgstr "Odoo幫助您在招募過程追蹤申請人及跟進所有操作：會議、面試等。"
+msgstr ""
+"Odoo 協助你在招聘過程中追蹤申請人，\n"
+"                以及跟進所有操作：會議、面試等。"
 
 #. module: hr_recruitment
 #: model_terms:ir.actions.act_window,help:hr_recruitment.crm_case_categ0_act_job
@@ -2191,8 +2193,8 @@ msgid ""
 "Odoo helps you track applicants in the recruitment\n"
 "            process and follow up all operations: meetings, interviews, etc."
 msgstr ""
-"Odoo幫助您在招募\n"
-"過程追蹤申請人及跟進所有操作：會議、面試等。"
+"Odoo 協助你在招聘過程中追蹤申請人，\n"
+"            以及跟進所有操作：會議、面試等。"
 
 #. module: hr_recruitment
 #: model:res.groups,name:hr_recruitment.group_hr_recruitment_user

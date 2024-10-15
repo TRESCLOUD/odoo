@@ -115,7 +115,7 @@ msgstr "%s toode(d) leitud \"%s\" jaoks."
 #: code:addons/point_of_sale/models/pos_session.py:0
 #, python-format
 msgid "%s untaxed"
-msgstr ""
+msgstr "%s  maksustamata"
 
 #. module: point_of_sale
 #. odoo-python
@@ -7576,6 +7576,15 @@ msgid ""
 msgstr ""
 "Kontakte ei saa kustutada, kui PoS-seansid on aktiivsed. Sulgege seans (id) "
 "%s kõigepealt."
+
+#. module: point_of_sale
+#. odoo-python
+#: code:addons/point_of_sale/models/pos_session.py:0
+#, python-format
+msgid ""
+"You do not have permission to open a POS session. Please try opening a "
+"session with a different user"
+msgstr ""
 
 #. module: point_of_sale
 #. odoo-python

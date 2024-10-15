@@ -846,12 +846,9 @@ msgstr ""
 #: model:ir.module.module,description:base.module_l10n_tr_reports
 msgid ""
 "\n"
-"        Accounting reports for Turkey\n"
+"        Accounting reports for Türkiye\n"
 "    "
 msgstr ""
-"\n"
-"        Accounting reports for Turkey\n"
-"    "
 
 #. module: base
 #: model:ir.module.module,description:base.module_l10n_uk_reports
@@ -20317,7 +20314,7 @@ msgstr ""
 #. module: base
 #: model:ir.model.fields,field_description:base.field_ir_demo_failure_wizard__failures_count
 msgid "Failures Count"
-msgstr "عدد مرات الفشل"
+msgstr "عدد الأعطال "
 
 #. module: base
 #: model:ir.module.module,description:base.module_test_data_module
@@ -24614,7 +24611,7 @@ msgstr "نظام تخطيط متطلبات المواد 2 - انتهاء الص�
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_project_mrp
 msgid "MRP Project"
-msgstr "مشروع تخطيط متطلبات المواد "
+msgstr "مشروع التصنيع "
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_mrp_subcontracting_enterprise
@@ -28592,6 +28589,16 @@ msgstr ""
 #, python-format
 msgid "Odoo is unable to merge the generated PDFs."
 msgstr "لم يتمكن أودو من دمج ملفات PDF التي تم إنشاؤها. "
+
+#. module: base
+#. odoo-python
+#: code:addons/base/models/ir_actions_report.py:0
+msgid ""
+"Odoo is unable to merge the generated PDFs because of {num_errors} corrupted"
+" file(s)"
+msgstr ""
+"لم يتمكن أودو من دمج ملفات PDF التي تم إنشاؤها بسبب {num_errors} ملفات تالفة"
+" "
 
 #. module: base
 #: model:ir.model.fields,help:base.field_ir_sequence__padding
@@ -36030,18 +36037,18 @@ msgstr "تونس"
 
 #. module: base
 #: model:res.country,name:base.tr
-msgid "Turkey"
-msgstr "تركيا"
+msgid "Türkiye"
+msgstr ""
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_tr
-msgid "Turkey - Accounting"
-msgstr "تركيا - المحاسبة"
+msgid "Türkiye - Accounting"
+msgstr ""
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_tr_reports
-msgid "Turkey - Accounting Reports"
-msgstr "Turkey - Accounting Reports"
+msgid "Türkiye - Accounting Reports"
+msgstr ""
 
 #. module: base
 #: model:res.country,name:base.tm
@@ -37177,6 +37184,12 @@ msgstr "عرض وضع الوراثة"
 #: model:ir.module.module,summary:base.module_website_crm_livechat
 msgid "View livechat sessions for leads"
 msgstr "عرض جلسات الدردشة المباشرة للعملاء المهتمين "
+
+#. module: base
+#. odoo-python
+#: code:addons/base/models/ir_actions_report.py:0
+msgid "View Problematic Record(s)"
+msgstr "عرض السجلات التي تحتوي على مشاكل "
 
 #. module: base
 #. odoo-python

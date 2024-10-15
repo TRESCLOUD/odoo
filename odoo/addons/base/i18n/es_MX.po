@@ -850,12 +850,9 @@ msgstr ""
 #: model:ir.module.module,description:base.module_l10n_tr_reports
 msgid ""
 "\n"
-"        Accounting reports for Turkey\n"
+"        Accounting reports for Türkiye\n"
 "    "
 msgstr ""
-"\n"
-"        Reportes contables para Turquía\n"
-"    "
 
 #. module: base
 #: model:ir.module.module,description:base.module_l10n_uk_reports
@@ -3650,7 +3647,7 @@ msgid ""
 "Add supports to fill three optional fields used when using Chorus Pro, especially when invoicing public services.\n"
 msgstr ""
 "\n"
-"Agregar soportes para llenar tres campos opcionales al usar Chorus Pro, especialmente al facturar servicios públicos.\n"
+"Agregue compatibilidad para completar tres campos opcionales al usar Chorus Pro, en particular al facturar servicios públicos.\n"
 
 #. module: base
 #: model:ir.module.module,description:base.module_documents_project
@@ -4816,24 +4813,24 @@ msgstr ""
 "\n"
 "\n"
 "Más de 1000 empresas han probado este módulo como base, pues\n"
-"se basa en una mezcla de los software más comunes en el mercado\n"
-"venezolano, lo que permitirá con seguridad que los contadores den sus primeros pasos con Odoo de manera más cómoda.\n"
+"está basado en una mezcla de los software más comunes en el mercado\n"
+"venezolano, lo que permitirá que los contadores se sientan más cómodos al comenzar a usar Odoo.\n"
 "\n"
-"Este módulo no pretende ser la localización contable completa para Venezuela,\n"
+"Este módulo no pretende ser la localización completa para Venezuela,\n"
 "pero le ayudará a empezar a usar Odoo muy rápido en este país.\n"
 "\n"
-"Este módulo le proporciona.\n"
+"Este módulo le proporciona:\n"
 "---------------------\n"
 "\n"
 "- Impuestos básicos para Venezuela.\n"
 "- Datos básicos para realizar pruebas con localización comunitaria.\n"
 "- Iniciar una empresa desde 0 si sus necesidades son básicas desde un punto de vista contable.\n"
 "\n"
-"Recomendamos el uso de account_anglo_saxon si desea valuar sus\n"
-"existencias como lo hace Venezuela sin facturas.\n"
+"Recomendamos usar account_anglo_saxon si desea valuar sus\n"
+"existencias como se hace en Venezuela sin facturas.\n"
 "\n"
-"Si instala este módulo y selecciona plan personalizado, se propondrá un plan básico,\n"
-"pero necesitará establecer los valores predeterminados de la cuenta de forma manual para los impuestos.\n"
+"Se propondrá un plan básico si instala este módulo y selecciona el plan de cuentas personalizado,\n"
+"pero necesitará configurar las cuentas predeterminadas de forma manual para los impuestos.\n"
 
 #. module: base
 #: model:ir.module.module,description:base.module_l10n_th
@@ -6785,20 +6782,20 @@ msgid ""
 "    "
 msgstr ""
 "\n"
-"Normas de la nómina de India.\n"
+"Reglas salariales de la nómina de India.\n"
 "============================\n"
 "\n"
-"- Configuración de hr_payroll para la localización india\n"
-"- Todas las normas de contribución principales para las nóminas indias. \n"
-"* Nuevo reporte de nóminas \n"
+"- Configuración de hr_payroll para la localización de India\n"
+"- Todas las reglas de contribución principales para los recibos de nómina de la India\n"
+"* Nuevo reporte de recibo de nómina \n"
 "* Contratos de los empleados \n"
 "* Permite configurar el salario base, bruto y neto \n"
-"* Nóminas de los empleados \n"
+"* Recibos de nómina de los empleados \n"
 "* Prestaciones y deducciones \n"
-"* Integrado con la gestión de las ausencias \n"
-"* Gastos médicos, de viajes, por cuidado de niños... \n"
+"* Integrado con la gestión de ausencias \n"
+"* Gastos médicos, de transporte, de manutención infantil... \n"
 "- Asesoramiento salarial y reportes\n"
-"- Salarios anuales por persona y salarios anuales por reporte de empleado"
+"- Reporte anual de salario por persona y por empleado"
 
 #. module: base
 #: model:ir.module.module,description:base.module_account_intrastat
@@ -14582,7 +14579,7 @@ msgid ""
 "An SMTP exception occurred. Check port number and connection security type.\n"
 " %s"
 msgstr ""
-"Se ha producido una excepción SMTP. Comprueba el número de puerto y el tipo de seguridad de la conexión.\n"
+"Ocurrió una excepción SMTP. Compruebe el número de puerto y el tipo de seguridad de la conexión.\n"
 " %s"
 
 #. module: base
@@ -14593,7 +14590,7 @@ msgid ""
 "An SSL exception occurred. Check connection security type.\n"
 " %s"
 msgstr ""
-"Se ha producido una excepción SSL. Comprueba el tipo de seguridad de conexión.\n"
+"Ocurrió una excepción SSL. Compruebe el tipo de seguridad de la conexión.\n"
 "%s"
 
 #. module: base
@@ -14795,12 +14792,12 @@ msgstr "Citas"
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_hr_appraisal_skills
 msgid "Appraisal - Skills"
-msgstr "Valoración - Habilidades"
+msgstr "Evaluación - Habilidades"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_hr_appraisal_survey
 msgid "Appraisal - Survey"
-msgstr "Valoración - Encuesta"
+msgstr "Evaluación - Encuesta"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_hr_appraisal_contract
@@ -28812,6 +28809,16 @@ msgid "Odoo is unable to merge the generated PDFs."
 msgstr "Odoo no puede fusionar los PDF generados."
 
 #. module: base
+#. odoo-python
+#: code:addons/base/models/ir_actions_report.py:0
+msgid ""
+"Odoo is unable to merge the generated PDFs because of {num_errors} corrupted"
+" file(s)"
+msgstr ""
+"Odoo no puede fusionar los PDF generados porque {num_errors} archivos están "
+"dañados."
+
+#. module: base
 #: model:ir.model.fields,help:base.field_ir_sequence__padding
 msgid ""
 "Odoo will automatically adds some '0' on the left of the 'Next Number' to "
@@ -31194,7 +31201,7 @@ msgstr "QWeb"
 #. module: base
 #: model:ir.model,name:base.model_ir_qweb_field_time
 msgid "QWeb Field Time"
-msgstr "Tiempo del campo QWeb"
+msgstr "Campo de tiempo QWeb"
 
 #. module: base
 #: model_terms:ir.ui.view,arch_db:base.act_report_xml_view
@@ -36344,18 +36351,18 @@ msgstr "Túnez"
 
 #. module: base
 #: model:res.country,name:base.tr
-msgid "Turkey"
-msgstr "Turquía"
+msgid "Türkiye"
+msgstr ""
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_tr
-msgid "Turkey - Accounting"
-msgstr "Turquía - Contabilidad"
+msgid "Türkiye - Accounting"
+msgstr ""
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_tr_reports
-msgid "Turkey - Accounting Reports"
-msgstr "Turquía - Reportes contables"
+msgid "Türkiye - Accounting Reports"
+msgstr ""
 
 #. module: base
 #: model:res.country,name:base.tm
@@ -37513,6 +37520,12 @@ msgstr "Modo de herencia de la vista"
 #: model:ir.module.module,summary:base.module_website_crm_livechat
 msgid "View livechat sessions for leads"
 msgstr "Ver las sesiones de chat en vivo para leads"
+
+#. module: base
+#. odoo-python
+#: code:addons/base/models/ir_actions_report.py:0
+msgid "View Problematic Record(s)"
+msgstr "Ver registros con errores"
 
 #. module: base
 #. odoo-python

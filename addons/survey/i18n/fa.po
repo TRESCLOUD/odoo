@@ -211,7 +211,7 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:survey.certification_report_view_classic
 #: model_terms:ir.ui.view,arch_db:survey.certification_report_view_modern
 msgid "<br/>by"
-msgstr ""
+msgstr "<br/>توسط"
 
 #. module: survey
 #: model:mail.template,body_html:survey.mail_template_certification
@@ -2654,7 +2654,7 @@ msgstr "حداکثر مقدار نمی تواند کوچکتر از حداقل �
 #. module: survey
 #: model_terms:ir.ui.view,arch_db:survey.question_result_number_or_date_or_datetime
 msgid "Maximum"
-msgstr ""
+msgstr "حداکثر"
 
 #. module: survey
 #: model:ir.model.fields,field_description:survey.field_survey_question__validation_max_date
@@ -2696,7 +2696,7 @@ msgstr "پیام ها"
 #. module: survey
 #: model_terms:ir.ui.view,arch_db:survey.question_result_number_or_date_or_datetime
 msgid "Minimum"
-msgstr ""
+msgstr "حداقل"
 
 #. module: survey
 #: model:ir.model.fields,field_description:survey.field_survey_question__validation_min_date
@@ -3201,7 +3201,7 @@ msgstr "صفحات"
 #. module: survey
 #: model:ir.model.fields,field_description:survey.field_survey_survey__questions_layout
 msgid "Pagination"
-msgstr ""
+msgstr "صفحه‌بندی"
 
 #. module: survey
 #: model:survey.question.answer,value:survey.survey_demo_burger_quiz_p3_q2_sug4
@@ -3230,7 +3230,7 @@ msgstr "شرکت کننده"
 #. module: survey
 #: model_terms:ir.ui.view,arch_db:survey.survey_survey_view_form
 msgid "Participants"
-msgstr ""
+msgstr "شرکت‌کنندگان"
 
 #. module: survey
 #: model:mail.template,subject:survey.mail_template_user_input_invite

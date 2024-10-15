@@ -4338,7 +4338,7 @@ msgstr "Odoo • Зображення та текст"
 #. module: website_slides
 #: model:res.groups,name:website_slides.group_website_slides_officer
 msgid "Officer"
-msgstr "Керівник"
+msgstr "Спеціаліст"
 
 #. module: website_slides
 #. odoo-javascript
@@ -4377,6 +4377,12 @@ msgstr "Після того, як завешите, не забудьте <b>О�
 #: model:ir.model.fields.selection,name:website_slides.selection__slide_channel__visibility__public
 msgid "Open To All"
 msgstr "Відкрити для всіх"
+
+#. module: website_slides
+#: code:addons/website_slides/controllers/mail.py:0
+#, python-format
+msgid "Only a single review can be posted per course."
+msgstr ""
 
 #. module: website_slides
 #: model:ir.model.fields,help:website_slides.field_slide_channel_invite__lang
@@ -6787,7 +6793,7 @@ msgstr "напр. Ваш рівень"
 #: model:ir.ui.menu,name:website_slides.website_slides_menu_root
 #: model_terms:ir.ui.view,arch_db:website_slides.res_config_settings_view_form
 msgid "eLearning"
-msgstr "електронне навчання"
+msgstr "Електронне навчання"
 
 #. module: website_slides
 #: model:ir.model.fields,field_description:website_slides.field_res_partner__slide_channel_ids

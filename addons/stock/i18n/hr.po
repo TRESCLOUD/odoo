@@ -27,10 +27,11 @@
 # Carlo Štefanac, 2023
 # Matija Gudlin, 2024
 # etoimene, 2024
-# Luka Carević <luka@uvid.hr>, 2024
 # Alen Komljen, 2024
 # Vladimir Vrgoč, 2024
 # Gordana Bilas, 2024
+# Servisi RAM d.o.o. <support@servisiram.hr>, 2024
+# Luka Carević <luka@uvid.hr>, 2024
 # 
 msgid ""
 msgstr ""
@@ -38,7 +39,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-02-06 13:31+0000\n"
 "PO-Revision-Date: 2022-09-22 05:55+0000\n"
-"Last-Translator: Gordana Bilas, 2024\n"
+"Last-Translator: Luka Carević <luka@uvid.hr>, 2024\n"
 "Language-Team: Croatian (https://app.transifex.com/odoo/teams/41243/hr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -127,6 +128,16 @@ msgid ""
 " * Done: The transfer has been processed.\n"
 " * Cancelled: The transfer has been cancelled."
 msgstr ""
+" * Nacrt: Prijenos još nije potvrđen. Rezervacija se ne primjenjuje.\n"
+" * Čeka drugi korak: Ovaj prijenos čeka na dovršetak druge operacije prije nego što bude spreman.\n"
+" * Na čekanju: Prijenos čeka na dostupnost nekih proizvoda.\n"
+"(a) Politika dostave je \"Što je prije moguće\": nijedan proizvod nije mogao biti rezerviran.\n"
+"(b) Politika dostave je \"Kada su svi proizvodi spremni\": ne mogu se rezervirati svi proizvodi.\n"
+" * Spremno: Prijenos je spreman za obradu.\n"
+"(a) Politika dostave je \"Što je prije moguće\": barem jedan proizvod je rezerviran.\n"
+"(b) Politika dostave je \"Kada su svi proizvodi spremni\": svi proizvodi su rezervirani.\n"
+" * Riješeno: Prijenos je obrađen.\n"
+" * Otkazano: Prijenos je otkazan."
 
 #. module: stock
 #. odoo-python
@@ -290,7 +301,7 @@ msgstr ", max:"
 #. module: stock
 #: model_terms:ir.ui.view,arch_db:stock.message_body
 msgid "-&gt;"
-msgstr ""
+msgstr "-&gt;"
 
 #. module: stock
 #: model_terms:ir.ui.view,arch_db:stock.exception_on_picking
@@ -696,7 +707,7 @@ msgstr "<strong>Gdje želite poslati proizvode?</strong>"
 #. module: stock
 #: model_terms:ir.ui.view,arch_db:stock.stock_warn_insufficient_qty_scrap_form_view
 msgid "? This may lead to inconsistencies in your inventory."
-msgstr "To može dovesti do nedosljednosti u vašem zalihi."
+msgstr "To može dovesti do nedosljednosti u vašoj zalihi."
 
 #. module: stock
 #: model:ir.model.constraint,message:stock.constraint_stock_package_type_barcode_uniq
@@ -2435,12 +2446,12 @@ msgstr "Opis"
 #. module: stock
 #: model_terms:ir.ui.view,arch_db:stock.view_template_property_form
 msgid "Description for Delivery Orders"
-msgstr ""
+msgstr "Opis za otpremnice"
 
 #. module: stock
 #: model_terms:ir.ui.view,arch_db:stock.view_template_property_form
 msgid "Description for Internal Transfers"
-msgstr ""
+msgstr "Opis za interne prijenose"
 
 #. module: stock
 #: model_terms:ir.ui.view,arch_db:stock.view_template_property_form
@@ -4337,7 +4348,7 @@ msgstr "Lokacija gotovih proizvoda"
 #. module: stock
 #: model_terms:ir.ui.view,arch_db:stock.view_putaway_search
 msgid "Location: Store to"
-msgstr "Lokacija: Pohrani na podlokaciju"
+msgstr "Lokacija: Pohraniti u"
 
 #. module: stock
 #: model_terms:ir.ui.view,arch_db:stock.view_putaway_search
@@ -4883,7 +4894,7 @@ msgstr "Tip sljedeće aktivnosti"
 #. module: stock
 #: model:ir.model.fields,field_description:stock.field_stock_location__next_inventory_date
 msgid "Next Expected Inventory"
-msgstr "Iduća inventura"
+msgstr "Sljedeća inventura"
 
 #. module: stock
 #: model:ir.model.fields,help:stock.field_stock_quant__inventory_date
@@ -6235,7 +6246,7 @@ msgstr "Pravila odlaganja"
 #. module: stock
 #: model_terms:ir.ui.view,arch_db:stock.report_stock_rule
 msgid "Putaway:"
-msgstr "Odlaganje"
+msgstr "Odlaganje:"
 
 #. module: stock
 #: model:ir.actions.act_window,name:stock.action_putaway_tree
@@ -6485,7 +6496,7 @@ msgstr ""
 #: model:ir.model.fields.selection,name:stock.selection__stock_picking_type__code__incoming
 #, python-format
 msgid "Receipt"
-msgstr "Primke"
+msgstr "Primka"
 
 #. module: stock
 #: model:ir.model.fields,field_description:stock.field_stock_warehouse__reception_route_id
@@ -6713,7 +6724,7 @@ msgstr ""
 #: model:ir.actions.act_window,name:stock.action_stock_replenishment_info
 #: model_terms:ir.ui.view,arch_db:stock.view_warehouse_orderpoint_tree_editable
 msgid "Replenishment Information"
-msgstr "Informacije o dopunama"
+msgstr "Informacije o nadopuni"
 
 #. module: stock
 #. odoo-python
@@ -6727,7 +6738,7 @@ msgstr ""
 #: code:addons/stock/models/stock_orderpoint.py:0
 #, python-format
 msgid "Replenishment Report"
-msgstr "Izvještaj dopuna"
+msgstr "Izvještaj o nadopuni"
 
 #. module: stock
 #: model_terms:ir.ui.view,arch_db:stock.stock_reorder_report_search
@@ -8353,7 +8364,7 @@ msgstr ""
 #. module: stock
 #: model_terms:ir.ui.view,arch_db:stock.view_template_property_form
 msgid "This note is added to delivery orders."
-msgstr ""
+msgstr "Ova napomena se dodaje na otpremnicama."
 
 #. module: stock
 #: model_terms:ir.ui.view,arch_db:stock.view_template_property_form
@@ -8361,6 +8372,8 @@ msgid ""
 "This note is added to internal transfer orders (e.g. where to pick the "
 "product in the warehouse)."
 msgstr ""
+"Ovaj opis se dodaje na internim prijenosima (npr. gdje se proizvod nalazi na"
+" skladištu)."
 
 #. module: stock
 #: model_terms:ir.ui.view,arch_db:stock.view_template_property_form
@@ -8368,6 +8381,8 @@ msgid ""
 "This note is added to receipt orders (e.g. where to store the product in the"
 " warehouse)."
 msgstr ""
+"Ovaj opis se dodaje na primkama (npr. gdje spremiti proizvod na "
+"skladištima)."
 
 #. module: stock
 #: model_terms:ir.ui.view,arch_db:stock.view_stock_return_picking_form
@@ -9546,7 +9561,7 @@ msgstr ""
 #: code:addons/stock/models/stock_move_line.py:0
 #, python-format
 msgid "You can not enter negative quantities."
-msgstr "Ne možete unositi negativne količine"
+msgstr "Ne možete unositi negativne količine."
 
 #. module: stock
 #. odoo-python

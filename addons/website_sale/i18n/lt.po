@@ -22,10 +22,10 @@
 # Asta Kasinskaitė, 2023
 # Sigitasvia <sigitas@vialaurea.lt>, 2024
 # Linas Versada <linaskrisiukenas@gmail.com>, 2024
-# Gailius Kazlauskas <gailius@vialaurea.lt>, 2024
 # Mantas, 2024
 # Gailius Kazlauskas, 2024
-# Šarūnas Misevičius, 2024
+# Sarunas M., 2024
+# Gailius Kazlauskas <gailius@vialaurea.lt>, 2024
 # Ramunė ViaLaurea <ramune.vialaurea@gmail.com>, 2024
 # 
 msgid ""
@@ -73,7 +73,7 @@ msgstr "&amp; Siuntimas"
 #. module: website_sale
 #: model_terms:ir.ui.view,arch_db:website_sale.products
 msgid "'. Showing results for '"
-msgstr ""
+msgstr "'. Rezultatai rodomi pagal '"
 
 #. module: website_sale
 #: model:ir.model.fields.selection,name:website_sale.selection__website__product_page_image_width__100_pc
@@ -2607,12 +2607,12 @@ msgstr "Mokėjimų piktogramos"
 #. module: website_sale
 #: model:ir.model,name:website_sale.model_payment_provider
 msgid "Payment Provider"
-msgstr ""
+msgstr "Mokėjimo paslaugos tiekėjas"
 
 #. module: website_sale
 #: model:ir.ui.menu,name:website_sale.menu_ecommerce_payment_providers
 msgid "Payment Providers"
-msgstr ""
+msgstr "Mokėjimo paslaugos tiekėjas"
 
 #. module: website_sale
 #: model:ir.ui.menu,name:website_sale.menu_ecommerce_payment_tokens
