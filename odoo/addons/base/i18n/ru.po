@@ -24,11 +24,11 @@
 # Ꚁemetron <d.v.selitsky@gmail.com>, 2024
 # valmasone, 2024
 # Yuriy Ney <k_wizard@mail.ru>, 2024
+# Андрей Гусев <gaussgss@gmail.com>, 2024
 # alenafairy, 2024
 # Viktor Pogrebniak <vp@aifil.ru>, 2024
 # Gennady Marchenko <gennadym@gmail.com>, 2024
 # Irina Fedulova <istartlin@gmail.com>, 2024
-# Андрей Гусев <gaussgss@gmail.com>, 2024
 # Max Belyanin <maxbelyanin@gmail.com>, 2024
 # Sergey Vilizhanin, 2024
 # Алексей Хомяков <alexey.homyakov@gmail.com>, 2024
@@ -42,6 +42,7 @@
 # Collex100, 2024
 # Смородин Даниил, 2024
 # Wil Odoo, 2024
+# Ilya Rozhkov, 2024
 # 
 msgid ""
 msgstr ""
@@ -49,7 +50,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-02-06 13:33+0000\n"
 "PO-Revision-Date: 2022-09-22 05:44+0000\n"
-"Last-Translator: Wil Odoo, 2024\n"
+"Last-Translator: Ilya Rozhkov, 2024\n"
 "Language-Team: Russian (https://app.transifex.com/odoo/teams/41243/ru/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1678,6 +1679,9 @@ msgid ""
 "        ZATCA E-Invoicing, support for PoS\n"
 "    "
 msgstr ""
+"\n"
+"        Электронное выставление счетов ZATCA, поддержка для PoS\n"
+"    "
 
 #. module: base
 #: model:ir.module.module,summary:base.module_purchase_product_matrix
@@ -18183,8 +18187,8 @@ msgstr ""
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_delivery_fedex
-msgid "Fedex Shipping"
-msgstr "Доставка FedEx"
+msgid "Fedex Shipping (Legacy)"
+msgstr ""
 
 #. module: base
 #: model:ir.module.module,summary:base.module_l10n_fr_fec
@@ -29596,8 +29600,11 @@ msgstr "Отправляйте свои посылки через DHL и отс�
 
 #. module: base
 #: model:ir.module.module,description:base.module_delivery_fedex
-msgid "Send your shippings through Fedex and track them online"
-msgstr "Отправляйте свои посылки через Fedex и отслеживайте их онлайн"
+msgid ""
+"This is the legacy integration with FedEx that is no longer supported.Please"
+" install the new \"Fedex Shipping\" module and uninstall this one as soon as"
+" possible. This integration will stop working in 2024"
+msgstr ""
 
 #. module: base
 #: model:ir.module.module,summary:base.module_delivery_ups_rest
@@ -31301,6 +31308,15 @@ msgid "The \"App Switcher\" action cannot be selected as home action."
 msgstr ""
 "Действие \"App Switcher\" не может быть выбрано в качестве домашнего "
 "действия."
+
+#. module: base
+#. odoo-python
+#: code:addons/base/models/res_users.py:0
+#, python-format
+msgid ""
+"The action \"%s\" cannot be set as the home action because it requires a "
+"record to be selected beforehand."
+msgstr ""
 
 #. module: base
 #: model:ir.model.fields,help:base.field_res_country__code

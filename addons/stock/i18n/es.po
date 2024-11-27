@@ -14,8 +14,11 @@
 # Sergio Del Castillo Baranda, 2024
 # Patricia Gutiérrez Capetillo <pagc@odoo.com>, 2024
 # Wil Odoo, 2024
-# Larissa Manderfeld, 2024
 # Pedro M. Baeza <pedro.baeza@tecnativa.com>, 2024
+# Carlos Roca Zaragoza, 2024
+# Pilar Vargas, 2024
+# David Vidal <david.vidal@tecnativa.com>, 2024
+# Larissa Manderfeld, 2024
 # 
 msgid ""
 msgstr ""
@@ -23,7 +26,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-02-06 13:31+0000\n"
 "PO-Revision-Date: 2022-09-22 05:55+0000\n"
-"Last-Translator: Pedro M. Baeza <pedro.baeza@tecnativa.com>, 2024\n"
+"Last-Translator: Larissa Manderfeld, 2024\n"
 "Language-Team: Spanish (https://app.transifex.com/odoo/teams/41243/es/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -526,7 +529,7 @@ msgstr "<span class=\"o_stat_text\">Operaciones</span>"
 #. module: stock
 #: model_terms:ir.ui.view,arch_db:stock.view_production_lot_form
 msgid "<span class=\"o_stat_text\">Transfers</span>"
-msgstr "<span class=\"o_stat_text\">Transferencias</span>"
+msgstr "<span class=\"o_stat_text\">Traslados</span>"
 
 #. module: stock
 #: model_terms:ir.ui.view,arch_db:stock.report_mrp_line
@@ -3328,8 +3331,8 @@ msgstr "Agrupar por..."
 #: model:ir.model.fields,help:stock.field_res_config_settings__group_stock_picking_wave
 msgid "Group your move operations in wave transfer to process them together"
 msgstr ""
-"Agrupe las operaciones de traslado en traslados por olas para procesarlas "
-"juntas"
+"Agrupe las operaciones de movimientos en traslados por oleadas para "
+"procesarlas juntas"
 
 #. module: stock
 #: model:ir.model.fields,field_description:stock.field_stock_lot__has_message
@@ -3822,7 +3825,7 @@ msgstr "Traslado interno"
 #: model:stock.picking.type,name:stock.picking_type_internal
 #, python-format
 msgid "Internal Transfers"
-msgstr "Traslados internos"
+msgstr "Traslado internos"
 
 #. module: stock
 #: model:ir.model.fields,field_description:stock.field_res_company__internal_transit_location_id
@@ -3978,7 +3981,7 @@ msgstr "Resumen de inventario"
 #. module: stock
 #: model:ir.model.fields,field_description:stock.field_stock_quant__inventory_quantity_set
 msgid "Inventory Quantity Set"
-msgstr "Conjunto de cantidades de inventario"
+msgstr "Se ha contado cantidad"
 
 #. module: stock
 #: model_terms:ir.ui.view,arch_db:stock.stock_inventory_adjustment_name_form_view
@@ -5081,7 +5084,7 @@ msgstr "La próxima fecha en la que se contará la cantidad real."
 #. module: stock
 #: model_terms:ir.ui.view,arch_db:stock.exception_on_picking
 msgid "Next transfer(s) impacted:"
-msgstr "Siguiente(s) traslado(s) afectado(s):"
+msgstr "Siguiente(s) traslado(es) afectado(s):"
 
 #. module: stock
 #. odoo-python
@@ -5135,7 +5138,7 @@ msgstr "Ninguna operación realizada en este lote."
 #. module: stock
 #: model_terms:ir.actions.act_window,help:stock.action_get_picking_type_operations
 msgid "No operations found. Let's create a transfer !"
-msgstr "No se encontraron operaciones. ¡Creemos una transferencia!"
+msgstr "No se encontraron operaciones. ¡Creemos un traslado!"
 
 #. module: stock
 #: model_terms:ir.actions.act_window,help:stock.product_template_action_product
@@ -5329,8 +5332,8 @@ msgid ""
 "On hand quantity which hasn't been reserved on a transfer, in the default "
 "unit of measure of the product"
 msgstr ""
-"Stock real que no se ha reservado en un traslado, en la unidad de medida "
-"predeterminada del producto"
+"Stock real que no se ha reservado en un traslado, en la unidad de medida por"
+" defecto del producto"
 
 #. module: stock
 #: model_terms:ir.ui.view,arch_db:stock.product_template_kanban_stock_view
@@ -6060,7 +6063,7 @@ msgstr "Procese operaciones más rápido con códigos de barras"
 #. module: stock
 #: model_terms:ir.ui.view,arch_db:stock.res_config_settings_view_form
 msgid "Process operations in wave transfers"
-msgstr "Procese operaciones en traslados por olas"
+msgstr "Procese operaciones en traslados por oleadas"
 
 #. module: stock
 #: model_terms:ir.ui.view,arch_db:stock.res_config_settings_view_form
@@ -6987,7 +6990,7 @@ msgstr "Pida una firma en sus órdenes de entrega"
 #. module: stock
 #: model:ir.model.fields,field_description:stock.field_stock_picking_type__reservation_method
 msgid "Reservation Method"
-msgstr "Método de reservación"
+msgstr "Método de reserva"
 
 #. module: stock
 #: model_terms:ir.ui.view,arch_db:stock.quant_search_view
@@ -9149,7 +9152,7 @@ msgstr "Activar manualmente"
 #: code:addons/stock/static/src/stock_forecasted/stock_forecasted.js:0
 #, python-format
 msgid "Try to add some incoming or outgoing transfers."
-msgstr "Intente agregar algunas traslados entrantes o salientes."
+msgstr "Intente agregar algunos traslados entrantes o salientes."
 
 #. module: stock
 #: model:ir.model.fields,field_description:stock.field_barcode_rule__type
@@ -9243,7 +9246,7 @@ msgstr "Precio unitario"
 #: model_terms:ir.ui.view,arch_db:stock.view_stock_move_line_kanban
 #: model_terms:ir.ui.view,arch_db:stock.view_stock_move_line_operation_tree
 msgid "Unit of Measure"
-msgstr "Unidad de medida"
+msgstr "UdM"
 
 #. module: stock
 #: model:ir.model.fields,field_description:stock.field_stock_replenishment_option__uom
@@ -9379,7 +9382,7 @@ msgstr ""
 #. module: stock
 #: model:res.groups,name:stock.group_stock_picking_wave
 msgid "Use wave pickings"
-msgstr "Utilizar picking por olas"
+msgstr "Utilizar picking por oleadas"
 
 #. module: stock
 #: model_terms:ir.ui.view,arch_db:stock.res_config_settings_view_form
@@ -9653,7 +9656,7 @@ msgstr "Advertencias para el stock"
 #. module: stock
 #: model:ir.model.fields,field_description:stock.field_res_config_settings__group_stock_picking_wave
 msgid "Wave Transfers"
-msgstr "Traslados con recolección por olas"
+msgstr "Traslados con recolección por oleadas"
 
 #. module: stock
 #: model:ir.model.fields,field_description:stock.field_stock_lot__website_message_ids
@@ -10327,7 +10330,7 @@ msgstr "Solo puede devolver un picking a la vez."
 msgid "You might want to update the locations of this transfer's operations"
 msgstr ""
 "Tal vez quiera actualizar las ubicaciones de las operaciones de este "
-"traslado"
+"traslado."
 
 #. module: stock
 #. odoo-python

@@ -1735,7 +1735,7 @@ msgstr "Nhấp đôi để điền mô tả sản phẩm"
 #. module: website_sale
 #: model_terms:ir.ui.view,arch_db:website_sale.products
 msgid "Drag building blocks here to customize the header for \""
-msgstr "Kéo khối dựng ở đây để tùy chỉnh phần tiêu đề cho \""
+msgstr "Kéo khối dựng ở đây để tùy chỉnh phần header cho \""
 
 #. module: website_sale
 #. odoo-javascript
@@ -4493,7 +4493,7 @@ msgstr "vd. đèn,thùng"
 #: model:ir.ui.menu,name:website_sale.menu_ecommerce_settings
 #, python-format
 msgid "eCommerce"
-msgstr "thương mại điện tử"
+msgstr "Thương mại điện tử"
 
 #. module: website_sale
 #: model:ir.actions.act_window,name:website_sale.product_public_category_action
