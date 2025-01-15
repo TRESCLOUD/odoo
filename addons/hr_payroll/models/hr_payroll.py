@@ -13,6 +13,9 @@ from odoo.tools.safe_eval import safe_eval
 
 from odoo.addons import decimal_precision as dp
 
+PROV_DCUARTO_MONTHLY = ['PROV_DCUARTO_MENSUAL', 'PROV DCUARTO']
+PROV_DTERCERO_MONTHLY = ['PROV_DTERCERO_MENSUAL', 'PROV DTERCERO']
+CATEGORY_UNTAXABLE = ['PROV_FOND_RESERV_MENSUAL'] + PROV_DCUARTO_MONTHLY + PROV_DTERCERO_MONTHLY
 
 class HrPayrollStructure(models.Model):
     """
@@ -566,6 +569,8 @@ class HrPayslip(models.Model):
         #La siguiente línea fue modificada por TRESCLOUD
         sorted_rule_ids = self.get_sorted_rules(rule_ids)
         sorted_rules = self.env['hr.salary.rule'].browse(sorted_rule_ids)
+        oingresos_vals_dict = {}
+        baselocaldict.update ({'oingresos': BrowsableObject(payslip.employee_id.id, oingresos_vals_dict, self.env)})
 
         for contract in contracts:
             employee = contract.employee_id
@@ -601,6 +606,9 @@ class HrPayslip(models.Model):
                     #set/overwrite the amount computed for this rule in the localdict
                     tot_rule = amount * qty * rate / 100.0
                     
+                    #Agreado por TRESCLOUD.
+                    if rule.category_id.code == 'OINGRESOS' and rule.code not in CATEGORY_UNTAXABLE:
+                        oingresos_vals_dict[rule.code] = tot_rule
                     
                     #MODIFICADO POR TRESCLOUD PARA PERMITIR SUMAR VARIOS REGISTROS
                     #DE LA MISMA REGLA SALARIAL
