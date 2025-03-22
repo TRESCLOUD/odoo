@@ -205,10 +205,15 @@ class sale_quote(http.Controller):
             Transaction.reference,
             Order.amount_total,
             Order.pricelist_id.currency_id.id,
-            values={
+            #Siguiente línea modificada por Trescloud
+            values=self._get_values_render_quote(order_id, token, Order, Transaction))
+
+    def _get_values_render_quote(self, order_id, token, order, transaction):
+        # Hooks agregado por Trescloud, será manejado en un módulo superior
+        return {
                 'return_url': '/quote/%s/%s' % (order_id, token) if token else '/quote/%s' % order_id,
-                'type': Order._get_payment_type(),
+                'type': order._get_payment_type(),
                 'alias_usage': _('If we store your payment information on our server, subscription payments will be made automatically.'),
-                'partner_id': Order.partner_shipping_id.id or Order.partner_invoice_id.id,
-                'billing_partner_id': Order.partner_invoice_id.id,
-            })
+                'partner_id': order.partner_shipping_id.id or order.partner_invoice_id.id,
+                'billing_partner_id': order.partner_invoice_id.id,
+            }

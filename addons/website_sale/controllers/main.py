@@ -843,19 +843,28 @@ class WebsiteSale(http.Controller):
             'payment_acquirer_id': acquirer_id,
             'payment_tx_id': request.session['sale_transaction_id']
         })
+        # siguiente línea agregada por Trescloud
+        dic_values = self._get_values_render(order, tx, token)
         if token:
-            return request.env.ref('website_sale.payment_token_form').render(dict(tx=tx), engine='ir.qweb')
+            return request.env.ref('website_sale.payment_token_form').render(dic_values, engine='ir.qweb')
 
         return tx.acquirer_id.with_context(submit_class='btn btn-primary', submit_txt=_('Pay Now')).sudo().render(
             tx.reference,
             order.amount_total,
             order.pricelist_id.currency_id.id,
-            values={
+            #siguiente línea modificada por Trescloud
+            values=dic_values,
+        )
+
+    def _get_values_render(self, order, transaction, token):
+        #Hooks agregado por trescloud, será manejado en un modulo superior
+        if token:
+            return dict(tx=transaction)
+        return {
                 'return_url': '/shop/payment/validate',
                 'partner_id': order.partner_shipping_id.id or order.partner_invoice_id.id,
                 'billing_partner_id': order.partner_invoice_id.id,
-            },
-        )
+            }
 
     @http.route('/shop/payment/get_status/<int:sale_order_id>', type='json', auth="public", website=True)
     def payment_get_status(self, sale_order_id, **post):
