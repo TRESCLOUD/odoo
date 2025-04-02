@@ -1211,7 +1211,7 @@ msgstr "Envío y seguro pagado a "
 #. module: stock
 #: model:stock.incoterms,name:stock.incoterm_CPT
 msgid "CARRIAGE PAID TO"
-msgstr "Envío pagado a "
+msgstr "Transporte pagado hasta"
 
 #. module: stock
 #: model:stock.incoterms,name:stock.incoterm_CFR
